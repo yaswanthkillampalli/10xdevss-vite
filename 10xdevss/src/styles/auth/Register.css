@@ -1,0 +1,328 @@
+/* THEME VARIABLES */
+:root,
+[data-theme="light"] {
+  --register-bg: #ffffff;
+  --register-surface: #f8f8f9;
+  --register-surface-2: #ffffff;
+  --register-text: #111111;
+  --register-muted: #5f5f67;
+  --register-border: rgba(17, 17, 17, 0.1);
+  --register-accent: #c1121f;
+  --register-accent-hover: #a20f19;
+  --register-black: #111111;
+  --register-white: #ffffff;
+  --register-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  --register-soft-shadow: 0 10px 30px rgba(193, 18, 31, 0.08);
+}
+
+[data-theme="dark"] {
+  --register-bg: #050505;
+  --register-surface: #111113;
+  --register-surface-2: #17171a;
+  --register-text: #f5f5f5;
+  --register-muted: #a1a1aa;
+  --register-border: rgba(255, 255, 255, 0.1);
+  --register-accent: #ef233c;
+  --register-accent-hover: #ff4d6d;
+  --register-black: #000000;
+  --register-white: #ffffff;
+  --register-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+  --register-soft-shadow: 0 10px 30px rgba(239, 35, 60, 0.12);
+}
+
+/* PAGE / LAYOUT */
+.register-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(193, 18, 31, 0.08), transparent 22%),
+    radial-gradient(circle at bottom right, rgba(0, 0, 0, 0.05), transparent 25%),
+    var(--register-bg);
+  color: var(--register-text);
+}
+
+/* LEFT BRAND PANEL */
+.register-brand-panel {
+  position: relative;
+  overflow: hidden;
+  background: var(--register-surface);
+  border-right: 1px solid var(--register-border);
+}
+
+.register-brand-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.06;
+  background-image:
+    linear-gradient(rgba(193, 18, 31, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(193, 18, 31, 0.16) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(circle at center, black 35%, transparent 90%);
+}
+
+.register-brand-content {
+  position: relative;
+  z-index: 2;
+  padding: 2.8rem 2.4rem 3.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.register-brand-top {
+  color: var(--register-accent);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.register-brand-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--register-accent);
+  color: var(--register-white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--register-soft-shadow);
+}
+
+.register-brand-name {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--register-text);
+  letter-spacing: -0.03em;
+}
+
+.register-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(193, 18, 31, 0.08);
+  color: var(--register-accent);
+  border: 1px solid rgba(193, 18, 31, 0.14);
+  font-size: 0.84rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+}
+
+.register-brand-title {
+  margin: 0;
+  font-size: clamp(2.1rem, 2.8vw, 2.9rem);
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: var(--register-text);
+}
+
+.register-brand-text {
+  margin-top: 1.1rem;
+  max-width: 280px;
+  font-size: 0.96rem;
+  line-height: 1.75;
+  color: var(--register-muted);
+}
+
+.register-brand-footer {
+  font-size: 0.84rem;
+  color: var(--register-muted);
+}
+
+/* RIGHT FORM PANEL */
+.register-form-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--register-bg);
+}
+
+.register-form-shell {
+  width: 100%;
+  max-width: 660px;
+  padding: 1.2rem 0.8rem;
+}
+
+.register-form-card {
+  padding: 2rem;
+  border-radius: 28px;
+  background: var(--register-surface-2);
+  border: 1px solid var(--register-border);
+  box-shadow: var(--register-shadow);
+}
+
+.register-mobile-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--register-text);
+}
+
+/* Form Header */
+.register-header {
+  margin-bottom: 1.8rem;
+}
+
+.register-title {
+  margin: 0 0 0.4rem;
+  font-size: clamp(1.8rem, 2.3vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--register-text);
+}
+
+.register-subtitle {
+  margin: 0;
+  color: var(--register-muted);
+  font-size: 0.92rem;
+}
+
+.register-link {
+  color: var(--register-accent);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.register-link:hover {
+  text-decoration: underline;
+}
+
+/* FORM FIELDS */
+.register-label {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--register-text);
+}
+
+.register-input-group {
+  border: 1px solid var(--register-border);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--register-surface);
+  transition: all 0.25s ease;
+}
+
+.register-input-group:focus-within {
+  border-color: var(--register-accent);
+  box-shadow: 0 0 0 4px rgba(193, 18, 31, 0.08);
+}
+
+.register-input-icon {
+  border: none;
+  background: transparent;
+  color: var(--register-muted);
+  padding-left: 1rem;
+  padding-right: 0.35rem;
+}
+
+.register-check-icon {
+  border: none;
+  background: transparent;
+  padding: 0.35rem 0.8rem;
+  color: var(--register-accent);
+}
+
+.register-input {
+  border: none;
+  background: transparent;
+  color: var(--register-text);
+  min-height: 48px;
+  font-size: 0.94rem;
+  box-shadow: none;
+}
+
+.register-input::placeholder {
+  color: #999;
+}
+
+/* Error Alert */
+.register-error-alert {
+  padding: 0.9rem 1rem;
+  border-radius: 14px;
+  border: 1px solid rgba(193, 18, 31, 0.18);
+  background: rgba(193, 18, 31, 0.07);
+  color: var(--register-accent);
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+/* Submit Button */
+.register-submit-btn {
+  min-height: 54px;
+  margin: 0.75rem 0;
+  border: none;
+  border-radius: 16px;
+  padding: 0 1.25rem;
+  background: linear-gradient(135deg, var(--register-black), #2a2a2a);
+  color: var(--register-white);
+  font-size: 0.9rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+}
+
+.register-submit-btn:hover,
+.register-submit-btn:focus {
+  background: linear-gradient(135deg, var(--register-accent), var(--register-accent-hover));
+  color: var(--register-white);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(193, 18, 31, 0.2);
+}
+
+/* Policy Text */
+.register-policy-text {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.84rem;
+  color: var(--register-muted);
+}
+
+/* Dark mode helper for Bootstrap icons */
+[data-theme="dark"] .register-input-icon {
+  color: var(--register-muted);
+}
+
+/* Ensure Bootstrap icons stay readable in dark mode */
+[data-theme="dark"] .input-group-text {
+  background: transparent;
+  border-right-color: var(--register-border);
+}
+
+/* Form link inside dark mode */
+[data-theme="dark"] .register-link {
+  color: var(--register-accent);
+}
+
+[data-theme="dark"] .register-link:hover {
+  color: var(--register-accent-hover);
+}
+
+/* Button in dark mode */
+[data-theme="dark"] .register-submit-btn {
+  background: linear-gradient(135deg, var(--register-white), #e4e4e4);
+  color: var(--register-black);
+}
+
+[data-theme="dark"] .register-submit-btn:hover,
+[data-theme="dark"] .register-submit-btn:focus {
+  background: linear-gradient(135deg, var(--register-accent), var(--register-accent-hover));
+  color: var(--register-white);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(239, 35, 60, 0.2);
+}
+
+/* Ensure borders and surfaces look consistent */
+[data-theme="dark"] .register-form-card {
+  border-color: var(--register-border);
+}
+
+/* Light mode card border looks soft */
+[data-theme="light"] .register-form-card,
+.register-form-card {
+  border-color: var(--register-border);
+}

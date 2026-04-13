@@ -1,0 +1,129 @@
+.publications-layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  margin-top: 24px;
+}
+
+.publications-filters {
+  position: sticky;
+  top: 96px; /* adjust based on your navbar height */
+  align-self: start;
+}
+
+.filters-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.filters-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+
+.filter-group + .filter-group {
+  margin-top: 20px;
+}
+
+.filter-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+
+.filter-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text);
+  padding: 6px 0;
+  cursor: pointer;
+}
+
+.filter-check input {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--accent);
+}
+
+.filter-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: var(--surface, #f5f5f5);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-tag-chip input {
+  display: none;
+}
+
+.filter-tag-chip.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.publications-content {
+  min-width: 0;
+}
+
+.publications-searchbar {
+  margin-bottom: 16px;
+}
+
+.publications-search-input {
+  width: 100%;
+  height: 46px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  padding: 0 14px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.publications-search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.08);
+}
+
+.publications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (max-width: 991px) {
+  .publications-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .publications-filters {
+    position: static;
+  }
+}

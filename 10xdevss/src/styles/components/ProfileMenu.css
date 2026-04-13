@@ -1,0 +1,245 @@
+.profile-dropdown-toggle {
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+.portfolio-dropdown-menu {
+  min-width: 240px;
+  padding: 0.5rem;
+  border-radius: 16px;
+  border: 1px solid var(--nav-border);
+  background: var(--nav-bg);
+  box-shadow: var(--nav-shadow);
+}
+
+.portfolio-dropdown-item {
+  border-radius: 12px;
+  padding: 0.72rem 0.9rem;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--nav-text);
+}
+
+.portfolio-dropdown-item:hover,
+.portfolio-dropdown-item:focus {
+  background: var(--nav-hover-bg);
+  color: var(--nav-accent);
+}
+
+.portfolio-submenu-wrapper {
+  position: relative;
+}
+
+.portfolio-submenu-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.submenu-arrow {
+  font-size: 18px;
+  line-height: 1;
+  color: var(--nav-text);
+}
+
+.portfolio-submenu {
+  position: absolute;
+  top: -6px;
+  min-width: 190px;
+  padding: 0.5rem;
+  border-radius: 16px;
+  border: 1px solid var(--nav-border);
+  background: var(--nav-bg);
+  box-shadow: var(--nav-shadow);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+  z-index: 1200;
+}
+
+.portfolio-submenu-left {
+  right: calc(100% + 10px);
+}
+
+.portfolio-submenu-left::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -14px;
+  width: 18px;
+  height: 100%;
+}
+
+.portfolio-submenu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.portfolio-submenu-item {
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+  padding: 0.72rem 0.85rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--nav-text);
+  transition: all 0.25s ease;
+}
+
+.portfolio-submenu-item:hover,
+.portfolio-submenu-item:focus {
+  background: var(--nav-hover-bg);
+  color: var(--nav-accent);
+}
+
+.portfolio-submenu-item.danger:hover,
+.portfolio-submenu-item.danger:focus {
+  background: rgba(220, 38, 38, 0.08);
+  color: #dc2626;
+}
+
+.portfolio-submenu-item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.portfolio-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.portfolio-modal {
+  width: 100%;
+  max-width: 760px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.portfolio-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.portfolio-modal-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.portfolio-modal-close {
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.portfolio-modal-body {
+  padding: 20px 22px;
+}
+
+.portfolio-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 22px;
+  border-top: 1px solid var(--border);
+}
+
+.portfolio-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.portfolio-form-input {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  padding: 0 12px;
+  font-size: 13px;
+  outline: none;
+}
+
+.portfolio-form-input:focus,
+.portfolio-form-textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.08);
+}
+
+.portfolio-form-input-full {
+  grid-column: 1 / -1;
+}
+
+.portfolio-form-textarea {
+  min-height: 110px;
+  resize: vertical;
+  padding: 12px;
+}
+
+.portfolio-view-grid {
+  display: grid;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.portfolio-delete-text {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+@media (max-width: 991.98px) {
+  .portfolio-submenu,
+  .portfolio-submenu-left {
+    position: static;
+    right: auto;
+    top: auto;
+    min-width: 100%;
+    margin-top: 8px;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    display: none;
+  }
+
+  .portfolio-submenu.show {
+    display: block;
+  }
+
+  .portfolio-submenu-left::before {
+    display: none;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .portfolio-form-grid {
+    grid-template-columns: 1fr;
+  }
+}

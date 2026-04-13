@@ -1,0 +1,60 @@
+:root,
+[data-theme="light"] {
+  --text-strong: #111111;
+  --text-muted: #666666;
+  --border: rgba(0, 0, 0, 0.12);
+
+  /* Red accent */
+  --accent: #c1121f;
+  --accent-hover: #a30f1a;
+  --accent-bg: #fdf0f0;
+
+  --white: #ffffff;
+  --bg: #f9f9f9;
+  --card-bg: #ffffff;
+  --card-border: #e0e0e0;
+
+  --radius-md: 0.6rem;
+  --radius-xl: 1rem;
+}
+
+[data-theme="dark"] {
+  --text-strong: #e0e0e0;
+  --text-muted: #a5a5a5;
+  --border: rgba(255, 255, 255, 0.08);
+
+  --accent: #ef233c;
+  --accent-hover: #ff4d6d;
+  --accent-bg: #2c0000;
+
+  --white: #ffffff;
+  --bg: #111112;
+  --card-bg: #1a1a1c;
+  --card-border: #303032;
+}
+
+.project-search-input {
+  background: var(--card-bg);
+  color: var(--text-strong);
+}
+
+.project-search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.project-filter-btn {
+  background: var(--card-bg);
+  color: var(--text-strong);
+  border: 1px solid var(--border);
+}
+
+.project-filter-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.project-filter-btn.is-active {
+  background: var(--accent);
+  color: var(--white);
+  border-color: var(--accent);
+}

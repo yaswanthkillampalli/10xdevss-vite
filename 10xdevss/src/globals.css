@@ -1,0 +1,66 @@
+:root {
+  color-scheme: light dark;
+  --app-bg: #f5f5f5;
+  --app-surface: #ffffff;
+  --app-text: #111111;
+  --app-muted: #575757;
+  --app-red: #d40000;
+  --app-border: #e5e5e5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --app-bg: #0f0f0f;
+    --app-surface: #171717;
+    --app-text: #f4f4f4;
+    --app-muted: #b5b5b5;
+    --app-border: #2d2d2d;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--app-bg);
+  color: var(--app-text);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.app-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.25rem;
+  background: var(--app-surface);
+  border-bottom: 1px solid var(--app-border);
+}
+
+.app-navbar-brand {
+  font-weight: 700;
+  color: var(--app-red);
+}
+
+.app-navbar-links {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.app-nav-link {
+  color: var(--app-muted);
+  text-decoration: none;
+  font-size: 0.92rem;
+}
+
+.app-nav-link.is-active {
+  color: var(--app-red);
+  font-weight: 600;
+}
+
+.app-page {
+  padding: 1rem 1.25rem;
+}

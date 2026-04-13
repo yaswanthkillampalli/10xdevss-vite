@@ -1,0 +1,35 @@
+:root,
+[data-theme="light"] {
+  --layout-bg: linear-gradient(180deg, #fff5f5 0%, #ffffff 40%, #f8f9fa 100%);
+  --layout-text: #111111;
+}
+
+[data-theme="dark"] {
+  --layout-bg: linear-gradient(180deg, #090909 0%, #111214 50%, #18191b 100%);
+  --layout-text: #ffffff;
+}
+
+.app-layout {
+  min-height: 100vh;
+  background: var(--layout-bg);
+  color: var(--layout-text);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.app-main {
+  width: 100%;
+  padding-top: 0.35rem;
+  padding-bottom: 1.5rem;
+}
+
+.app-content {
+  padding-top: 0.75rem;
+  padding-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .app-content {
+    padding-top: 0.75rem;
+    padding-bottom: 3rem;
+  }
+}

@@ -1,0 +1,37 @@
+import { Routes, Route } from 'react-router'
+import Login from './pages/auth/Login.jsx'
+import Register from './pages/auth/Register.jsx'
+import Dashboard from './pages/Dashboard.jsx'
+import Projects from './pages/portfolio/Projects.jsx'
+import Skills from './pages/portfolio/Skills.jsx'
+import Experience from './pages/portfolio/Experience.jsx'
+import Certifications from './pages/portfolio/Certifications.jsx'
+import Publications from './pages/portfolio/Publications.jsx'
+import Achievements from './pages/portfolio/Achievements.jsx'
+import PublicProfile from './pages/profile/PublicProfile.jsx'
+import Settings from './pages/settings/Settings.jsx'
+import Layout from './components/Layout.jsx'
+import ProtectedRoute from './routes/ProtectedRoute.jsx'
+
+export default function App() {
+    return (
+        <Routes>
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route path="profile/:username" element={<PublicProfile />} />
+
+            <Route element={<ProtectedRoute />}>
+                <Route element={<Layout />}>
+                    <Route index element={<Dashboard />} />
+                    <Route path="portfolio/projects" element={<Projects />} />
+                    <Route path="portfolio/experience" element={<Experience />} />
+                    <Route path="portfolio/certifications" element={<Certifications />} />
+                    <Route path="portfolio/publications" element={<Publications />} />
+                    <Route path="portfolio/achievements" element={<Achievements />} />
+                    <Route path="portfolio/skills" element={<Skills />} />
+                    <Route path="settings" element={<Settings />} />
+                </Route>
+            </Route>
+        </Routes>
+    )
+}
