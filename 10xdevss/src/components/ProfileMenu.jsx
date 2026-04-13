@@ -33,10 +33,43 @@ export default function ProfileMenu({ theme, toggleTheme, onLogout }) {
 
           <li>
             <Link
+              to="/portfolio/projects"
+              className="dropdown-item portfolio-dropdown-item"
+            >
+              My Projects
+            </Link>
+          </li>
+
+          <li><hr className="dropdown-divider" /></li>
+
+          <li>
+            <Link
               to="/portfolio/certifications"
               className="dropdown-item portfolio-dropdown-item"
             >
-              Certifications
+              My Certifications
+            </Link>
+          </li>
+
+          <li><hr className="dropdown-divider" /></li>
+
+          <li>
+            <Link
+              to="/portfolio/publications"
+              className="dropdown-item portfolio-dropdown-item"
+            >
+              My Publications
+            </Link>
+          </li>
+
+          <li><hr className="dropdown-divider" /></li>
+
+          <li>
+            <Link
+              to="/portfolio/achievements"
+              className="dropdown-item portfolio-dropdown-item"
+            >
+              My Achievements
             </Link>
           </li>
 

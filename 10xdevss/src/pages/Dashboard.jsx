@@ -192,7 +192,7 @@ export default function Dashboard() {
             <div className="section-header">
               <h2 className="section-title">Recent Projects</h2>
               <a
-                href="/portfolio/projects"
+                href="/projects"
                 className="btn btn-ghost"
                 style={{ fontSize: 13 }}
               >

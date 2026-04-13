@@ -3,6 +3,9 @@ import Login from './pages/auth/Login.jsx'
 import Register from './pages/auth/Register.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Projects from './pages/portfolio/Projects.jsx'
+import MyProjects from './pages/portfolio/MyProjects.jsx'
+import MyPublications from './pages/portfolio/MyPublications.jsx'
+import MyAchievements from './pages/portfolio/MyAchievements.jsx'
 import Skills from './pages/portfolio/Skills.jsx'
 import Experience from './pages/portfolio/Experience.jsx'
 import Certifications from './pages/portfolio/Certifications.jsx'
@@ -23,11 +26,17 @@ export default function App() {
             <Route element={<ProtectedRoute />}>
                 <Route element={<Layout />}>
                     <Route index element={<Dashboard />} />
-                    <Route path="portfolio/projects" element={<Projects />} />
+                    <Route path="projects" element={<Projects />} />
+                    <Route path="portfolio/projects" element={<MyProjects />} />
+                    <Route path="portofolio/projects" element={<MyProjects />} />
+                    <Route path="portfolio/publications" element={<MyPublications />} />
+                    <Route path="portofolio/publications" element={<MyPublications />} />
+                    <Route path="portfolio/achievements" element={<MyAchievements />} />
+                    <Route path="portofolio/achievements" element={<MyAchievements />} />
                     <Route path="portfolio/experience" element={<Experience />} />
                     <Route path="portfolio/certifications" element={<Certifications />} />
-                    <Route path="portfolio/publications" element={<Publications />} />
-                    <Route path="portfolio/achievements" element={<Achievements />} />
+                    <Route path="publications" element={<Publications />} />
+                    <Route path="achievements" element={<Achievements />} />
                     <Route path="portfolio/skills" element={<Skills />} />
                     <Route path="settings" element={<Settings />} />
                 </Route>

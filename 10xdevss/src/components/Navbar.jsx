@@ -5,9 +5,9 @@ import '../styles/components/Navbar.css';
 
 const NAV_LINKS = [
   { to: "/", label: "Dashboard" },
-  { to: "/portfolio/projects", label: "Projects" },
-  { to: "/portfolio/publications", label: "Publications" },
-  { to: "/portfolio/achievements", label: "Achievements" },
+  { to: "/projects", label: "Projects" },
+  { to: "/publications", label: "Publications" },
+  { to: "/achievements", label: "Achievements" },
 ];
 
 export default function Navbar() {
@@ -32,11 +32,19 @@ export default function Navbar() {
   };
 
   return (
-    <nav className={`navbar navbar-expand-lg sticky-top portfolio-navbar ${theme === 'dark' ? 'navbar-dark' : 'navbar-light'}`}>
-      <div className="container-xl px-3 px-lg-4">
-        <Link to="/" className="navbar-brand d-flex align-items-center gap-2">
-          <span className="portfolio-logo">L</span>
-          <span className="portfolio-brand-text">My Portfolio</span>
+    <nav
+      className={`navbar navbar-expand-lg sticky-top portfolio-navbar ${
+        theme === 'dark' ? 'navbar-dark' : 'navbar-light'
+      }`}
+    >
+      <div className="container-fluid portfolio-navbar-container">
+        <Link to="/" className="navbar-brand portfolio-brand d-flex align-items-center gap-2 m-0">
+          <img
+            src="/10xdevs-bg-removed.svg"
+            alt="10x Devs"
+            className="portfolio-logo-img"
+          />
+          {/* <span className="portfolio-brand-text">10x Devs</span> */}
         </Link>
 
         <button
@@ -52,7 +60,7 @@ export default function Navbar() {
         </button>
 
         <div className="collapse navbar-collapse" id="mainNavbar">
-          <ul className="navbar-nav mx-auto mb-3 mb-lg-0 gap-lg-2">
+          <ul className="navbar-nav portfolio-nav-list mb-3 mb-lg-0">
             {NAV_LINKS.map((link) => (
               <li className="nav-item" key={link.to}>
                 <Link
@@ -66,7 +74,7 @@ export default function Navbar() {
             ))}
           </ul>
 
-          <div className="d-flex align-items-center justify-content-lg-end">
+          <div className="portfolio-profile-wrap d-flex align-items-center">
             <ProfileMenu
               theme={theme}
               toggleTheme={toggleTheme}
