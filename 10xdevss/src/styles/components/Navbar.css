@@ -1,405 +1,520 @@
+/* ================================================================
+   Navbar.css — 10xDevs Portfolio
+   Fonts: Syne (brand) + Outfit (nav) + JetBrains Mono (meta)
+   Themes: Crisp white (light) / Deep blood-red black (dark)
+================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ─────────────────────────────────────
+   1. DESIGN TOKENS
+───────────────────────────────────── */
 :root,
 [data-theme="light"] {
-  --nav-bg: rgba(255, 255, 255, 0.82);
-  --nav-text: #111111;
-  --nav-muted: #555555;
-  --nav-border: rgba(0, 0, 0, 0.08);
-  --nav-accent: #c1121f;
-  --nav-accent-hover: #a30f1a;
-  --nav-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-  --nav-profile-bg: #111111;
-  --nav-profile-text: #ffffff;
-  --nav-hover-bg: rgba(193, 18, 31, 0.08);
-  --nav-active-bg: rgba(193, 18, 31, 0.1);
-  --nav-active-text: #c1121f;
-  --dropdown-bg: #ffffff;
-  --dropdown-text: #111111;
-  --dropdown-hover-bg: rgba(193, 18, 31, 0.08);
-  --dropdown-divider: rgba(0, 0, 0, 0.08);
+  --nav-bg:             rgba(255, 255, 255, 0.80);
+  --nav-bg-solid:       #ffffff;
+  --nav-text:           #0d0d0d;
+  --nav-muted:          #52525b;
+  --nav-border:         rgba(0, 0, 0, 0.07);
+  --nav-border-strong:  rgba(193, 18, 31, 0.18);
+  --nav-accent:         #c1121f;
+  --nav-accent-hover:   #9b0e18;
+  --nav-accent-rgb:     193, 18, 31;
+  --nav-shadow:         0 2px 20px rgba(0, 0, 0, 0.07), 0 1px 4px rgba(0, 0, 0, 0.04);
+  --nav-shadow-lg:      0 8px 32px rgba(193, 18, 31, 0.10), 0 2px 8px rgba(0, 0, 0, 0.06);
+  --nav-profile-bg:     #0d0d0d;
+  --nav-profile-text:   #ffffff;
+  --nav-hover-bg:       rgba(193, 18, 31, 0.06);
+  --nav-active-bg:      rgba(193, 18, 31, 0.09);
+  --nav-active-text:    #c1121f;
+  --dropdown-bg:        #ffffff;
+  --dropdown-text:      #0d0d0d;
+  --dropdown-hover-bg:  rgba(193, 18, 31, 0.07);
+  --dropdown-divider:   rgba(0, 0, 0, 0.07);
+  --nav-blur:           18px;
+  --nav-height:         66px;
+  --nav-radius:         14px;
+  --nav-pill:           999px;
+
+  /* Story ring */
+  --ring-1: #f09433;
+  --ring-2: #e6683c;
+  --ring-3: #dc2743;
+  --ring-4: #cc2366;
+  --ring-5: #bc1888;
 }
 
 [data-theme="dark"] {
-  --nav-bg: rgba(14, 14, 15, 0.8);
-  --nav-text: #ffffff;
-  --nav-muted: #b9b9b9;
-  --nav-border: rgba(255, 255, 255, 0.08);
-  --nav-accent: #ef233c;
-  --nav-accent-hover: #ff4d6d;
-  --nav-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
-  --nav-profile-bg: #ffffff;
-  --nav-profile-text: #111111;
-  --nav-hover-bg: rgba(239, 35, 60, 0.12);
-  --nav-active-bg: rgba(239, 35, 60, 0.14);
-  --nav-active-text: #ffffff;
-  --dropdown-bg: #18181a;
-  --dropdown-text: #ffffff;
-  --dropdown-hover-bg: rgba(239, 35, 60, 0.14);
-  --dropdown-divider: rgba(255, 255, 255, 0.08);
+  --nav-bg:             rgba(20, 20, 28, 0.95);
+  --nav-bg-solid:       #0f0f15;
+  --nav-text:           #e8e8f0;
+  --nav-muted:          #a0a0b5;
+  --nav-border:         rgba(239, 35, 60, 0.15);
+  --nav-border-strong:  rgba(239, 35, 60, 0.25);
+  --nav-accent:         #ef233c;
+  --nav-accent-hover:   #ff5a6f;
+  --nav-accent-rgb:     239, 35, 60;
+  --nav-shadow:         0 4px 24px rgba(0, 0, 0, 0.60), 0 1px 8px rgba(0, 0, 0, 0.40);
+  --nav-shadow-lg:      0 12px 48px rgba(239, 35, 60, 0.20), 0 4px 16px rgba(0, 0, 0, 0.60);
+  --nav-profile-bg:     #1a1a22;
+  --nav-profile-text:   #e8e8f0;
+  --nav-hover-bg:       rgba(239, 35, 60, 0.10);
+  --nav-active-bg:      rgba(239, 35, 60, 0.16);
+  --nav-active-text:    #ffffff;
+  --dropdown-bg:        #151520;
+  --dropdown-text:      #e0e0e8;
+  --dropdown-hover-bg:  rgba(239, 35, 60, 0.14);
+  --dropdown-divider:   rgba(239, 35, 60, 0.12);
+  --nav-blur:           24px;
+  --nav-height:         66px;
+  --nav-radius:         14px;
+  --nav-pill:           999px;
+
+  /* Story ring — professional red-toned palette */
+  --ring-1: #e74c3c;
+  --ring-2: #c0392b;
+  --ring-3: #ef233c;
+  --ring-4: #d91e44;
+  --ring-5: #a01130;
 }
 
-/* =========================
-   Navbar shell
-========================= */
+/* ─────────────────────────────────────
+   2. BASE RESET
+───────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ─────────────────────────────────────
+   3. NAVBAR SHELL
+───────────────────────────────────── */
 .portfolio-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1050;
   width: 100%;
+  min-height: var(--nav-height);
   padding: 0;
+  font-family: 'Outfit', sans-serif;
   background: var(--nav-bg);
   border-bottom: 1px solid var(--nav-border);
   box-shadow: var(--nav-shadow);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-  z-index: 1030;
+  backdrop-filter: blur(var(--nav-blur)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--nav-blur)) saturate(160%);
+  transition:
+    background 0.30s ease,
+    border-color 0.30s ease,
+    box-shadow 0.30s ease;
 }
 
-.portfolio-navbar .container-fluid {
+/* ─────────────────────────────────────
+   4. CONTAINER
+───────────────────────────────────── */
+.portfolio-navbar-container {
+  display: flex;
+  align-items: center;
   width: 100%;
   max-width: 100%;
-  padding-left: 24px;
-  padding-right: 24px;
+  min-height: var(--nav-height);
+  padding: 0 28px;
+  gap: 0;
 }
 
-/* =========================
-   Brand
-========================= */
+/* ─────────────────────────────────────
+   5. BRAND
+───────────────────────────────────── */
 .navbar-brand.portfolio-brand {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin: 0;
-  color: var(--nav-text);
-  text-decoration: none;
+  gap: 10px;
   flex-shrink: 0;
-  min-width: 0;
+  text-decoration: none;
+  color: var(--nav-text);
+  padding: 4px 0;
+  outline: none;
+  transition: opacity 0.20s ease;
 }
 
 .navbar-brand.portfolio-brand:hover {
+  opacity: 0.88;
   color: var(--nav-text);
 }
 
+.navbar-brand.portfolio-brand:focus-visible {
+  outline: 2px solid var(--nav-accent);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+/* Logo image */
 .portfolio-logo-img {
-  width: 48px;
-  height: 48px;
-  display: block;
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 10px;
   flex-shrink: 0;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
-  transition: filter 0.2s ease;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+              filter 0.20s ease;
+  filter: drop-shadow(0 2px 5px rgba(var(--nav-accent-rgb), 0.20));
 }
 
-.portfolio-logo-img:hover {
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.12));
+.navbar-brand.portfolio-brand:hover .portfolio-logo-img {
+  transform: rotate(-5deg) scale(1.08);
+  filter: drop-shadow(0 4px 10px rgba(var(--nav-accent-rgb), 0.35));
 }
 
-[data-theme="dark"] .portfolio-logo-img {
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-}
-
-[data-theme="dark"] .portfolio-logo-img:hover {
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
-}
-
+/* Brand wordmark */
 .portfolio-brand-text {
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
+  font-family: 'Syne', sans-serif;
+  font-size: 1.30rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
   color: var(--nav-text);
   white-space: nowrap;
+  line-height: 1;
+  transition: color 0.20s ease;
 }
 
-/* =========================
-   Toggler
-========================= */
+[data-theme="dark"] .portfolio-brand-text {
+  background: linear-gradient(135deg, #ffffff 30%, rgba(var(--nav-accent-rgb), 0.85) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─────────────────────────────────────
+   6. TOGGLER
+───────────────────────────────────── */
 .navbar-toggler {
-  border: 1px solid var(--nav-border);
-  border-radius: 12px;
-  padding: 0.45rem 0.65rem;
+  flex-shrink: 0;
+  border: 1.5px solid var(--nav-border-strong) !important;
+  border-radius: 12px !important;
+  padding: 8px 10px !important;
+  background: transparent !important;
   box-shadow: none !important;
-  background-color: transparent;
+  transition: background 0.20s ease, border-color 0.20s ease,
+              transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  outline: none !important;
 }
 
 .navbar-toggler:hover {
-  background-color: var(--nav-hover-bg);
-  border-color: var(--nav-accent);
+  background: var(--nav-hover-bg) !important;
+  border-color: var(--nav-accent) !important;
+  transform: scale(1.06);
 }
 
 .navbar-toggler:focus {
-  box-shadow: 0 0 0 0.2rem rgba(193, 18, 31, 0.15) !important;
+  box-shadow: 0 0 0 3px rgba(var(--nav-accent-rgb), 0.18) !important;
 }
 
-[data-theme="dark"] .navbar-toggler:focus {
-  box-shadow: 0 0 0 0.2rem rgba(239, 35, 60, 0.18) !important;
-}
-
+/* Custom hamburger lines */
 .navbar-toggler-icon {
   background-image: none !important;
-  width: 1.4rem;
-  height: 1.4rem;
   position: relative;
-  display: inline-block;
-}
-
-.navbar-toggler-icon::before,
-.navbar-toggler-icon::after,
-.navbar-toggler-icon {
-  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 20px;
+  height: 20px;
 }
 
 .navbar-toggler-icon::before,
 .navbar-toggler-icon::after {
-  content: "";
-  position: absolute;
-  left: 0;
+  content: '';
+  display: block;
   width: 100%;
-  height: 2px;
-  border-radius: 10px;
-  background-color: var(--nav-text);
-  transition: transform 0.25s ease, opacity 0.25s ease, top 0.25s ease;
+  height: 1.8px;
+  border-radius: 4px;
+  background: var(--nav-text);
+  transition: transform 0.28s ease, opacity 0.28s ease;
+}
+
+/* Middle line via box-shadow */
+.navbar-toggler-icon {
+  box-shadow: none;
+  background: none !important;
 }
 
 .navbar-toggler-icon::before {
-  top: 0.35rem;
-  box-shadow: 0 0.36rem 0 0 var(--nav-text);
+  box-shadow: 0 5px 0 var(--nav-text);
 }
 
-.navbar-toggler-icon::after {
-  top: 0.95rem;
-}
-
-/* =========================
-   Collapse layout
-========================= */
-#mainNavbar {
-  align-items: center;
-}
-
-.portfolio-nav-list {
-  align-items: center;
-}
-
-.portfolio-profile-wrap {
-  flex-shrink: 0;
-}
-
-/* =========================
-   Desktop full-width edge layout
-========================= */
+/* ─────────────────────────────────────
+   7. COLLAPSE / DESKTOP LAYOUT
+───────────────────────────────────── */
 @media (min-width: 992px) {
-  .portfolio-navbar .container-fluid {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-
-  #mainNavbar.navbar-collapse {
+  .portfolio-navbar .navbar-collapse {
     display: flex !important;
-    flex-basis: auto;
     align-items: center;
     justify-content: space-between;
     flex-grow: 1;
+    flex-basis: auto;
     min-width: 0;
-  }
-
-  .portfolio-nav-list {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 0.4rem;
-    margin: 0 auto;
-    padding: 0;
-  }
-
-  .portfolio-profile-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    margin-left: auto;
   }
 }
 
-/* =========================
-   Nav links
-========================= */
+/* ─────────────────────────────────────
+   8. NAV LIST
+───────────────────────────────────── */
+.portfolio-nav-list {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  list-style: none;
+  margin: 0 auto !important;
+  padding: 0;
+}
+
+/* ─────────────────────────────────────
+   9. NAV LINKS
+───────────────────────────────────── */
 .portfolio-nav-link {
   position: relative;
-  color: var(--nav-muted) !important;
-  font-size: 0.96rem;
+  display: inline-flex;
+  align-items: center;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.888rem;
   font-weight: 500;
-  padding: 0.7rem 1rem !important;
-  border-radius: 999px;
-  transition: all 0.25s ease;
+  letter-spacing: 0.01em;
+  color: var(--nav-muted) !important;
+  text-decoration: none;
+  padding: 7px 15px !important;
+  border-radius: var(--nav-pill);
+  border: 1px solid transparent;
+  background: transparent;
+  transition:
+    color 0.22s ease,
+    background 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.22s ease;
+  white-space: nowrap;
+  outline: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .portfolio-nav-link:hover {
   color: var(--nav-accent) !important;
-  background-color: var(--nav-hover-bg);
-}
-
-.portfolio-nav-link.active,
-.portfolio-nav-link[aria-current="page"] {
-  color: var(--nav-active-text) !important;
-  background-color: var(--nav-active-bg);
-  font-weight: 600;
-}
-
-[data-theme="light"] .portfolio-nav-link.active,
-[data-theme="light"] .portfolio-nav-link[aria-current="page"] {
-  color: var(--nav-active-text) !important;
-}
-
-[data-theme="dark"] .portfolio-nav-link.active,
-[data-theme="dark"] .portfolio-nav-link[aria-current="page"] {
-  color: var(--nav-active-text) !important;
-}
-
-/* =========================
-   Profile trigger / right side
-========================= */
-.portfolio-profile-wrap .btn,
-.portfolio-profile-wrap button,
-.portfolio-profile-wrap .dropdown-toggle {
-  border-radius: 999px !important;
-}
-
-/* Optional class if your ProfileMenu trigger supports it */
-.portfolio-profile-trigger {
-  background-color: var(--nav-profile-bg);
-  color: var(--nav-profile-text);
-  border: 1px solid transparent;
-  min-height: 42px;
-  padding: 0.55rem 0.95rem;
-  border-radius: 999px;
-  font-weight: 600;
-  transition: all 0.25s ease;
-}
-
-.portfolio-profile-trigger:hover {
-  opacity: 0.92;
+  background: var(--nav-hover-bg);
+  border-color: rgba(var(--nav-accent-rgb), 0.12);
   transform: translateY(-1px);
 }
 
-/* =========================
-   Dropdown menu
-========================= */
-.dropdown-menu {
+.portfolio-nav-link:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.portfolio-nav-link:focus-visible {
+  outline: 2px solid var(--nav-accent);
+  outline-offset: 2px;
+}
+
+/* Active state */
+.portfolio-nav-link.active {
+  color: var(--nav-active-text) !important;
+  background: var(--nav-active-bg);
+  border-color: rgba(var(--nav-accent-rgb), 0.15);
+  font-weight: 600;
+}
+
+/* Animated dot on active */
+.portfolio-nav-link.active::before {
+  content: '';
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--nav-accent);
+  animation: nav-dot-in 0.30s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes nav-dot-in {
+  from { width: 0; opacity: 0; }
+  to   { width: 18px; opacity: 1; }
+}
+
+/* ─────────────────────────────────────
+   10. PROFILE WRAP
+───────────────────────────────────── */
+.portfolio-profile-wrap {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding-left: 8px;
+}
+
+/* ─────────────────────────────────────
+   11. DROPDOWN MENU
+───────────────────────────────────── */
+.dropdown-menu.portfolio-dropdown-menu {
+  background: var(--dropdown-bg);
+  border: 1px solid var(--nav-border-strong);
+  border-radius: 18px;
+  padding: 6px;
+  min-width: 230px;
+  margin-top: 10px !important;
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.14),
+    0 4px 12px rgba(0, 0, 0, 0.07),
+    0 0 0 1px rgba(var(--nav-accent-rgb), 0.08);
+  animation: menu-drop-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-origin: top right;
+  overflow: hidden;
+}
+
+@keyframes menu-drop-in {
+  from { opacity: 0; transform: scale(0.94) translateY(-6px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+[data-theme="dark"] .dropdown-menu.portfolio-dropdown-menu {
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.65),
+    0 4px 16px rgba(0, 0, 0, 0.40),
+    0 0 0 1px rgba(var(--nav-accent-rgb), 0.15);
+}
+
+/* Dropdown items */
+.dropdown-item.portfolio-dropdown-item {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--dropdown-text);
+  border-radius: 12px;
+  padding: 9px 12px;
+  transition: background 0.18s ease, color 0.18s ease, transform 0.20s ease;
+  letter-spacing: 0.01em;
+}
+
+.dropdown-item.portfolio-dropdown-item:hover,
+.dropdown-item.portfolio-dropdown-item:focus {
+  color: var(--nav-accent);
+  background: var(--dropdown-hover-bg);
+  transform: translateX(3px);
+}
+
+.dropdown-item.portfolio-dropdown-item:active {
+  transform: translateX(3px) scale(0.98);
+}
+
+/* Logout item */
+.dropdown-item.portfolio-dropdown-item.logout-item {
+  color: var(--nav-accent);
+  font-weight: 600;
+}
+
+.dropdown-item.portfolio-dropdown-item.logout-item:hover {
+  background: rgba(var(--nav-accent-rgb), 0.12);
+  color: var(--nav-accent-hover);
+}
+
+/* Divider */
+.dropdown-divider {
+  border-color: var(--dropdown-divider) !important;
+  opacity: 1 !important;
+  margin: 4px 0 !important;
+}
+
+/* Override BS variables */
+.portfolio-dropdown-menu {
   --bs-dropdown-bg: var(--dropdown-bg);
   --bs-dropdown-color: var(--dropdown-text);
   --bs-dropdown-link-color: var(--dropdown-text);
   --bs-dropdown-link-hover-color: var(--nav-accent);
   --bs-dropdown-link-hover-bg: var(--dropdown-hover-bg);
-  --bs-dropdown-border-color: var(--dropdown-divider);
-  --bs-dropdown-divider-bg: var(--dropdown-divider);
-  --bs-dropdown-box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
-
-  background-color: var(--dropdown-bg);
-  color: var(--dropdown-text);
-  border: 1px solid var(--dropdown-divider);
-  border-radius: 16px;
-  padding: 0.5rem;
-  min-width: 220px;
-  margin-top: 0.75rem !important;
-  overflow: hidden;
+  --bs-dropdown-border-color: var(--nav-border-strong);
 }
 
-.dropdown-item {
-  color: var(--dropdown-text);
-  border-radius: 10px;
-  padding: 0.7rem 0.85rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.dropdown-item:hover,
-.dropdown-item:focus {
-  color: var(--nav-accent);
-  background-color: var(--dropdown-hover-bg);
-}
-
-.dropdown-divider {
-  border-top: 1px solid var(--dropdown-divider);
-  opacity: 1;
-  margin: 0.45rem 0;
-}
-
-/* =========================
-   Mobile navbar
-========================= */
+/* ─────────────────────────────────────
+   12. MOBILE COLLAPSE
+───────────────────────────────────── */
 @media (max-width: 991.98px) {
-  .portfolio-navbar .container-fluid {
-    padding-left: 16px;
-    padding-right: 16px;
+  .portfolio-navbar {
+    border-left-width: 0;
+    border-bottom-width: 1.5px;
+  }
+
+  .portfolio-navbar-container {
+    padding: 0 16px;
+    flex-wrap: wrap;
+    min-height: 60px;
   }
 
   .navbar-brand.portfolio-brand {
-    max-width: calc(100% - 70px);
+    max-width: calc(100% - 64px);
   }
 
   .portfolio-logo-img {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-  }
-
-  .portfolio-brand-text {
-    font-size: 1rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    width: 36px;
+    height: 36px;
   }
 
   #mainNavbar {
-    margin-top: 0.9rem;
-    padding: 0.9rem;
+    width: 100%;
+    margin-top: 8px;
+    padding: 10px;
     background: var(--nav-bg);
-    border: 1px solid var(--nav-border);
+    border: 1px solid var(--nav-border-strong);
     border-radius: 18px;
-    box-shadow: var(--nav-shadow);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    box-shadow: var(--nav-shadow-lg);
+    backdrop-filter: blur(var(--nav-blur));
+    -webkit-backdrop-filter: blur(var(--nav-blur));
+    animation: collapse-in 0.26s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes collapse-in {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
   .portfolio-nav-list {
-    display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap: 0.35rem;
-    margin: 0 0 0.9rem 0;
-    padding: 0;
+    gap: 3px;
+    margin: 0 0 10px !important;
   }
 
+  .nav-item { width: 100%; }
+
   .portfolio-nav-link {
+    display: block;
     width: 100%;
-    border-radius: 14px;
-    padding: 0.85rem 1rem !important;
+    border-radius: 12px !important;
+    padding: 11px 14px !important;
+    font-size: 0.92rem;
+  }
+
+  .portfolio-nav-link.active::before {
+    display: none;
   }
 
   .portfolio-profile-wrap {
     width: 100%;
-    display: flex;
-    justify-content: stretch;
-    margin-top: 0.35rem;
+    padding: 8px 4px 2px;
+    border-top: 1px solid var(--nav-border);
+    margin-top: 4px;
+    justify-content: flex-end;
   }
 
-  .portfolio-profile-wrap > * {
-    width: 100%;
-  }
-
-  .portfolio-profile-wrap .btn,
-  .portfolio-profile-wrap button,
-  .portfolio-profile-wrap .dropdown-toggle {
-    width: 100%;
-    justify-content: center;
+  .dropdown-menu.portfolio-dropdown-menu {
+    min-width: 100%;
+    margin-top: 6px !important;
+    border-radius: 16px;
   }
 }
 
-/* =========================
-   Extra polish
-========================= */
-.portfolio-navbar a,
-.portfolio-navbar button {
-  transition: all 0.25s ease;
-}
-
+/* ─────────────────────────────────────
+   13. EXTRA POLISH
+───────────────────────────────────── */
 .portfolio-navbar .nav-item {
   list-style: none;
 }
@@ -408,11 +523,35 @@
   padding-left: 0;
 }
 
-.portfolio-navbar .dropdown-toggle::after {
-  margin-left: 0.5rem;
+/* ─────────────────────────────────────
+   14. REDUCED MOTION
+───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-nav-link,
+  .portfolio-logo-img,
+  .navbar-toggler,
+  .dropdown-menu.portfolio-dropdown-menu,
+  .dropdown-item.portfolio-dropdown-item {
+    transition: none;
+    animation: none;
+  }
+  .portfolio-nav-link.active::before {
+    animation: none;
+  }
 }
 
-.portfolio-navbar .navbar-collapse.show,
-.portfolio-navbar .navbar-collapse.collapsing {
-  transition: height 0.35s ease;
+/* ─────────────────────────────────────
+   15. PRINT
+───────────────────────────────────── */
+@media print {
+  .portfolio-navbar {
+    position: static;
+    box-shadow: none;
+    border: none;
+    backdrop-filter: none;
+  }
+  .navbar-toggler,
+  .portfolio-profile-wrap {
+    display: none !important;
+  }
 }

@@ -1,63 +1,358 @@
+/* ================================================================
+   ProfileMenu.css — 10xDevs Portfolio
+   Features: Instagram story ring, smooth dropdown, theme toggle
+================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+
+/* ─────────────────────────────────────
+   1. PROFILE TOGGLE BUTTON
+───────────────────────────────────── */
 .profile-dropdown-toggle {
   border: none;
   background: transparent;
   padding: 0;
   cursor: pointer;
-}
-
-.portfolio-profile-circle {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  overflow: hidden;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--nav-profile-bg);
-  border: 2px solid var(--nav-accent);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.profile-dropdown-toggle:hover .portfolio-profile-circle {
-  border-color: var(--nav-accent-hover);
-  box-shadow: 0 0 0 3px rgba(193, 18, 31, 0.1);
+.profile-dropdown-toggle:focus-visible {
+  outline: 2px solid var(--nav-accent);
+  outline-offset: 4px;
+  border-radius: 50%;
 }
 
-[data-theme="dark"] .profile-dropdown-toggle:hover .portfolio-profile-circle {
-  box-shadow: 0 0 0 3px rgba(239, 35, 60, 0.15);
+/* ─────────────────────────────────────
+   2. INSTAGRAM STORY RING
+───────────────────────────────────── */
+
+/* Outer container — holds the conic ring */
+.portfolio-profile-circle {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.30s cubic-bezier(0.34, 1.56, 0.64, 1),
+              filter 0.22s ease;
+  /* Drop shadow that reacts to story ring colours */
+  filter: drop-shadow(0 2px 8px rgba(220, 39, 67, 0.25));
 }
 
+/* Spinning IG gradient ring */
+.portfolio-profile-circle::before {
+  content: '';
+  position: absolute;
+  inset: -2.5px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    var(--ring-1)   0deg,
+    var(--ring-2)   72deg,
+    var(--ring-3)   144deg,
+    var(--ring-4)   216deg,
+    var(--ring-5)   288deg,
+    var(--ring-1)   360deg
+  );
+  animation: story-ring-spin 4s linear infinite;
+  z-index: 0;
+}
+
+/* Gap ring — matches navbar bg so it looks like a border */
+.portfolio-profile-circle::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  background: var(--nav-bg-solid, var(--nav-bg));
+  z-index: 1;
+  transition: background 0.30s ease;
+}
+
+/* Profile image inside the ring */
 .portfolio-profile-image {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  inset: 4.5px;
+  width: calc(100% - 9px);
+  height: calc(100% - 9px);
+  border-radius: 50%;
   object-fit: cover;
-  object-position: center;
+  object-position: center top;
+  display: block;
+  z-index: 2;
+  transition: transform 0.30s cubic-bezier(0.34, 1.56, 0.64, 1),
+              filter 0.22s ease;
+}
+
+/* Fallback initials (keep in case image fails) */
+.portfolio-profile-initials {
+  position: absolute;
+  inset: 4.5px;
+  width: calc(100% - 9px);
+  height: calc(100% - 9px);
+  border-radius: 50%;
+  background: var(--nav-profile-bg);
+  color: var(--nav-profile-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.80rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  z-index: 2;
+  user-select: none;
+}
+
+@keyframes story-ring-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ─── Hover interactions ─── */
+.profile-dropdown-toggle:hover .portfolio-profile-circle {
+  transform: scale(1.07);
+  filter: drop-shadow(0 4px 14px rgba(220, 39, 67, 0.45));
+}
+
+.profile-dropdown-toggle:hover .portfolio-profile-circle::before {
+  animation-play-state: paused;
+}
+
+.profile-dropdown-toggle:hover .portfolio-profile-image {
+  transform: scale(1.05);
+}
+
+.profile-dropdown-toggle:active .portfolio-profile-circle {
+  transform: scale(0.96);
+}
+
+/* ─── Open state ─── */
+.profile-dropdown-toggle[aria-expanded="true"] .portfolio-profile-circle::before {
+  animation-duration: 1.8s;
+}
+
+.profile-dropdown-toggle[aria-expanded="true"] .portfolio-profile-circle {
+  filter: drop-shadow(0 0 10px rgba(220, 39, 67, 0.55));
+}
+
+/* ─────────────────────────────────────
+   3. DROPDOWN MENU SHELL
+───────────────────────────────────── */
+.portfolio-dropdown-menu {
+  min-width: 240px;
+  padding: 6px;
+  border-radius: 18px;
+  border: 1px solid var(--nav-border-strong);
+  background: var(--dropdown-bg);
+  box-shadow:
+    0 16px 50px rgba(0, 0, 0, 0.13),
+    0 4px 12px rgba(0, 0, 0, 0.07),
+    0 0 0 1px rgba(var(--nav-accent-rgb, 193, 18, 31), 0.07);
+  animation: dropdown-appear 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-origin: top right;
+  overflow: hidden;
+  /* Thin top accent line */
+  border-top: 2px solid var(--nav-accent);
+}
+
+[data-theme="dark"] .portfolio-dropdown-menu {
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.70),
+    0 4px 14px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(239, 35, 60, 0.18);
+}
+
+@keyframes dropdown-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.93) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ─────────────────────────────────────
+   4. DROPDOWN HEADER (profile info)
+───────────────────────────────────── */
+.portfolio-dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 12px 12px;
+  border-bottom: 1px solid var(--dropdown-divider);
+  margin-bottom: 4px;
+}
+
+/* Mini story ring in dropdown header */
+.portfolio-dropdown-avatar {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.portfolio-dropdown-avatar::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    var(--ring-1) 0deg,
+    var(--ring-3) 180deg,
+    var(--ring-5) 360deg
+  );
+  z-index: 0;
+}
+
+.portfolio-dropdown-avatar::after {
+  content: '';
+  position: absolute;
+  inset: 1.5px;
+  border-radius: 50%;
+  background: var(--dropdown-bg);
+  z-index: 1;
+  transition: background 0.30s ease;
+}
+
+.portfolio-dropdown-avatar img {
+  position: absolute;
+  inset: 3.5px;
+  width: calc(100% - 7px);
+  height: calc(100% - 7px);
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+  z-index: 2;
   display: block;
 }
 
-.portfolio-dropdown-menu {
-  min-width: 240px;
-  padding: 0.5rem;
-  border-radius: 16px;
-  border: 1px solid var(--nav-border);
-  background: var(--nav-bg);
-  box-shadow: var(--nav-shadow);
+.portfolio-dropdown-info {
+  min-width: 0;
 }
 
-.portfolio-dropdown-item {
-  border-radius: 12px;
-  padding: 0.72rem 0.9rem;
-  font-size: 0.92rem;
+.portfolio-dropdown-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--dropdown-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.portfolio-dropdown-role {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--nav-muted);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─────────────────────────────────────
+   5. DROPDOWN ITEMS
+───────────────────────────────────── */
+.dropdown-item.portfolio-dropdown-item {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.868rem;
   font-weight: 500;
-  color: var(--nav-text);
+  color: var(--dropdown-text);
+  border-radius: 11px;
+  padding: 9px 13px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  transition: background 0.18s ease,
+              color 0.18s ease,
+              transform 0.20s cubic-bezier(0.34, 1.56, 0.64, 1);
+  letter-spacing: 0.005em;
+  cursor: pointer;
+  /* Icon slot (left accent dot) */
+  position: relative;
 }
 
-.portfolio-dropdown-item:hover,
-.portfolio-dropdown-item:focus {
-  background: var(--nav-hover-bg);
+/* Leading accent dot */
+.dropdown-item.portfolio-dropdown-item::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--nav-accent);
+  opacity: 0;
+  flex-shrink: 0;
+  transform: scale(0.4);
+  transition: opacity 0.18s ease, transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dropdown-item.portfolio-dropdown-item:hover::before,
+.dropdown-item.portfolio-dropdown-item:focus::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.dropdown-item.portfolio-dropdown-item:hover,
+.dropdown-item.portfolio-dropdown-item:focus {
   color: var(--nav-accent);
+  background: var(--dropdown-hover-bg);
+  transform: translateX(2px);
 }
 
+.dropdown-item.portfolio-dropdown-item:active {
+  transform: translateX(2px) scale(0.98);
+}
+
+/* Theme toggle item — special styling */
+.dropdown-item.portfolio-dropdown-item.theme-toggle-item {
+  font-weight: 600;
+  color: var(--nav-accent);
+  background: rgba(var(--nav-accent-rgb, 193, 18, 31), 0.05);
+}
+
+.dropdown-item.portfolio-dropdown-item.theme-toggle-item:hover {
+  background: rgba(var(--nav-accent-rgb, 193, 18, 31), 0.10);
+}
+
+/* Logout item */
+.dropdown-item.portfolio-dropdown-item.logout-item {
+  color: var(--nav-accent);
+  font-weight: 600;
+}
+
+.dropdown-item.portfolio-dropdown-item.logout-item:hover {
+  background: rgba(var(--nav-accent-rgb, 193, 18, 31), 0.11);
+  color: var(--nav-accent-hover);
+}
+
+.dropdown-item.portfolio-dropdown-item.logout-item::before {
+  background: var(--nav-accent-hover);
+}
+
+/* ─────────────────────────────────────
+   6. DIVIDER
+───────────────────────────────────── */
+.dropdown-divider {
+  border-color: var(--dropdown-divider) !important;
+  opacity: 1 !important;
+  margin: 3px 0 !important;
+}
+
+/* ─────────────────────────────────────
+   7. SUBMENU (from original ProfileMenu.css)
+───────────────────────────────────── */
 .portfolio-submenu-wrapper {
   position: relative;
 }
@@ -70,24 +365,34 @@
 }
 
 .submenu-arrow {
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1;
-  color: var(--nav-text);
+  color: var(--nav-muted);
+  transition: transform 0.22s ease, color 0.18s ease;
+}
+
+.portfolio-submenu-trigger:hover .submenu-arrow {
+  color: var(--nav-accent);
+  transform: translateX(-2px);
 }
 
 .portfolio-submenu {
   position: absolute;
   top: -6px;
-  min-width: 190px;
-  padding: 0.5rem;
+  min-width: 200px;
+  padding: 6px;
   border-radius: 16px;
-  border: 1px solid var(--nav-border);
-  background: var(--nav-bg);
-  box-shadow: var(--nav-shadow);
+  border: 1px solid var(--nav-border-strong);
+  background: var(--dropdown-bg);
+  box-shadow:
+    0 12px 36px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.06);
   opacity: 0;
   visibility: hidden;
-  transform: translateY(4px);
-  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+  transform: translateY(6px) scale(0.96);
+  transition: opacity 0.20s ease,
+              transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.20s ease;
   z-index: 1200;
 }
 
@@ -107,7 +412,7 @@
 .portfolio-submenu.show {
   opacity: 1;
   visibility: visible;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
 .portfolio-submenu-item {
@@ -115,50 +420,72 @@
   border: none;
   background: transparent;
   text-align: left;
-  padding: 0.72rem 0.85rem;
-  border-radius: 12px;
-  font-size: 0.9rem;
+  padding: 9px 12px;
+  border-radius: 11px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.868rem;
   font-weight: 500;
-  color: var(--nav-text);
-  transition: all 0.25s ease;
+  color: var(--dropdown-text);
+  cursor: pointer;
+  transition: background 0.18s ease,
+              color 0.18s ease,
+              transform 0.20s ease;
 }
 
 .portfolio-submenu-item:hover,
 .portfolio-submenu-item:focus {
-  background: var(--nav-hover-bg);
+  background: var(--dropdown-hover-bg);
   color: var(--nav-accent);
+  transform: translateX(2px);
 }
 
 .portfolio-submenu-item.danger:hover,
 .portfolio-submenu-item.danger:focus {
-  background: rgba(220, 38, 38, 0.08);
+  background: rgba(220, 38, 38, 0.09);
   color: #dc2626;
 }
 
 .portfolio-submenu-item:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
+  transform: none;
 }
 
+/* ─────────────────────────────────────
+   8. MODAL STYLES
+───────────────────────────────────── */
 .portfolio-modal-backdrop {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
   z-index: 2000;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 16px;
+  animation: backdrop-in 0.22s ease both;
+}
+
+@keyframes backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 .portfolio-modal {
   width: 100%;
   max-width: 760px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+  background: var(--nav-bg-solid, var(--dropdown-bg));
+  border: 1px solid var(--nav-border-strong);
+  border-radius: 22px;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.22);
   overflow: hidden;
+  animation: modal-in 0.26s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.94) translateY(12px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .portfolio-modal-header {
@@ -167,22 +494,37 @@
   align-items: center;
   gap: 12px;
   padding: 18px 22px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--dropdown-divider);
+  /* Accent top stripe */
+  border-top: 3px solid var(--nav-accent);
 }
 
 .portfolio-modal-title {
   margin: 0;
-  font-size: 1.05rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.02rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--dropdown-text);
 }
 
 .portfolio-modal-close {
   border: none;
   background: transparent;
-  color: var(--text);
+  color: var(--nav-muted);
   font-size: 1.1rem;
   cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.portfolio-modal-close:hover {
+  background: var(--nav-hover-bg);
+  color: var(--nav-accent);
 }
 
 .portfolio-modal-body {
@@ -194,9 +536,12 @@
   justify-content: flex-end;
   gap: 10px;
   padding: 16px 22px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--dropdown-divider);
 }
 
+/* ─────────────────────────────────────
+   9. FORM STYLES
+───────────────────────────────────── */
 .portfolio-form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -207,18 +552,24 @@
   width: 100%;
   min-height: 44px;
   border-radius: 12px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text);
-  padding: 0 12px;
-  font-size: 13px;
+  border: 1px solid var(--nav-border-strong);
+  background: var(--nav-bg-solid, var(--dropdown-bg));
+  color: var(--dropdown-text);
+  padding: 0 13px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.875rem;
   outline: none;
+  transition: border-color 0.20s ease, box-shadow 0.20s ease;
+}
+
+.portfolio-form-input::placeholder {
+  color: var(--nav-muted);
 }
 
 .portfolio-form-input:focus,
 .portfolio-form-textarea:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.08);
+  border-color: var(--nav-accent);
+  box-shadow: 0 0 0 3px rgba(var(--nav-accent-rgb, 193, 18, 31), 0.12);
 }
 
 .portfolio-form-input-full {
@@ -226,38 +577,58 @@
 }
 
 .portfolio-form-textarea {
+  width: 100%;
   min-height: 110px;
   resize: vertical;
-  padding: 12px;
+  padding: 12px 13px;
+  border-radius: 12px;
+  border: 1px solid var(--nav-border-strong);
+  background: var(--nav-bg-solid, var(--dropdown-bg));
+  color: var(--dropdown-text);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.20s ease, box-shadow 0.20s ease;
 }
 
 .portfolio-view-grid {
   display: grid;
   gap: 12px;
-  font-size: 13px;
-  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.875rem;
+  color: var(--dropdown-text);
   line-height: 1.6;
 }
 
 .portfolio-delete-text {
   margin: 0;
-  font-size: 14px;
-  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.875rem;
+  color: var(--dropdown-text);
   line-height: 1.6;
 }
 
+/* ─────────────────────────────────────
+   10. MOBILE OVERRIDES
+───────────────────────────────────── */
 @media (max-width: 991.98px) {
+  .portfolio-dropdown-menu {
+    min-width: 220px;
+    border-radius: 16px;
+  }
+
   .portfolio-submenu,
   .portfolio-submenu-left {
     position: static;
     right: auto;
     top: auto;
     min-width: 100%;
-    margin-top: 8px;
+    margin-top: 6px;
     opacity: 1;
     visibility: visible;
     transform: none;
     display: none;
+    border-radius: 12px;
   }
 
   .portfolio-submenu.show {
@@ -272,5 +643,23 @@
 @media (max-width: 767.98px) {
   .portfolio-form-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ─────────────────────────────────────
+   11. REDUCED MOTION
+───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-profile-circle::before {
+    animation: none;
+  }
+  .portfolio-dropdown-menu,
+  .portfolio-modal,
+  .portfolio-submenu,
+  .portfolio-dropdown-item,
+  .portfolio-profile-circle,
+  .portfolio-profile-image {
+    animation: none;
+    transition: none;
   }
 }

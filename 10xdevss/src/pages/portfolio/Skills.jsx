@@ -168,7 +168,7 @@ export default function Skills() {
 
   return (
     <>
-      <div className="container" style={{ maxWidth: "1180px" }}>
+      <div className="container-fluid">
         <div className="skills-page-shell">
           <div className="skills-page-header">
             <div>

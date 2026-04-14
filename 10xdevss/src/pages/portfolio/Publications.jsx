@@ -129,7 +129,7 @@ export default function Publications() {
 
   return (
     <>
-      <div className="container" style={{ maxWidth: 1200 }}>
+      <div className="container-fluid">
         <div className="section-header animate-in">
           <div>
             <h1 style={{ fontSize: 28, letterSpacing: "-0.02em" }}>

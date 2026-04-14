@@ -106,7 +106,7 @@ export default function Achievements() {
 
   return (
     <>
-      <div className="container" style={{ maxWidth: 1200 }}>
+      <div className="container-fluid">
         <div className="section-header animate-in">
           <div>
             <h1 style={{ fontSize: 24, letterSpacing: "-0.02em", marginBottom: 4 }}>

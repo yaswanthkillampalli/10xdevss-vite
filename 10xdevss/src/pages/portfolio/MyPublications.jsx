@@ -227,7 +227,7 @@ export default function MyPublications() {
   };
 
   return (
-    <div className="container" style={{ maxWidth: "1180px" }}>
+    <div className="container-fluid">
       <div className="cert-page-shell">
         <div className="cert-page-header">
           <div>

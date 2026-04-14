@@ -1,4 +1,6 @@
 import "../styles/Dashboard.css";
+import RecentProjects from "../components/dashboard/RecentProjects";
+import RecentActivity from "../components/dashboard/RecentActivity";
 
 const stats = [
   { label: "Projects", value: "12", accent: true },
@@ -64,7 +66,7 @@ const recentActivity = [
 export default function Dashboard() {
   return (
     <>
-      <div className="container dashboard-page">
+      <div className="container-fluid dashboard-page">
         {/* Header */}
         <div className="animate-in" style={{ marginBottom: 40 }}>
           <div
@@ -188,118 +190,10 @@ export default function Dashboard() {
         {/* Two-col layout */}
         <div className="dashboard-layout animate-in delay-2">
           {/* Recent projects */}
-          <div>
-            <div className="section-header">
-              <h2 className="section-title">Recent Projects</h2>
-              <a
-                href="/projects"
-                className="btn btn-ghost"
-                style={{ fontSize: 13 }}
-              >
-                View all →
-              </a>
-            </div>
-
-            <div className="projects-column">
-              {recentProjects.map((p) => (
-                <div
-                  key={p.title}
-                  className="card recent-project-card"
-                  style={{
-                    padding: "18px 20px",
-                  }}
-                >
-                  <div className="recent-project-top">
-                    <div className="project-owner-wrap">
-                      <div className="project-owner-avatar">{p.owner.avatar}</div>
-                      <div className="project-owner-meta">
-                        <span className="project-owner-label">Owner</span>
-                        <span className="project-owner-name">{p.owner.name}</span>
-                      </div>
-                    </div>
-
-                    <span
-                      className={`badge ${
-                        p.status === "ongoing" ? "badge-accent" : "badge-muted"
-                      }`}
-                    >
-                      {p.status}
-                    </span>
-                  </div>
-
-                  <p className="recent-project-title">{p.title}</p>
-
-                  <div className="tags project-tags-row">
-                    {p.stack.map((t) => (
-                      <span key={t} className="tag">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <RecentProjects projects={recentProjects} />
 
           {/* Activity feed */}
-          <div>
-            <div className="section-header">
-              <h2 className="section-title">Recent Activity</h2>
-            </div>
-
-            <div className="card activity-card" style={{ padding: 0, overflow: "hidden" }}>
-              {recentActivity.map((item, i) => (
-                <div
-                  key={i}
-                  className="activity-row"
-                  style={{
-                    borderBottom:
-                      i < recentActivity.length - 1
-                        ? "1px solid var(--border)"
-                        : "none",
-                  }}
-                >
-                  <div className="activity-avatar">{item.user.avatar}</div>
-
-                  <div style={{ flex: 1 }}>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "baseline",
-                        gap: 6,
-                        marginBottom: 4,
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      <strong
-                        style={{
-                          fontSize: 13,
-                          color: "var(--text-strong)",
-                        }}
-                      >
-                        {item.user.name}
-                      </strong>
-                      <span style={{ fontSize: 13, color: "var(--text-muted)" }}>
-                        {item.action}
-                      </span>
-                    </div>
-
-                    <p
-                      style={{
-                        fontSize: 13,
-                        color: "var(--text-muted)",
-                        margin: 0,
-                      }}
-                    >
-                      {item.detail}
-                    </p>
-                  </div>
-
-                  <span className="activity-time">{item.time}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+          <RecentActivity activities={recentActivity} />
         </div>
 
         {/* Quick actions */}

@@ -4,110 +4,126 @@ import '../styles/components/ProfileMenu.css';
 
 export default function ProfileMenu({ theme, toggleTheme, onLogout }) {
   return (
-    <>
-      <div className="dropdown">
-        <button
-          className="profile-dropdown-toggle"
-          type="button"
-          id="profileMenu"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        >
-          <div className="portfolio-profile-circle" aria-label="Profile menu">
-            <span className="fw-bold small">JD</span>
+    <div className="dropdown">
+      {/* ── Profile trigger button with IG story ring ── */}
+      <button
+        className="profile-dropdown-toggle"
+        type="button"
+        id="profileMenu"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+        aria-label="Open profile menu"
+      >
+        <div className="portfolio-profile-circle">
+          <img
+            src="/profile-pic.jpg"
+            alt="Profile"
+            className="portfolio-profile-image"
+            onError={(e) => {
+              /* Graceful fallback to initials if image fails */
+              e.currentTarget.style.display = 'none';
+              const fallback = e.currentTarget.parentElement.querySelector(
+                '.portfolio-profile-initials'
+              );
+              if (fallback) fallback.style.display = 'flex';
+            }}
+          />
+          {/* Fallback initials — hidden by default */}
+          <span className="portfolio-profile-initials" style={{ display: 'none' }}>
+            JD
+          </span>
+        </div>
+      </button>
+
+      {/* ── Dropdown menu ── */}
+      <ul
+        className="dropdown-menu dropdown-menu-end portfolio-dropdown-menu"
+        aria-labelledby="profileMenu"
+      >
+        {/* Header with mini avatar + name */}
+        <li>
+          <div className="portfolio-dropdown-header">
+            <div className="portfolio-dropdown-avatar">
+              <img src="/profile-pic.jpg" alt="Profile" />
+            </div>
+            <div className="portfolio-dropdown-info">
+              <div className="portfolio-dropdown-name">John Doe</div>
+              <div className="portfolio-dropdown-role">Full-Stack Developer</div>
+            </div>
           </div>
-        </button>
+        </li>
 
-        <ul className="dropdown-menu dropdown-menu-end portfolio-dropdown-menu" aria-labelledby="profileMenu">
-          <li>
-            <button
-              type="button"
-              className="dropdown-item portfolio-dropdown-item"
-              onClick={toggleTheme}
-            >
-              {theme === 'light' ? 'Switch to Dark Theme' : 'Switch to Light Theme'}
-            </button>
-          </li>
+        {/* Theme toggle */}
+        <li>
+          <button
+            type="button"
+            className="dropdown-item portfolio-dropdown-item theme-toggle-item"
+            onClick={toggleTheme}
+          >
+            {theme === 'light' ? '☀ Switch to Dark' : '☽ Switch to Light'}
+          </button>
+        </li>
 
-          <li><hr className="dropdown-divider" /></li>
+        <li><hr className="dropdown-divider" /></li>
 
-          <li>
-            <Link
-              to="/portfolio/projects"
-              className="dropdown-item portfolio-dropdown-item"
-            >
-              My Projects
-            </Link>
-          </li>
+        <li>
+          <Link to="/portfolio/projects" className="dropdown-item portfolio-dropdown-item">
+            My Projects
+          </Link>
+        </li>
 
-          <li><hr className="dropdown-divider" /></li>
+        <li><hr className="dropdown-divider" /></li>
 
-          <li>
-            <Link
-              to="/portfolio/certifications"
-              className="dropdown-item portfolio-dropdown-item"
-            >
-              My Certifications
-            </Link>
-          </li>
+        <li>
+          <Link to="/portfolio/certifications" className="dropdown-item portfolio-dropdown-item">
+            My Certifications
+          </Link>
+        </li>
 
-          <li><hr className="dropdown-divider" /></li>
+        <li><hr className="dropdown-divider" /></li>
 
-          <li>
-            <Link
-              to="/portfolio/publications"
-              className="dropdown-item portfolio-dropdown-item"
-            >
-              My Publications
-            </Link>
-          </li>
+        <li>
+          <Link to="/portfolio/publications" className="dropdown-item portfolio-dropdown-item">
+            My Publications
+          </Link>
+        </li>
 
-          <li><hr className="dropdown-divider" /></li>
+        <li><hr className="dropdown-divider" /></li>
 
-          <li>
-            <Link
-              to="/portfolio/achievements"
-              className="dropdown-item portfolio-dropdown-item"
-            >
-              My Achievements
-            </Link>
-          </li>
+        <li>
+          <Link to="/portfolio/achievements" className="dropdown-item portfolio-dropdown-item">
+            My Achievements
+          </Link>
+        </li>
 
-          <li><hr className="dropdown-divider" /></li>
+        <li><hr className="dropdown-divider" /></li>
 
-          <li>
-            <Link
-              to="/portfolio/experience"
-              className="dropdown-item portfolio-dropdown-item"
-            >
-              Experience
-            </Link>
-          </li>
+        <li>
+          <Link to="/portfolio/experience" className="dropdown-item portfolio-dropdown-item">
+            Experience
+          </Link>
+        </li>
 
-          <li><hr className="dropdown-divider" /></li>
+        <li><hr className="dropdown-divider" /></li>
 
-          <li>
-            <Link
-              to="/portfolio/skills"
-              className="dropdown-item portfolio-dropdown-item"
-            >
-              Edit Skills
-            </Link>
-          </li>
+        <li>
+          <Link to="/portfolio/skills" className="dropdown-item portfolio-dropdown-item">
+            Edit Skills
+          </Link>
+        </li>
 
-          <li><hr className="dropdown-divider" /></li>
+        <li><hr className="dropdown-divider" /></li>
 
-          <li>
-            <button
-              type="button"
-              className="dropdown-item portfolio-dropdown-item logout-item"
-              onClick={onLogout}
-            >
-              Logout
-            </button>
-          </li>
-        </ul>
-      </div>
-    </>
+        <li>
+          <button
+            type="button"
+            className="dropdown-item portfolio-dropdown-item logout-item"
+            onClick={onLogout}
+          >
+            Logout
+          </button>
+        </li>
+      </ul>
+    </div>
   );
 }

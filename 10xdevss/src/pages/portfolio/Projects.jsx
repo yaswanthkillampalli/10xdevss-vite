@@ -128,7 +128,7 @@ export default function Projects() {
 
   return (
     <>
-      <div className="container">
+      <div className="container-fluid">
         {/* Section header – no CTA button for this page */}
         <div className="section-header animate-in">
           <div>

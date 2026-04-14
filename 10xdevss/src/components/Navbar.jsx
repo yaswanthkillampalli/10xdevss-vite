@@ -44,7 +44,7 @@ export default function Navbar() {
             alt="10x Devs"
             className="portfolio-logo-img"
           />
-          {/* <span className="portfolio-brand-text">10x Devs</span> */}
+          
         </Link>
 
         <button
