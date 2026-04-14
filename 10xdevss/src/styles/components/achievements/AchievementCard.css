@@ -1,0 +1,368 @@
+/* ─────────────────────────────────────────
+   AchievementCard – Design Tokens
+   ───────────────────────────────────────── */
+:root,
+[data-theme="light"] {
+  --ach-bg:                   #ffffff;
+  --ach-bg-hover:             #fafafa;
+  --ach-border:               rgba(0, 0, 0, 0.07);
+  --ach-border-hover:         rgba(0, 0, 0, 0.14);
+  --ach-shadow:               0 1px 3px rgba(0, 0, 0, 0.06),
+                              0 4px 16px rgba(0, 0, 0, 0.05);
+  --ach-shadow-hover:         0 4px 8px rgba(0, 0, 0, 0.08),
+                              0 12px 32px rgba(0, 0, 0, 0.10);
+
+  --ach-heading:              #111111;
+  --ach-body:                 #555;
+  --ach-meta:                 #888;
+
+  --ach-divider:              rgba(0, 0, 0, 0.06);
+
+  /* ── Per-type icon colors (light) ── */
+  --ach-award-bg:             rgba(234, 179, 8,  0.10);
+  --ach-award-color:          #a16207;
+  --ach-award-ring:           rgba(234, 179, 8,  0.22);
+
+  --ach-scholarship-bg:       rgba(59, 130, 246, 0.10);
+  --ach-scholarship-color:    #1d4ed8;
+  --ach-scholarship-ring:     rgba(59, 130, 246, 0.22);
+
+  --ach-competition-bg:       rgba(239, 68, 68,  0.09);
+  --ach-competition-color:    #b91c1c;
+  --ach-competition-ring:     rgba(239, 68, 68,  0.20);
+
+  --ach-recognition-bg:       rgba(168, 85, 247, 0.09);
+  --ach-recognition-color:    #7c3aed;
+  --ach-recognition-ring:     rgba(168, 85, 247, 0.20);
+
+  --ach-fellowship-bg:        rgba(20, 184, 166, 0.09);
+  --ach-fellowship-color:     #0f766e;
+  --ach-fellowship-ring:      rgba(20, 184, 166, 0.20);
+
+  --ach-other-bg:             rgba(0, 0, 0, 0.05);
+  --ach-other-color:          #555;
+  --ach-other-ring:           rgba(0, 0, 0, 0.08);
+
+  /* badge */
+  --ach-badge-bg:             rgba(0, 0, 0, 0.05);
+  --ach-badge-text:           #666;
+  --ach-badge-ring:           rgba(0, 0, 0, 0.07);
+
+  /* buttons */
+  --ach-btn-outline-border:       rgba(0, 0, 0, 0.15);
+  --ach-btn-outline-text:         #333;
+  --ach-btn-outline-hover-bg:     #f3f4f6;
+  --ach-btn-outline-hover-border: rgba(0, 0, 0, 0.25);
+
+  --ach-btn-danger-bg:        #fee2e2;
+  --ach-btn-danger-text:      #b91c1c;
+  --ach-btn-danger-hover-bg:  #fecaca;
+
+  --ach-radius:               14px;
+  --ach-transition:           180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] {
+  --ach-bg:                   #18181b;
+  --ach-bg-hover:             #1c1c1f;
+  --ach-border:               rgba(255, 255, 255, 0.07);
+  --ach-border-hover:         rgba(255, 255, 255, 0.14);
+  --ach-shadow:               0 1px 3px rgba(0, 0, 0, 0.30),
+                              0 4px 16px rgba(0, 0, 0, 0.25);
+  --ach-shadow-hover:         0 4px 10px rgba(0, 0, 0, 0.40),
+                              0 16px 40px rgba(0, 0, 0, 0.35);
+
+  --ach-heading:              #f4f4f5;
+  --ach-body:                 #a1a1aa;
+  --ach-meta:                 #71717a;
+
+  --ach-divider:              rgba(255, 255, 255, 0.06);
+
+  /* ── Per-type icon colors (dark) ── */
+  --ach-award-bg:             rgba(234, 179, 8,  0.13);
+  --ach-award-color:          #fbbf24;
+  --ach-award-ring:           rgba(234, 179, 8,  0.20);
+
+  --ach-scholarship-bg:       rgba(96, 165, 250, 0.12);
+  --ach-scholarship-color:    #60a5fa;
+  --ach-scholarship-ring:     rgba(96, 165, 250, 0.20);
+
+  --ach-competition-bg:       rgba(239, 68, 68,  0.12);
+  --ach-competition-color:    #f87171;
+  --ach-competition-ring:     rgba(239, 68, 68,  0.20);
+
+  --ach-recognition-bg:       rgba(167, 139, 250, 0.12);
+  --ach-recognition-color:    #a78bfa;
+  --ach-recognition-ring:     rgba(167, 139, 250, 0.20);
+
+  --ach-fellowship-bg:        rgba(45, 212, 191, 0.11);
+  --ach-fellowship-color:     #2dd4bf;
+  --ach-fellowship-ring:      rgba(45, 212, 191, 0.20);
+
+  --ach-other-bg:             rgba(255, 255, 255, 0.06);
+  --ach-other-color:          #71717a;
+  --ach-other-ring:           rgba(255, 255, 255, 0.07);
+
+  --ach-badge-bg:             rgba(255, 255, 255, 0.06);
+  --ach-badge-text:           #71717a;
+  --ach-badge-ring:           rgba(255, 255, 255, 0.07);
+
+  --ach-btn-outline-border:       rgba(255, 255, 255, 0.12);
+  --ach-btn-outline-text:         #d4d4d8;
+  --ach-btn-outline-hover-bg:     #27272a;
+  --ach-btn-outline-hover-border: rgba(255, 255, 255, 0.22);
+
+  --ach-btn-danger-bg:        rgba(185, 28, 28, 0.15);
+  --ach-btn-danger-text:      #f87171;
+  --ach-btn-danger-hover-bg:  rgba(185, 28, 28, 0.25);
+}
+
+/* ─────────────────────────────────────────
+   Card Shell
+   ───────────────────────────────────────── */
+.achievement-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  background: var(--ach-bg);
+  border: 1px solid var(--ach-border);
+  border-radius: var(--ach-radius);
+  box-shadow: var(--ach-shadow);
+  overflow: hidden;
+  transition:
+    background var(--ach-transition),
+    border-color var(--ach-transition),
+    box-shadow var(--ach-transition),
+    transform var(--ach-transition);
+  will-change: transform, box-shadow;
+}
+
+.achievement-card:hover {
+  background: var(--ach-bg-hover);
+  border-color: var(--ach-border-hover);
+  box-shadow: var(--ach-shadow-hover);
+  transform: translateY(-2px);
+}
+
+/* ─────────────────────────────────────────
+   Inner padding – each section owns its own
+   ───────────────────────────────────────── */
+.achievement-card__top,
+.achievement-card__main,
+.achievement-card__divider,
+.achievement-card__actions {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+/* ─────────────────────────────────────────
+   Top row – icon wrap + type badge
+   ───────────────────────────────────────── */
+.achievement-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 18px;
+  padding-bottom: 16px;
+}
+
+/* Icon wrap – base */
+.achievement-card__icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform var(--ach-transition);
+}
+
+.achievement-card:hover .achievement-card__icon-wrap {
+  transform: scale(1.06);
+}
+
+/* Per-type icon colours */
+.achievement-icon--award {
+  background: var(--ach-award-bg);
+  color: var(--ach-award-color);
+  box-shadow: 0 0 0 1px var(--ach-award-ring);
+}
+.achievement-icon--scholarship {
+  background: var(--ach-scholarship-bg);
+  color: var(--ach-scholarship-color);
+  box-shadow: 0 0 0 1px var(--ach-scholarship-ring);
+}
+.achievement-icon--competition {
+  background: var(--ach-competition-bg);
+  color: var(--ach-competition-color);
+  box-shadow: 0 0 0 1px var(--ach-competition-ring);
+}
+.achievement-icon--recognition {
+  background: var(--ach-recognition-bg);
+  color: var(--ach-recognition-color);
+  box-shadow: 0 0 0 1px var(--ach-recognition-ring);
+}
+.achievement-icon--fellowship {
+  background: var(--ach-fellowship-bg);
+  color: var(--ach-fellowship-color);
+  box-shadow: 0 0 0 1px var(--ach-fellowship-ring);
+}
+.achievement-icon--other {
+  background: var(--ach-other-bg);
+  color: var(--ach-other-color);
+  box-shadow: 0 0 0 1px var(--ach-other-ring);
+}
+
+/* Type badge */
+.achievement-card__type-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: capitalize;
+  line-height: 1;
+  background: var(--ach-badge-bg);
+  color: var(--ach-badge-text);
+  box-shadow: 0 0 0 1px var(--ach-badge-ring);
+}
+
+/* ─────────────────────────────────────────
+   Main content
+   ───────────────────────────────────────── */
+.achievement-card__main {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 18px;
+}
+
+.achievement-card__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ach-heading);
+  margin: 0;
+  line-height: 1.38;
+  letter-spacing: -0.02em;
+  transition: color var(--ach-transition);
+}
+
+/* Meta row – org + date */
+.achievement-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.achievement-card__meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  color: var(--ach-meta);
+  line-height: 1;
+}
+
+/* org in slightly more prominent colour */
+.achievement-card__meta-item:first-child {
+  font-weight: 600;
+  color: var(--ach-body);
+}
+
+.achievement-card__description {
+  font-size: 13px;
+  color: var(--ach-body);
+  line-height: 1.65;
+  margin: 4px 0 0;
+
+  /* clamp to 3 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ─────────────────────────────────────────
+   Divider
+   ───────────────────────────────────────── */
+.achievement-card__divider {
+  height: 1px;
+  background: var(--ach-divider);
+  padding: 0;
+  border: none;
+}
+
+/* ─────────────────────────────────────────
+   Actions
+   ───────────────────────────────────────── */
+.achievement-card__actions {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  padding-top: 14px;
+  padding-bottom: 16px;
+}
+
+.achievement-card__action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 13px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  transition:
+    background var(--ach-transition),
+    border-color var(--ach-transition),
+    color var(--ach-transition),
+    box-shadow var(--ach-transition),
+    transform 100ms ease;
+}
+
+.achievement-card__action-btn:active {
+  transform: scale(0.97);
+}
+
+.achievement-card__action-btn--outline {
+  background: transparent;
+  border-color: var(--ach-btn-outline-border);
+  color: var(--ach-btn-outline-text);
+}
+
+.achievement-card__action-btn--outline:hover {
+  background: var(--ach-btn-outline-hover-bg);
+  border-color: var(--ach-btn-outline-hover-border);
+}
+
+.achievement-card__action-btn--danger {
+  background: var(--ach-btn-danger-bg);
+  border-color: transparent;
+  color: var(--ach-btn-danger-text);
+}
+
+.achievement-card__action-btn--danger:hover {
+  background: var(--ach-btn-danger-hover-bg);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ach-btn-danger-text) 30%, transparent);
+}
+
+/* ─────────────────────────────────────────
+   Animate-in
+   ───────────────────────────────────────── */
+@keyframes ach-fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.achievement-card.animate-in {
+  animation: ach-fade-up 300ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}

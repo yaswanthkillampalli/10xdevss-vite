@@ -1,14 +1,6 @@
 import { useState } from "react";
 import "../../styles/portfolio/Achievements.css";
-
-const TYPE_ICONS = {
-  award: "🏆",
-  scholarship: "🎓",
-  competition: "🥇",
-  recognition: "⭐",
-  fellowship: "🎖️",
-  other: "🏅",
-};
+import AchievementCard from "../../components/achievements/AchievementCard.jsx";
 
 const MOCK_ACHIEVEMENTS = [
   {
@@ -41,59 +33,6 @@ const EMPTY_FORM = {
   type: "award",
   url: "",
 };
-
-function AchievementCard({ achievement, onEdit, onDelete }) {
-  return (
-    <div className="card animate-in achievement-card">
-      <div className="achievement-card-top">
-        <div className="achievement-icon-wrap">
-          <span className="achievement-icon">{TYPE_ICONS[achievement.type]}</span>
-        </div>
-
-        <span className="badge badge-gray achievement-type-badge">{achievement.type}</span>
-      </div>
-
-      <div className="achievement-main">
-        <h3 className="achievement-title">{achievement.title}</h3>
-        <p className="achievement-org">{achievement.issuingOrganization}</p>
-        <p className="achievement-date">{achievement.date}</p>
-        <p className="achievement-description">{achievement.description}</p>
-      </div>
-
-      <div className="achievement-actions" style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        {achievement.url && (
-          <a
-            href={achievement.url}
-            target="_blank"
-            rel="noreferrer"
-            className="btn btn-outline"
-            style={{ fontSize: 12, padding: "6px 12px" }}
-          >
-            View
-          </a>
-        )}
-
-        <button
-          type="button"
-          className="btn btn-outline"
-          style={{ fontSize: 12, padding: "6px 12px" }}
-          onClick={() => onEdit(achievement)}
-        >
-          Edit
-        </button>
-
-        <button
-          type="button"
-          className="btn btn-danger"
-          style={{ fontSize: 12, padding: "6px 12px" }}
-          onClick={() => onDelete(achievement.id)}
-        >
-          Delete
-        </button>
-      </div>
-    </div>
-  );
-}
 
 export default function MyAchievements() {
   const [achievements, setAchievements] = useState(MOCK_ACHIEVEMENTS);
@@ -216,6 +155,7 @@ export default function MyAchievements() {
                       <AchievementCard
                         key={item.id}
                         achievement={item}
+                        isEdit
                         onEdit={openEditPanel}
                         onDelete={handleDelete}
                       />

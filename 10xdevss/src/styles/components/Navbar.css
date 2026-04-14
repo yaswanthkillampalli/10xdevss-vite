@@ -37,11 +37,11 @@
   --nav-pill:           999px;
 
   /* Story ring */
-  --ring-1: #f09433;
-  --ring-2: #e6683c;
-  --ring-3: #dc2743;
-  --ring-4: #cc2366;
-  --ring-5: #bc1888;
+  --ring-1: #e74c3c;
+  --ring-2: #f1c40f;
+  --ring-3: #2ecc71;
+  --ring-4: #3498db;
+  --ring-5: #a01130;
 }
 
 [data-theme="dark"] {
@@ -72,9 +72,9 @@
 
   /* Story ring — professional red-toned palette */
   --ring-1: #e74c3c;
-  --ring-2: #c0392b;
-  --ring-3: #ef233c;
-  --ring-4: #d91e44;
+  --ring-2: #f1c40f;
+  --ring-3: #2ecc71;
+  --ring-4: #3498db;
   --ring-5: #a01130;
 }
 

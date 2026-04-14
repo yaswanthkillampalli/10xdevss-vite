@@ -1,0 +1,416 @@
+/* ─────────────────────────────────────────
+   ProjectCard – Design Tokens
+   ───────────────────────────────────────── */
+:root,
+[data-theme="light"] {
+  --pc-bg:              #ffffff;
+  --pc-bg-hover:        #fafafa;
+  --pc-border:          rgba(0, 0, 0, 0.07);
+  --pc-border-hover:    rgba(0, 0, 0, 0.14);
+  --pc-shadow:          0 1px 3px rgba(0, 0, 0, 0.06),
+                        0 4px 16px rgba(0, 0, 0, 0.05);
+  --pc-shadow-hover:    0 4px 8px rgba(0, 0, 0, 0.08),
+                        0 12px 32px rgba(0, 0, 0, 0.10);
+
+  --pc-avatar-bg:       var(--accent, #0070f3);
+  --pc-avatar-text:     #ffffff;
+
+  --pc-meta:            #888;
+  --pc-heading:         #111111;
+  --pc-body:            #444;
+
+  --pc-tag-bg:          #f3f4f6;
+  --pc-tag-border:      rgba(0, 0, 0, 0.07);
+  --pc-tag-text:        #555;
+  --pc-tag-bg-hover:    #e9ebee;
+
+  --pc-divider:         rgba(0, 0, 0, 0.06);
+
+  --pc-badge-ongoing-bg:    rgba(16, 185, 129, 0.10);
+  --pc-badge-ongoing-text:  #059669;
+  --pc-badge-ongoing-ring:  rgba(16, 185, 129, 0.25);
+
+  --pc-badge-muted-bg:      rgba(0, 0, 0, 0.05);
+  --pc-badge-muted-text:    #777;
+  --pc-badge-muted-ring:    rgba(0, 0, 0, 0.08);
+
+  --pc-btn-outline-border:  rgba(0, 0, 0, 0.15);
+  --pc-btn-outline-text:    #333;
+  --pc-btn-outline-hover-bg:    #f3f4f6;
+  --pc-btn-outline-hover-border: rgba(0, 0, 0, 0.25);
+
+  --pc-btn-danger-bg:       #fee2e2;
+  --pc-btn-danger-text:     #b91c1c;
+  --pc-btn-danger-hover-bg: #fecaca;
+
+  --pc-timeline-icon:   #bbb;
+  --pc-radius:          14px;
+  --pc-transition:      180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] {
+  --pc-bg:              #18181b;
+  --pc-bg-hover:        #1c1c1f;
+  --pc-border:          rgba(255, 255, 255, 0.07);
+  --pc-border-hover:    rgba(255, 255, 255, 0.14);
+  --pc-shadow:          0 1px 3px rgba(0, 0, 0, 0.30),
+                        0 4px 16px rgba(0, 0, 0, 0.25);
+  --pc-shadow-hover:    0 4px 10px rgba(0, 0, 0, 0.40),
+                        0 16px 40px rgba(0, 0, 0, 0.35);
+
+  --pc-avatar-bg:       var(--accent, #3b82f6);
+  --pc-avatar-text:     #ffffff;
+
+  --pc-meta:            #71717a;
+  --pc-heading:         #f4f4f5;
+  --pc-body:            #a1a1aa;
+
+  --pc-tag-bg:          #27272a;
+  --pc-tag-border:      rgba(255, 255, 255, 0.07);
+  --pc-tag-text:        #a1a1aa;
+  --pc-tag-bg-hover:    #303033;
+
+  --pc-divider:         rgba(255, 255, 255, 0.06);
+
+  --pc-badge-ongoing-bg:    rgba(16, 185, 129, 0.12);
+  --pc-badge-ongoing-text:  #34d399;
+  --pc-badge-ongoing-ring:  rgba(16, 185, 129, 0.20);
+
+  --pc-badge-muted-bg:      rgba(255, 255, 255, 0.06);
+  --pc-badge-muted-text:    #71717a;
+  --pc-badge-muted-ring:    rgba(255, 255, 255, 0.07);
+
+  --pc-btn-outline-border:  rgba(255, 255, 255, 0.12);
+  --pc-btn-outline-text:    #d4d4d8;
+  --pc-btn-outline-hover-bg:    #27272a;
+  --pc-btn-outline-hover-border: rgba(255, 255, 255, 0.22);
+
+  --pc-btn-danger-bg:       rgba(185, 28, 28, 0.15);
+  --pc-btn-danger-text:     #f87171;
+  --pc-btn-danger-hover-bg: rgba(185, 28, 28, 0.25);
+
+  --pc-timeline-icon:   #52525b;
+}
+
+/* ─────────────────────────────────────────
+   Card Shell
+   ───────────────────────────────────────── */
+.project-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  background: var(--pc-bg);
+  border: 1px solid var(--pc-border);
+  border-radius: var(--pc-radius);
+  box-shadow: var(--pc-shadow);
+  overflow: hidden;
+  transition:
+    background var(--pc-transition),
+    border-color var(--pc-transition),
+    box-shadow var(--pc-transition),
+    transform var(--pc-transition);
+  will-change: transform, box-shadow;
+}
+
+.project-card:hover {
+  background: var(--pc-bg-hover);
+  border-color: var(--pc-border-hover);
+  box-shadow: var(--pc-shadow-hover);
+  transform: translateY(-2px);
+}
+
+/* ─────────────────────────────────────────
+   Top accent stripe
+   ───────────────────────────────────────── */
+.project-card::before {
+  content: "";
+  display: block;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--pc-avatar-bg) 0%,
+    color-mix(in srgb, var(--pc-avatar-bg) 60%, transparent) 100%
+  );
+  opacity: 0.7;
+  transition: opacity var(--pc-transition);
+}
+
+.project-card:hover::before {
+  opacity: 1;
+}
+
+/* ─────────────────────────────────────────
+   Inner padding wrapper
+   ───────────────────────────────────────── */
+.project-card__submitted-row,
+.project-card__header-row,
+.project-card__description,
+.project-card__tags,
+.project-card__timeline,
+.project-card__divider,
+.project-card__actions {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+/* ─────────────────────────────────────────
+   Submitted Row
+   ───────────────────────────────────────── */
+.project-card__submitted-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11.5px;
+  color: var(--pc-meta);
+  letter-spacing: 0.01em;
+  padding-top: 16px;
+  padding-bottom: 14px;
+}
+
+.project-card__avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--pc-avatar-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--pc-avatar-text);
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--pc-avatar-bg) 25%, transparent);
+}
+
+.project-card__submitted-by {
+  font-weight: 600;
+  color: var(--pc-heading);
+  font-size: 11.5px;
+}
+
+/* ─────────────────────────────────────────
+   Header Row – Title + Status Badge
+   ───────────────────────────────────────── */
+.project-card__header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding-bottom: 8px;
+}
+
+.project-card__title {
+  font-size: 16.5px;
+  font-weight: 700;
+  color: var(--pc-heading);
+  margin: 0;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  transition: color var(--pc-transition);
+}
+
+/* ─────────────────────────────────────────
+   Status Badge
+   ───────────────────────────────────────── */
+.project-card__status {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+  transition: background var(--pc-transition), color var(--pc-transition);
+}
+
+/* ongoing */
+.project-card__status.badge-accent {
+  background: var(--pc-badge-ongoing-bg);
+  color: var(--pc-badge-ongoing-text);
+  box-shadow: 0 0 0 1px var(--pc-badge-ongoing-ring);
+}
+
+/* ongoing dot pulse */
+.project-card__status.badge-accent::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+  animation: pc-pulse 2s ease-in-out infinite;
+}
+
+@keyframes pc-pulse {
+  0%, 100% { opacity: 1;   transform: scale(1);    }
+  50%       { opacity: 0.5; transform: scale(0.75); }
+}
+
+/* completed / muted */
+.project-card__status.badge-muted {
+  background: var(--pc-badge-muted-bg);
+  color: var(--pc-badge-muted-text);
+  box-shadow: 0 0 0 1px var(--pc-badge-muted-ring);
+}
+
+/* ─────────────────────────────────────────
+   Description
+   ───────────────────────────────────────── */
+.project-card__description {
+  font-size: 13px;
+  color: var(--pc-body);
+  line-height: 1.65;
+  margin: 0;
+  padding-top: 4px;
+  padding-bottom: 14px;
+
+  /* clamp to 3 lines for visual rhythm */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ─────────────────────────────────────────
+   Tech Stack Tags
+   ───────────────────────────────────────── */
+.project-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-top: 0;
+  padding-bottom: 12px;
+}
+
+.project-card__tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: var(--pc-tag-bg);
+  border: 1px solid var(--pc-tag-border);
+  color: var(--pc-tag-text);
+  letter-spacing: 0.01em;
+  transition:
+    background var(--pc-transition),
+    border-color var(--pc-transition),
+    color var(--pc-transition);
+  cursor: default;
+}
+
+.project-card__tag:hover {
+  background: var(--pc-tag-bg-hover);
+  border-color: color-mix(in srgb, var(--pc-tag-border) 200%, transparent);
+}
+
+/* ─────────────────────────────────────────
+   Timeline
+   ───────────────────────────────────────── */
+.project-card__timeline {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  color: var(--pc-meta);
+  padding-top: 0;
+  padding-bottom: 16px;
+  letter-spacing: 0.01em;
+}
+
+.project-card__timeline::before {
+  content: "◷";
+  font-size: 12px;
+  color: var(--pc-timeline-icon);
+  line-height: 1;
+}
+
+/* ─────────────────────────────────────────
+   Divider
+   ───────────────────────────────────────── */
+.project-card__divider {
+  height: 1px;
+  background: var(--pc-divider);
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+/* ─────────────────────────────────────────
+   Actions
+   ───────────────────────────────────────── */
+.project-card__actions {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  padding-top: 14px;
+  padding-bottom: 16px;
+}
+
+.project-card__action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 13px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  transition:
+    background var(--pc-transition),
+    border-color var(--pc-transition),
+    color var(--pc-transition),
+    box-shadow var(--pc-transition),
+    transform 100ms ease;
+}
+
+.project-card__action-btn:active {
+  transform: scale(0.97);
+}
+
+/* Outline variant */
+.project-card__action-btn.btn-outline {
+  background: transparent;
+  border-color: var(--pc-btn-outline-border);
+  color: var(--pc-btn-outline-text);
+}
+
+.project-card__action-btn.btn-outline:hover {
+  background: var(--pc-btn-outline-hover-bg);
+  border-color: var(--pc-btn-outline-hover-border);
+}
+
+/* Danger variant */
+.project-card__action-btn.btn-danger {
+  background: var(--pc-btn-danger-bg);
+  border-color: transparent;
+  color: var(--pc-btn-danger-text);
+}
+
+.project-card__action-btn.btn-danger:hover {
+  background: var(--pc-btn-danger-hover-bg);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--pc-btn-danger-text) 30%, transparent);
+}
+
+/* ─────────────────────────────────────────
+   Animate-in (if used globally)
+   ───────────────────────────────────────── */
+@keyframes pc-fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.project-card.animate-in {
+  animation: pc-fade-up 300ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}

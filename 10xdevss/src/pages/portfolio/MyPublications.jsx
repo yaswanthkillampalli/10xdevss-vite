@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../../styles/portfolio/Publications.css";
+import PublicationCard from "../../components/publications/PublicationCard.jsx";
 
 const MOCK_PUBLICATIONS = [
   {
@@ -41,112 +42,6 @@ const EMPTY_FORM = {
   citationCount: "0",
   tags: "",
 };
-
-const VENUE_BADGE = {
-  journal: "badge-green",
-  conference: "badge-red",
-  preprint: "badge-gray",
-  workshop: "badge-gray",
-  other: "badge-gray",
-};
-
-function PublicationCard({ publication, onEdit, onDelete }) {
-  return (
-    <div className="card animate-in">
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          gap: 12,
-          flexWrap: "wrap",
-        }}
-      >
-        <div style={{ flex: 1 }}>
-          <div
-            style={{
-              display: "flex",
-              gap: 8,
-              alignItems: "center",
-              marginBottom: 8,
-              flexWrap: "wrap",
-            }}
-          >
-            <span className={`badge ${VENUE_BADGE[publication.venueType] || "badge-gray"}`}>
-              {publication.venueType}
-            </span>
-            <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
-              {publication.publishedDate}
-            </span>
-            <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
-              · {publication.citationCount} citations
-            </span>
-          </div>
-
-          <h3 style={{ fontFamily: "var(--font-display)", fontSize: 17, lineHeight: 1.4 }}>
-            {publication.title}
-          </h3>
-
-          <p style={{ fontSize: 13, color: "var(--accent)", fontWeight: 500, marginTop: 4 }}>
-            {publication.authors.join(", ")}
-          </p>
-
-          <p style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 2 }}>
-            {publication.venue}
-          </p>
-        </div>
-      </div>
-
-      <p style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 12, lineHeight: 1.7 }}>
-        {publication.abstract}
-      </p>
-
-      <div className="tags" style={{ marginTop: 12 }}>
-        {publication.tags.map((tag) => (
-          <span key={tag} className="tag">
-            {tag}
-          </span>
-        ))}
-      </div>
-
-      {publication.doi && (
-        <p style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 10 }}>
-          DOI: <span style={{ fontFamily: "monospace" }}>{publication.doi}</span>
-        </p>
-      )}
-
-      <div style={{ display: "flex", gap: 8, marginTop: 16, flexWrap: "wrap" }}>
-        {publication.doi && (
-          <a
-            href={`https://doi.org/${publication.doi}`}
-            target="_blank"
-            rel="noreferrer"
-            className="btn btn-outline"
-            style={{ fontSize: 12, padding: "5px 12px" }}
-          >
-            View Paper
-          </a>
-        )}
-        <button
-          type="button"
-          className="btn btn-outline"
-          style={{ fontSize: 12, padding: "5px 12px" }}
-          onClick={() => onEdit(publication)}
-        >
-          Edit
-        </button>
-        <button
-          type="button"
-          className="btn btn-danger"
-          style={{ fontSize: 12, padding: "5px 12px" }}
-          onClick={() => onDelete(publication.id)}
-        >
-          Delete
-        </button>
-      </div>
-    </div>
-  );
-}
 
 export default function MyPublications() {
   const [publications, setPublications] = useState(MOCK_PUBLICATIONS);
@@ -275,6 +170,7 @@ export default function MyPublications() {
                       <PublicationCard
                         key={item.id}
                         publication={item}
+                        isEdit
                         onEdit={openEditPanel}
                         onDelete={handleDelete}
                       />

@@ -38,6 +38,21 @@
   color: var(--text-strong);
 }
 
+.project-searchbar {
+  position: relative;
+}
+
+.project-search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
 .project-search-input::placeholder {
   color: var(--text-muted);
 }

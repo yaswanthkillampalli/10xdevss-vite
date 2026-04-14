@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Search } from "lucide-react";
 import "../../styles/portfolio/Projects.css";
 import ProjectCard from "../../components/projects/ProjectCard.jsx";
 
@@ -155,10 +156,14 @@ export default function Projects() {
 
         {/* Search bar */}
         <div
+          className="project-searchbar"
           style={{
             marginBottom: 24,
           }}
         >
+          <span className="project-search-icon">
+            <Search size={15} strokeWidth={2} />
+          </span>
           <input
             type="text"
             placeholder="Search projects by title, description, or tech..."
@@ -167,7 +172,7 @@ export default function Projects() {
             className="project-search-input"
             style={{
               width: "100%",
-              padding: "10px 16px",
+              padding: "10px 16px 10px 40px",
               borderRadius: "var(--radius-md)",
               border: "1px solid var(--border)",
               fontSize: 14,

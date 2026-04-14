@@ -1,5 +1,23 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
+import {
+  Search,
+  SlidersHorizontal,
+  BookOpen,
+  Presentation,
+  FileText,
+  Microscope,
+  BadgeCheck,
+} from "lucide-react";
 import "../../styles/portfolio/Publications.css";
+import PublicationCard from "../../components/publications/PublicationCard.jsx";
+
+const VENUE_TYPE_CONFIG = {
+  journal: { Icon: BookOpen, label: "Journal" },
+  conference: { Icon: Presentation, label: "Conference" },
+  preprint: { Icon: FileText, label: "Preprint" },
+  workshop: { Icon: Microscope, label: "Workshop" },
+  other: { Icon: BadgeCheck, label: "Other" },
+};
 
 const MOCK_PUBS = [
   {
@@ -32,13 +50,6 @@ const MOCK_PUBS = [
 
 // Extract all possible tags for filter checkboxes
 const ALL_TAGS = [...new Set(MOCK_PUBS.flatMap((pub) => pub.tags))];
-
-const VENUE_BADGE = {
-  journal: "badge-green",
-  conference: "badge-red",
-  preprint: "badge-gray",
-  workshop: "badge-gray",
-};
 
 // Modal can stay as scaffolding, but not wired here
 function Modal({ show, onClose }) {
@@ -102,6 +113,15 @@ export default function Publications() {
     setSelectedTags(next);
   };
 
+  const clearFilters = () => {
+    setSelectedVenueTypes(new Set());
+    setSelectedTags(new Set());
+    setSearch("");
+  };
+
+  const isFiltered =
+    selectedVenueTypes.size > 0 || selectedTags.size > 0 || search.trim() !== "";
+
   const filteredPubs = useMemo(() => {
     let filtered = pubs;
 
@@ -130,44 +150,62 @@ export default function Publications() {
   return (
     <>
       <div className="container-fluid">
-        <div className="section-header animate-in">
+        <div className="section-header animate-in publications-page-header">
           <div>
-            <h1 style={{ fontSize: 28, letterSpacing: "-0.02em" }}>
-              Publications
-            </h1>
-            <p
-              style={{
-                fontSize: 13,
-                color: "var(--text-muted)",
-                marginTop: 4,
-              }}
-            >
-              Research papers & academic work
+            <h1 className="publications-page-title">Publications</h1>
+            <p className="publications-page-count">
+              {filteredPubs.length} of {pubs.length} results
             </p>
           </div>
+
+          {isFiltered && (
+            <button
+              type="button"
+              className="publications-clear-btn"
+              onClick={clearFilters}
+            >
+              Clear filters
+            </button>
+          )}
         </div>
 
         <div className="publications-layout">
           <aside className="publications-filters">
-            <div className="filters-card">
-              <h3 className="filters-title">Filters</h3>
-
-              <div className="filter-group">
-                <div className="filter-label">Venue Type</div>
-                {["journal", "conference", "preprint", "workshop", "other"].map((type) => (
-                  <label key={type} className="filter-check">
-                    <input
-                      type="checkbox"
-                      checked={selectedVenueTypes.has(type)}
-                      onChange={() => toggleVenueType(type)}
-                    />
-                    <span>{type.charAt(0).toUpperCase() + type.slice(1)}</span>
-                  </label>
-                ))}
+            <div className="publications-filters-card">
+              <div className="publications-filters-header">
+                <SlidersHorizontal size={14} strokeWidth={2} />
+                <h3 className="publications-filters-title">Filters</h3>
               </div>
 
-              <div className="filter-group">
-                <div className="filter-label">Tags</div>
+              <div className="publications-filter-group">
+                <div className="publications-filter-label">Venue Type</div>
+                {Object.keys(VENUE_TYPE_CONFIG).map((type) => {
+                  const { Icon, label } = VENUE_TYPE_CONFIG[type];
+                  const checked = selectedVenueTypes.has(type);
+
+                  return (
+                    <label
+                      key={type}
+                      className={`publications-filter-check${
+                        checked ? " publications-filter-check--active" : ""
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => toggleVenueType(type)}
+                      />
+                      <span className="publications-filter-check__icon">
+                        <Icon size={13} strokeWidth={2} />
+                      </span>
+                      <span className="publications-filter-check__label">{label}</span>
+                    </label>
+                  );
+                })}
+              </div>
+
+              <div className="publications-filter-group">
+                <div className="publications-filter-label">Tags</div>
                 <div className="filter-tags">
                   {ALL_TAGS.map((tag) => (
                     <label
@@ -189,6 +227,9 @@ export default function Publications() {
 
           <section className="publications-content">
             <div className="publications-searchbar">
+              <span className="publications-search-icon">
+                <Search size={15} strokeWidth={2} />
+              </span>
               <input
                 type="text"
                 value={search}
@@ -196,6 +237,16 @@ export default function Publications() {
                 placeholder="Search by title, author, venue, or tag..."
                 className="publications-search-input"
               />
+              {search && (
+                <button
+                  type="button"
+                  className="publications-search-clear"
+                  onClick={() => setSearch("")}
+                  aria-label="Clear search"
+                >
+                  ✕
+                </button>
+              )}
             </div>
 
             {filteredPubs.length === 0 ? (
@@ -207,122 +258,12 @@ export default function Publications() {
             ) : (
               <div className="publications-list">
                 {filteredPubs.map((pub, i) => (
-                  <div
+                  <PublicationCard
                     key={pub.id}
-                    className="card animate-in"
-                    style={{ animationDelay: `${i * 0.08}s` }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "flex-start",
-                        gap: 12,
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      <div style={{ flex: 1 }}>
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: 8,
-                            alignItems: "center",
-                            marginBottom: 8,
-                            flexWrap: "wrap",
-                          }}
-                        >
-                          <span
-                            className={`badge ${
-                              VENUE_BADGE[pub.venueType] || "badge-gray"
-                            }`}
-                          >
-                            {pub.venueType}
-                          </span>
-                          <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
-                            {pub.publishedDate}
-                          </span>
-                          {pub.citationCount > 0 && (
-                            <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
-                              · {pub.citationCount} citations
-                            </span>
-                          )}
-                        </div>
-
-                        <h3
-                          style={{
-                            fontFamily: "var(--font-display)",
-                            fontSize: 17,
-                            fontWeight: 700,
-                            lineHeight: 1.4,
-                          }}
-                        >
-                          {pub.title}
-                        </h3>
-
-                        <p
-                          style={{
-                            fontSize: 13,
-                            color: "var(--accent)",
-                            fontWeight: 500,
-                            marginTop: 4,
-                          }}
-                        >
-                          {pub.authors.join(", ")}
-                        </p>
-
-                        <p style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 2 }}>
-                          {pub.venue}
-                        </p>
-                      </div>
-                    </div>
-
-                    <p
-                      style={{
-                        fontSize: 13,
-                        color: "var(--text-muted)",
-                        marginTop: 12,
-                        lineHeight: 1.7,
-                      }}
-                    >
-                      {pub.abstract}
-                    </p>
-
-                    <div className="tags" style={{ marginTop: 12 }}>
-                      {pub.tags.map((t) => (
-                        <span key={t} className="tag">
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-
-                    {pub.doi && (
-                      <p style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 10 }}>
-                        DOI:{" "}
-                        <span style={{ fontFamily: "monospace" }}>{pub.doi}</span>
-                      </p>
-                    )}
-
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: 8,
-                        marginTop: 16,
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      {pub.doi && (
-                        <a
-                          href={`https://doi.org/${pub.doi}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="btn btn-outline"
-                          style={{ fontSize: 12, padding: "5px 12px" }}
-                        >
-                          View Paper ↗
-                        </a>
-                      )}
-                    </div>
-                  </div>
+                    publication={pub}
+                    isEdit={false}
+                    animationDelay={`${i * 0.08}s`}
+                  />
                 ))}
               </div>
             )}
