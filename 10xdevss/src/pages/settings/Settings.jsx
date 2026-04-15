@@ -165,7 +165,7 @@ export default function Settings() {
                     <h2 style={{ fontFamily: "var(--font-display)", fontSize: 18, marginBottom: 8 }}>Account Info</h2>
                     <p style={{ fontSize: 13, color: "var(--text-muted)", marginBottom: 16 }}>Your account details and plan.</p>
                     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                      {[["Email", "john@example.com"], ["Member Since", "January 2024"], ["Role", "User"], ["Portfolio URL", "10xdevs.com/johndoe"]].map(([k, v]) => (
+                      {[["Email", "john@example.com"], ["Member Since", "January 2024"], ["Role", "Student"], ["Portfolio URL", "10xdevs.com/johndoe"]].map(([k, v]) => (
                         <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid var(--border)" }}>
                           <span style={{ fontSize: 13, color: "var(--text-muted)" }}>{k}</span>
                           <span style={{ fontSize: 13, fontWeight: 500 }}>{v}</span>

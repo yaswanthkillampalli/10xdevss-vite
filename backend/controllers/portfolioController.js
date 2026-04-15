@@ -24,13 +24,20 @@ const userController = {
     }
   },
 
-  // PUT /api/users/me  — update name or email
+  // PUT /api/users/me  — update full name, email, roll and phone
   updateMe: async (req, res) => {
     try {
-      const { name, email } = req.body;
+      const { fullName, emailId, rollId, phone } = req.body;
+      const updateData = {};
+
+      if (fullName !== undefined) updateData.fullName = fullName;
+      if (emailId !== undefined) updateData.emailId = emailId;
+      if (rollId !== undefined) updateData.rollId = rollId;
+      if (phone !== undefined) updateData.phone = phone;
+
       const user = await User.findByIdAndUpdate(
         req.user._id,
-        { name, email },
+        updateData,
         { new: true, runValidators: true }
       );
       return successResponse(res, { message: "User updated.", data: user.toSafeObject() });
@@ -128,7 +135,7 @@ const userProfileController = {
       const profile = await UserProfile.findOne({
         username: req.params.username.toLowerCase(),
         isPublic: true,
-      }).populate("userId", "name email");
+      }).populate("userId", "fullName emailId role");
 
       if (!profile) {
         return errorResponse(res, { statusCode: 404, message: "Profile not found." });

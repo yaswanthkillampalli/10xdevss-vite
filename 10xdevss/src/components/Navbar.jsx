@@ -48,7 +48,7 @@ export default function Navbar() {
       <div className="container-fluid portfolio-navbar-container">
         <Link to="/" className="navbar-brand portfolio-brand d-flex align-items-center gap-2 m-0">
           <img
-            src="/10xdevs-bg-removed.svg"
+            src={theme === 'dark' ? '/10xdevs-white.png' : '/10xdevs-black.png'}
             alt="10x Devs"
             className="portfolio-logo-img"
           />

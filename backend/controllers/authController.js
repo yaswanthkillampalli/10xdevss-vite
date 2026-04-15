@@ -13,7 +13,7 @@ const { successResponse, errorResponse } = require("../utils/response");
 
 const register = async (req, res) => {
   try {
-    const { fullName, emailId, rollId, phone, password } = req.body;
+    const { fullName, emailId, rollId, phone, password, role } = req.body;
 
     // Check if email or rollId is already taken
     const existingUser = await User.findOne({
@@ -33,6 +33,7 @@ const register = async (req, res) => {
       rollId,
       phone,
       password,
+      role: role || "student",
     });
 
     // Issue tokens

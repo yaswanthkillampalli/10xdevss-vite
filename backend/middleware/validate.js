@@ -1,7 +1,9 @@
 const { errorResponse } = require("../utils/response");
 
+const REGISTRATION_ROLES = ["student", "faculty"];
+
 const validateRegister = (req, res, next) => {
-	const { fullName, emailId, rollId, phone, password } = req.body;
+	const { fullName, emailId, rollId, phone, password, role } = req.body;
 
 	if (!fullName || !emailId || !rollId || !phone || !password) {
 		return errorResponse(res, {
@@ -28,6 +30,13 @@ const validateRegister = (req, res, next) => {
 
 	if (String(password).length < 6) {
 		return errorResponse(res, { statusCode: 400, message: "password must be at least 6 characters." });
+	}
+
+	if (role && !REGISTRATION_ROLES.includes(role)) {
+		return errorResponse(res, {
+			statusCode: 400,
+			message: `role must be one of: ${REGISTRATION_ROLES.join(", ")}.`,
+		});
 	}
 
 	next();

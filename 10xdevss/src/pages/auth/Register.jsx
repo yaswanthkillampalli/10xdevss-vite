@@ -21,6 +21,7 @@ export default function Register() {
     emailId: "",
     rollId: "",
     phone: "",
+    role: "student",
     password: "",
     confirmPassword: "",
   });
@@ -49,6 +50,7 @@ export default function Register() {
         emailId: formData.emailId,
         rollId: formData.rollId,
         phone: formData.phone,
+        role: formData.role,
         password: formData.password,
       });
       navigate("/");
@@ -205,6 +207,28 @@ export default function Register() {
                           onChange={handleChange}
                           required
                         />
+                      </div>
+                    </div>
+
+                    {/* Role */}
+                    <div className="col-12 col-md-6">
+                      <label htmlFor="role" className="form-label register-label">
+                        Role
+                      </label>
+                      <div className="input-group register-input-group">
+                        <span className="input-group-text register-input-icon">
+                          <CheckCircle2 size={18} />
+                        </span>
+                        <select
+                          id="role"
+                          name="role"
+                          className="form-control register-input"
+                          value={formData.role}
+                          onChange={handleChange}
+                        >
+                          <option value="student">Student</option>
+                          <option value="faculty">Faculty</option>
+                        </select>
                       </div>
                     </div>
 

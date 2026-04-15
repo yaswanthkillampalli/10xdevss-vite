@@ -49,6 +49,7 @@ export default function ProfileMenu({ theme, toggleTheme, onLogout }) {
             <div className="portfolio-dropdown-info">
               <div className="portfolio-dropdown-name">John Doe</div>
               <div className="portfolio-dropdown-role">Full-Stack Developer</div>
+              <div className="portfolio-dropdown-location">Hyderabad, India</div>
             </div>
           </div>
         </li>
@@ -62,6 +63,14 @@ export default function ProfileMenu({ theme, toggleTheme, onLogout }) {
           >
             {theme === 'light' ? '☀ Switch to Dark' : '☽ Switch to Light'}
           </button>
+        </li>
+
+        <li><hr className="dropdown-divider" /></li>
+
+        <li>
+          <Link to="/profile" className="dropdown-item portfolio-dropdown-item">
+            Profile
+          </Link>
         </li>
 
         <li><hr className="dropdown-divider" /></li>

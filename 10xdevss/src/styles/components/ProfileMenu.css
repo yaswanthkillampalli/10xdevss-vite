@@ -263,6 +263,16 @@
   text-overflow: ellipsis;
 }
 
+.portfolio-dropdown-location {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.70rem;
+  color: var(--nav-muted);
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* ─────────────────────────────────────
    5. DROPDOWN ITEMS
 ───────────────────────────────────── */

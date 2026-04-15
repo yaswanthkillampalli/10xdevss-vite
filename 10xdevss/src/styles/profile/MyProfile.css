@@ -1,0 +1,695 @@
+/* ─────────────────────────────────────────
+   MyProfile – Design Tokens
+   ───────────────────────────────────────── */
+:root,
+[data-theme="light"] {
+  --pf-page-bg:               #f5f5f5;
+
+  --pf-sidebar-bg:            #ffffff;
+  --pf-sidebar-border:        rgba(255, 255, 255, 0.07);
+  --pf-sidebar-shadow:        0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.07);
+
+  --pf-avatar-bg:             #c1121f;
+  --pf-avatar-text:           #ffffff;
+  --pf-avatar-ring:           rgba(193, 18, 31, 0.18);
+  --pf-avatar-ring2:          rgba(193, 18, 31, 0.07);
+
+  --pf-sidebar-name:          #111;
+  --pf-sidebar-meta:          #888;
+  --pf-sidebar-meta-icon:     #bbb;
+  --pf-sidebar-divider:       rgba(0,0,0,0.07);
+
+  --pf-social-chip-bg:        #f4f4f5;
+  --pf-social-chip-border:    rgba(0,0,0,0.07);
+  --pf-social-chip-text:      #444;
+  --pf-social-chip-hover-bg:  #e9ebee;
+  --pf-social-chip-hover-border: rgba(0,0,0,0.14);
+  --pf-social-chip-icon:      #888;
+
+  --pf-main-bg:               #ffffff;
+  --pf-main-border:           rgba(0,0,0,0.07);
+  --pf-main-shadow:           0 1px 3px rgba(0,0,0,0.05), 0 8px 24px rgba(0,0,0,0.06);
+
+  --pf-kicker:                #c1121f;
+  --pf-heading:               #111;
+  --pf-subheading:            #888;
+
+  --pf-section-title:         #333;
+  --pf-section-title-icon:    #bbb;
+  --pf-section-border:        rgba(0,0,0,0.06);
+
+  --pf-field-label:           #aaa;
+  --pf-field-label-icon:      #ccc;
+  --pf-field-value:           #1a1a1a;
+  --pf-field-empty:           #ccc;
+  --pf-field-mono:            #444;
+
+  --pf-input-bg:              #f8f8f8;
+  --pf-input-border:          rgba(0,0,0,0.10);
+  --pf-input-border-focus:    #c1121f;
+  --pf-input-shadow-focus:    0 0 0 3px rgba(193,18,31,0.10);
+  --pf-input-text:            #111;
+  --pf-input-placeholder:     #bbb;
+
+  --pf-bio-text:              #444;
+
+  --pf-social-view-label:     #999;
+  --pf-social-view-link:      #c1121f;
+  --pf-social-view-link-hover: #a00f1a;
+
+  --pf-notice-bg:             rgba(193,18,31,0.05);
+  --pf-notice-border:         rgba(193,18,31,0.18);
+  --pf-notice-text:           #b91c1c;
+
+  --pf-btn-primary-bg:        #c1121f;
+  --pf-btn-primary-text:      #fff;
+  --pf-btn-primary-hover:     #a00f1a;
+  --pf-btn-ghost-border:      rgba(0,0,0,0.14);
+  --pf-btn-ghost-text:        #555;
+  --pf-btn-ghost-hover-bg:    #f3f4f6;
+
+  --pf-radius:                14px;
+  --pf-transition:            180ms cubic-bezier(0.4,0,0.2,1);
+}
+
+[data-theme="dark"] {
+  --pf-page-bg:               #0f0f11;
+
+  --pf-sidebar-bg:            #18181b;
+  --pf-sidebar-border:        rgba(255,255,255,0.07);
+  --pf-sidebar-shadow:        0 1px 3px rgba(0,0,0,0.30), 0 8px 24px rgba(0,0,0,0.25);
+
+  --pf-avatar-bg:             #ef233c;
+  --pf-avatar-text:           #ffffff;
+  --pf-avatar-ring:           rgba(239,35,60,0.22);
+  --pf-avatar-ring2:          rgba(239,35,60,0.08);
+
+  --pf-sidebar-name:          #f4f4f5;
+  --pf-sidebar-meta:          #71717a;
+  --pf-sidebar-meta-icon:     #3f3f46;
+  --pf-sidebar-divider:       rgba(255,255,255,0.06);
+
+  --pf-social-chip-bg:        #27272a;
+  --pf-social-chip-border:    rgba(255,255,255,0.07);
+  --pf-social-chip-text:      #a1a1aa;
+  --pf-social-chip-hover-bg:  #303033;
+  --pf-social-chip-hover-border: rgba(255,255,255,0.14);
+  --pf-social-chip-icon:      #52525b;
+
+  --pf-main-bg:               #18181b;
+  --pf-main-border:           rgba(255,255,255,0.07);
+  --pf-main-shadow:           0 1px 3px rgba(0,0,0,0.30), 0 8px 24px rgba(0,0,0,0.22);
+
+  --pf-kicker:                #f87171;
+  --pf-heading:               #f4f4f5;
+  --pf-subheading:            #71717a;
+
+  --pf-section-title:         #d4d4d8;
+  --pf-section-title-icon:    #3f3f46;
+  --pf-section-border:        rgba(255,255,255,0.05);
+
+  --pf-field-label:           #52525b;
+  --pf-field-label-icon:      #3f3f46;
+  --pf-field-value:           #e4e4e7;
+  --pf-field-empty:           #3f3f46;
+  --pf-field-mono:            #a1a1aa;
+
+  --pf-input-bg:              #1c1c1f;
+  --pf-input-border:          rgba(255,255,255,0.09);
+  --pf-input-border-focus:    #ef233c;
+  --pf-input-shadow-focus:    0 0 0 3px rgba(239,35,60,0.12);
+  --pf-input-text:            #f4f4f5;
+  --pf-input-placeholder:     #52525b;
+
+  --pf-bio-text:              #a1a1aa;
+
+  --pf-social-view-label:     #52525b;
+  --pf-social-view-link:      #f87171;
+  --pf-social-view-link-hover: #fca5a5;
+
+  --pf-notice-bg:             rgba(239,35,60,0.08);
+  --pf-notice-border:         rgba(239,35,60,0.20);
+  --pf-notice-text:           #f87171;
+
+  --pf-btn-primary-bg:        #ef233c;
+  --pf-btn-primary-text:      #fff;
+  --pf-btn-primary-hover:     #c1121f;
+  --pf-btn-ghost-border:      rgba(255,255,255,0.12);
+  --pf-btn-ghost-text:        #a1a1aa;
+  --pf-btn-ghost-hover-bg:    #27272a;
+}
+
+/* ─────────────────────────────────────────
+   Page wrapper
+   ───────────────────────────────────────── */
+.pf-page {
+  min-height: 100vh;
+  /* background: var(--pf-page-bg); */
+  padding: 28px 20px 80px;
+  transition: background var(--pf-transition);
+}
+
+.pf-layout {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+/* ─────────────────────────────────────────
+   Sidebar
+   ───────────────────────────────────────── */
+.pf-sidebar {
+  position: sticky;
+  top: 88px;
+}
+
+.pf-sidebar__inner {
+  background: var(--pf-sidebar-bg);
+  border: 1px solid var(--pf-sidebar-border);
+  border-radius: var(--pf-radius);
+  box-shadow: var(--pf-sidebar-shadow);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  overflow: hidden;
+}
+
+/* Subtle top stripe */
+.pf-sidebar__inner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--pf-avatar-bg) 0%, transparent 100%);
+  opacity: 0.8;
+  border-radius: var(--pf-radius) var(--pf-radius) 0 0;
+}
+
+/* Avatar */
+.pf-avatar-wrap {
+  position: relative;
+  margin-bottom: 18px;
+}
+
+.pf-avatar {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: var(--pf-avatar-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.pf-avatar__initials {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--pf-avatar-text);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.pf-avatar__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pf-avatar__ring {
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 2px solid var(--pf-avatar-ring);
+  box-shadow: 0 0 0 4px var(--pf-avatar-ring2);
+}
+
+/* Identity */
+.pf-sidebar__identity {
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 18px;
+}
+
+.pf-sidebar__name {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--pf-sidebar-name);
+  letter-spacing: -0.02em;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.pf-sidebar__headline,
+.pf-sidebar__roll,
+.pf-sidebar__location {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--pf-sidebar-meta);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.pf-sidebar__headline svg,
+.pf-sidebar__roll svg,
+.pf-sidebar__location svg {
+  color: var(--pf-sidebar-meta-icon);
+  flex-shrink: 0;
+  display: block;
+}
+
+.pf-sidebar__divider {
+  width: 100%;
+  height: 1px;
+  background: var(--pf-sidebar-divider);
+  margin: 0 0 16px;
+}
+
+/* Social chips */
+.pf-sidebar__socials {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pf-sidebar__socials-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pf-sidebar-meta);
+  margin-bottom: 2px;
+}
+
+.pf-social-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--pf-social-chip-border);
+  background: var(--pf-social-chip-bg);
+  color: var(--pf-social-chip-text);
+  font-size: 12.5px;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background var(--pf-transition),
+    border-color var(--pf-transition),
+    color var(--pf-transition);
+}
+
+.pf-social-chip:hover {
+  background: var(--pf-social-chip-hover-bg);
+  border-color: var(--pf-social-chip-hover-border);
+}
+
+.pf-social-chip svg {
+  color: var(--pf-social-chip-icon);
+  flex-shrink: 0;
+  display: block;
+  line-height: 0;
+}
+
+.pf-social-chip > svg:not(.pf-social-chip__arrow) {
+  width: 13px;
+  height: 13px;
+}
+
+.pf-social-chip__arrow {
+  margin-left: auto;
+  opacity: 0;
+  transition: opacity var(--pf-transition);
+}
+
+.pf-social-chip:hover .pf-social-chip__arrow {
+  opacity: 1;
+}
+
+/* ─────────────────────────────────────────
+   Main panel
+   ───────────────────────────────────────── */
+.pf-main {
+  background: var(--pf-main-bg);
+  border: 1px solid var(--pf-main-border);
+  border-radius: var(--pf-radius);
+  box-shadow: var(--pf-main-shadow);
+  overflow: hidden;
+}
+
+.pf-main__topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 24px 20px;
+  border-bottom: 1px solid var(--pf-section-border);
+}
+
+.pf-kicker {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pf-kicker);
+  margin: 0 0 6px;
+}
+
+.pf-heading {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--pf-heading);
+  letter-spacing: -0.03em;
+  margin: 0 0 4px;
+  line-height: 1.2;
+}
+
+.pf-subheading {
+  font-size: 13px;
+  color: var(--pf-subheading);
+  margin: 0;
+}
+
+.pf-main__actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────
+   Buttons
+   ───────────────────────────────────────── */
+.pf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    background var(--pf-transition),
+    border-color var(--pf-transition),
+    color var(--pf-transition),
+    box-shadow var(--pf-transition),
+    transform 100ms ease;
+}
+
+.pf-btn:active { transform: scale(0.97); }
+
+.pf-btn--primary {
+  background: var(--pf-btn-primary-bg);
+  color: var(--pf-btn-primary-text);
+}
+
+.pf-btn--primary:hover {
+  background: var(--pf-btn-primary-hover);
+}
+
+.pf-btn--ghost {
+  background: transparent;
+  border-color: var(--pf-btn-ghost-border);
+  color: var(--pf-btn-ghost-text);
+}
+
+.pf-btn--ghost:hover {
+  background: var(--pf-btn-ghost-hover-bg);
+}
+
+/* ─────────────────────────────────────────
+   Save notice
+   ───────────────────────────────────────── */
+.pf-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 24px 0;
+  padding: 10px 14px;
+  border-radius: 9px;
+  border: 1px solid var(--pf-notice-border);
+  background: var(--pf-notice-bg);
+  color: var(--pf-notice-text);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* ─────────────────────────────────────────
+   Sections
+   ───────────────────────────────────────── */
+.pf-sections {
+  padding: 8px 0 8px;
+}
+
+.pf-section {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--pf-section-border);
+}
+
+.pf-section:last-child {
+  border-bottom: none;
+}
+
+.pf-section__title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--pf-section-title);
+  margin: 0 0 16px;
+}
+
+.pf-section__title svg {
+  color: var(--pf-section-title-icon);
+  display: block;
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────
+   Grid of fields
+   ───────────────────────────────────────── */
+.pf-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* ─────────────────────────────────────────
+   Individual field
+   ───────────────────────────────────────── */
+.pf-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pf-field--full {
+  grid-column: 1 / -1;
+}
+
+.pf-field__label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--pf-field-label);
+}
+
+.pf-field__label svg {
+  color: var(--pf-field-label-icon);
+  display: block;
+  flex-shrink: 0;
+}
+
+.pf-field__value {
+  font-size: 14px;
+  color: var(--pf-field-value);
+  margin: 0;
+  line-height: 1.55;
+  word-break: break-word;
+}
+
+.pf-field__value--mono {
+  font-family: ui-monospace, "Cascadia Code", "Fira Code", monospace;
+  font-size: 13px;
+  color: var(--pf-field-mono);
+}
+
+.pf-field__empty {
+  color: var(--pf-field-empty);
+  font-style: italic;
+  font-size: 13px;
+}
+
+/* ─────────────────────────────────────────
+   Inputs
+   ───────────────────────────────────────── */
+.pf-input {
+  width: 100%;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 9px;
+  border: 1px solid var(--pf-input-border);
+  background: var(--pf-input-bg);
+  color: var(--pf-input-text);
+  font-size: 13.5px;
+  outline: none;
+  box-sizing: border-box;
+  transition:
+    border-color var(--pf-transition),
+    box-shadow var(--pf-transition);
+}
+
+.pf-input::placeholder {
+  color: var(--pf-input-placeholder);
+}
+
+.pf-input:focus {
+  border-color: var(--pf-input-border-focus);
+  box-shadow: var(--pf-input-shadow-focus);
+}
+
+.pf-input--textarea {
+  height: auto;
+  padding: 10px 12px;
+  resize: vertical;
+  line-height: 1.65;
+}
+
+/* ─────────────────────────────────────────
+   Bio
+   ───────────────────────────────────────── */
+.pf-bio-text {
+  font-size: 14px;
+  color: var(--pf-bio-text);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ─────────────────────────────────────────
+   Social view (read mode)
+   ───────────────────────────────────────── */
+.pf-social-view-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.pf-social-view-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.pf-social-view-item__label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--pf-social-view-label);
+}
+
+.pf-social-view-item__label svg {
+  display: block;
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.pf-social-view-item__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--pf-social-view-link);
+  text-decoration: none;
+  word-break: break-all;
+  transition: color var(--pf-transition);
+}
+
+.pf-social-view-item__link svg,
+.pf-btn svg,
+.pf-notice svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.pf-social-view-item__link:hover {
+  color: var(--pf-social-view-link-hover);
+  text-decoration: underline;
+}
+
+/* ─────────────────────────────────────────
+   Responsive
+   ───────────────────────────────────────── */
+@media (max-width: 860px) {
+  .pf-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .pf-sidebar {
+    position: static;
+  }
+
+  .pf-sidebar__inner {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .pf-avatar-wrap { margin-bottom: 0; }
+  .pf-sidebar__identity { text-align: left; flex: 1; min-width: 160px; }
+  .pf-sidebar__identity > * { justify-content: flex-start; }
+  .pf-sidebar__divider { display: none; }
+  .pf-sidebar__socials { flex-direction: row; flex-wrap: wrap; width: auto; }
+  .pf-sidebar__socials-label { display: none; }
+}
+
+@media (max-width: 600px) {
+  .pf-page { padding: 16px 14px 60px; }
+
+  .pf-main__topbar {
+    flex-direction: column;
+    padding: 18px 18px 14px;
+  }
+
+  .pf-section { padding: 16px 18px; }
+
+  .pf-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pf-social-view-grid {
+    grid-template-columns: 1fr;
+  }
+}

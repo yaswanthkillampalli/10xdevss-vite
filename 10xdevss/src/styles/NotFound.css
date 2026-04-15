@@ -1,0 +1,341 @@
+/* ─────────────────────────────────────────
+   NotFound – Design Tokens
+   ───────────────────────────────────────── */
+:root,
+[data-theme="light"] {
+  --nf-bg:                  #fafafa;
+  --nf-grid-line:           rgba(0, 0, 0, 0.045);
+
+  --nf-code-color:          #111;
+  --nf-code-ghost:          rgba(193, 18, 31, 0.08);
+  --nf-code-stroke:         rgba(0, 0, 0, 0.06);
+
+  --nf-eyebrow-bg:          rgba(193, 18, 31, 0.08);
+  --nf-eyebrow-border:      rgba(193, 18, 31, 0.18);
+  --nf-eyebrow-text:        #b91c1c;
+
+  --nf-heading:             #111;
+  --nf-heading-em:          #c1121f;
+  --nf-text:                #777;
+  --nf-divider:             rgba(0,0,0,0.07);
+
+  --nf-btn-primary-bg:      #c1121f;
+  --nf-btn-primary-text:    #fff;
+  --nf-btn-primary-hover:   #a00f1a;
+  --nf-btn-primary-shadow:  rgba(193,18,31,0.22);
+
+  --nf-btn-ghost-border:    rgba(0,0,0,0.13);
+  --nf-btn-ghost-text:      #444;
+  --nf-btn-ghost-hover-bg:  #f0f0f0;
+
+  --nf-back-link:           #aaa;
+  --nf-back-link-hover:     #555;
+
+  --nf-transition:          180ms cubic-bezier(0.4,0,0.2,1);
+}
+
+[data-theme="dark"] {
+  --nf-bg:                  #0c0c0e;
+  --nf-grid-line:           rgba(255, 255, 255, 0.03);
+
+  --nf-code-color:          #f4f4f5;
+  --nf-code-ghost:          rgba(239, 35, 60, 0.07);
+  --nf-code-stroke:         rgba(255,255,255,0.04);
+
+  --nf-eyebrow-bg:          rgba(239, 35, 60, 0.10);
+  --nf-eyebrow-border:      rgba(239, 35, 60, 0.22);
+  --nf-eyebrow-text:        #f87171;
+
+  --nf-heading:             #f4f4f5;
+  --nf-heading-em:          #f87171;
+  --nf-text:                #71717a;
+  --nf-divider:             rgba(255,255,255,0.06);
+
+  --nf-btn-primary-bg:      #ef233c;
+  --nf-btn-primary-text:    #fff;
+  --nf-btn-primary-hover:   #c1121f;
+  --nf-btn-primary-shadow:  rgba(239,35,60,0.25);
+
+  --nf-btn-ghost-border:    rgba(255,255,255,0.10);
+  --nf-btn-ghost-text:      #a1a1aa;
+  --nf-btn-ghost-hover-bg:  #1c1c1f;
+
+  --nf-back-link:           #3f3f46;
+  --nf-back-link-hover:     #a1a1aa;
+}
+
+/* ─────────────────────────────────────────
+   Page
+   ───────────────────────────────────────── */
+.nf-page {
+  position: relative;
+  min-height: calc(100vh - 64px);
+  background: var(--nf-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  overflow: hidden;
+  transition: background var(--nf-transition);
+}
+
+/* ─────────────────────────────────────────
+   Grid background
+   ───────────────────────────────────────── */
+.nf-grid-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--nf-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--nf-grid-line) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 100%);
+}
+
+/* ─────────────────────────────────────────
+   Split content area
+   ───────────────────────────────────────── */
+.nf-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  max-width: 900px;
+  width: 100%;
+  animation: nf-fade-up 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes nf-fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─────────────────────────────────────────
+   Giant 404 glitch block
+   ───────────────────────────────────────── */
+.nf-glitch-block {
+  position: relative;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.nf-code {
+  display: block;
+  font-size: clamp(96px, 16vw, 180px);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+  color: var(--nf-code-color);
+  transition: color var(--nf-transition);
+
+  /* Outline stroke for depth */
+  -webkit-text-stroke: 1px var(--nf-code-stroke);
+}
+
+/* Ghost layer — offset red shadow behind */
+.nf-code--ghost {
+  position: absolute;
+  inset: 0;
+  color: transparent;
+  -webkit-text-stroke: 0;
+  background: none;
+  /* Red fill using clip — simulates a second layer */
+  text-shadow:
+    4px 4px 0 var(--nf-code-ghost),
+    -2px -2px 0 var(--nf-code-ghost);
+  animation: nf-ghost-drift 6s ease-in-out infinite;
+}
+
+@keyframes nf-ghost-drift {
+  0%, 100% { transform: translate(0, 0); opacity: 0.7; }
+  25%       { transform: translate(3px, -2px); opacity: 1; }
+  50%       { transform: translate(-2px, 2px); opacity: 0.6; }
+  75%       { transform: translate(1px, 1px); opacity: 0.9; }
+}
+
+/* Glitch bars on hover */
+.nf-glitch-block:hover .nf-code {
+  animation: nf-glitch 400ms steps(2) both;
+}
+
+@keyframes nf-glitch {
+  0%   { clip-path: inset(0 0 85% 0); transform: translate(-3px, 0); }
+  20%  { clip-path: inset(40% 0 45% 0); transform: translate(3px, 0); }
+  40%  { clip-path: inset(80% 0 5% 0); transform: translate(-2px, 0); }
+  60%  { clip-path: inset(20% 0 60% 0); transform: translate(2px, 0); }
+  80%  { clip-path: inset(60% 0 25% 0); transform: translate(-1px, 0); }
+  100% { clip-path: inset(0 0 0 0); transform: translate(0, 0); }
+}
+
+/* ─────────────────────────────────────────
+   Right body
+   ───────────────────────────────────────── */
+.nf-body {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Eyebrow pill */
+.nf-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: var(--nf-eyebrow-bg);
+  border: 1px solid var(--nf-eyebrow-border);
+  color: var(--nf-eyebrow-text);
+  margin-bottom: 18px;
+}
+
+/* Heading */
+.nf-heading {
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  color: var(--nf-heading);
+  margin: 0 0 14px;
+  transition: color var(--nf-transition);
+}
+
+.nf-heading em {
+  font-style: normal;
+  color: var(--nf-heading-em);
+  position: relative;
+  /* Subtle underline decoration */
+  display: inline-block;
+}
+
+.nf-heading em::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--nf-heading-em);
+  opacity: 0.25;
+  border-radius: 2px;
+}
+
+/* Body text */
+.nf-text {
+  font-size: 15px;
+  color: var(--nf-text);
+  line-height: 1.7;
+  margin: 0;
+  max-width: 400px;
+}
+
+/* Divider */
+.nf-divider {
+  width: 40px;
+  height: 2px;
+  background: var(--nf-heading-em);
+  opacity: 0.3;
+  border-radius: 2px;
+  margin: 22px 0;
+}
+
+/* ─────────────────────────────────────────
+   Buttons
+   ───────────────────────────────────────── */
+.nf-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.nf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  text-decoration: none;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background var(--nf-transition),
+    border-color var(--nf-transition),
+    box-shadow var(--nf-transition),
+    transform 100ms ease;
+}
+
+.nf-btn:active { transform: scale(0.97); }
+
+.nf-btn--primary {
+  background: var(--nf-btn-primary-bg);
+  color: var(--nf-btn-primary-text);
+  box-shadow: 0 2px 8px var(--nf-btn-primary-shadow);
+}
+
+.nf-btn--primary:hover {
+  background: var(--nf-btn-primary-hover);
+  box-shadow: 0 4px 16px var(--nf-btn-primary-shadow);
+}
+
+.nf-btn--ghost {
+  background: transparent;
+  border-color: var(--nf-btn-ghost-border);
+  color: var(--nf-btn-ghost-text);
+}
+
+.nf-btn--ghost:hover {
+  background: var(--nf-btn-ghost-hover-bg);
+}
+
+/* Back link */
+.nf-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--nf-back-link);
+  text-decoration: none;
+  transition: color var(--nf-transition);
+}
+
+.nf-back-link:hover {
+  color: var(--nf-back-link-hover);
+}
+
+/* ─────────────────────────────────────────
+   Responsive
+   ───────────────────────────────────────── */
+@media (max-width: 720px) {
+  .nf-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    text-align: left;
+  }
+
+  .nf-code {
+    font-size: clamp(80px, 22vw, 140px);
+  }
+}
+
+@media (max-width: 480px) {
+  .nf-page { padding: 32px 20px; }
+
+  .nf-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nf-text { max-width: 100%; }
+}

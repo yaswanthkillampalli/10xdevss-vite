@@ -12,7 +12,9 @@ import Certifications from './pages/portfolio/Certifications.jsx'
 import Publications from './pages/portfolio/Publications.jsx'
 import Achievements from './pages/portfolio/Achievements.jsx'
 import PublicProfile from './pages/profile/PublicProfile.jsx'
+import MyProfile from './pages/profile/MyProfile.jsx'
 import Settings from './pages/settings/Settings.jsx'
+import NotFound from './pages/NotFound.jsx'
 import Layout from './components/Layout.jsx'
 import ProtectedRoute from './routes/ProtectedRoute.jsx'
 
@@ -35,12 +37,15 @@ export default function App() {
                     <Route path="portofolio/achievements" element={<MyAchievements />} />
                     <Route path="portfolio/experience" element={<Experience />} />
                     <Route path="portfolio/certifications" element={<Certifications />} />
+                    <Route path="profile" element={<MyProfile />} />
                     <Route path="publications" element={<Publications />} />
                     <Route path="achievements" element={<Achievements />} />
                     <Route path="portfolio/skills" element={<Skills />} />
                     <Route path="settings" element={<Settings />} />
                 </Route>
             </Route>
+
+            <Route path="*" element={<NotFound />} />
         </Routes>
     )
 }
