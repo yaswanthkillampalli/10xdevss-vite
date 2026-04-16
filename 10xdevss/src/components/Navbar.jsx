@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import ProfileMenu from './ProfileMenu';
 import { logoutUser } from '../authentication/auth';
 import '../styles/components/Navbar.css';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 const NAV_LINKS = [
   { to: "/", label: "Dashboard" },
@@ -15,6 +16,9 @@ export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const [theme, setTheme] = useState('light');
+  
+  // State to control when the animation is visible
+  const [showThemeAnimation, setShowThemeAnimation] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -26,7 +30,17 @@ export default function Navbar() {
   };
 
   const toggleTheme = () => {
+    // 1. Show the animation overlay
+    setShowThemeAnimation(true);
+    
+    // 2. Switch the actual theme
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+
+    // 3. Hide the animation after it finishes. 
+    // Adjust this time to match the length of your Lottie animation!
+    setTimeout(() => {
+      setShowThemeAnimation(false);
+    }, 2500); 
   };
 
   const handleLogout = async () => {
@@ -40,57 +54,85 @@ export default function Navbar() {
   };
 
   return (
-    <nav
-      className={`navbar navbar-expand-lg sticky-top portfolio-navbar ${
-        theme === 'dark' ? 'navbar-dark' : 'navbar-light'
-      }`}
-    >
-      <div className="container-fluid portfolio-navbar-container">
-        <Link to="/" className="navbar-brand portfolio-brand d-flex align-items-center gap-2 m-0">
-          <img
-            src={theme === 'dark' ? '/10xdevs-white.png' : '/10xdevs-black.png'}
-            alt="10x Devs"
-            className="portfolio-logo-img"
-          />
+    <>
+      {/* --- THE 3-LAYER FULL-SCREEN ANIMATION OVERLAY --- */}
+      {showThemeAnimation && (
+        <div className="theme-overlay-wrapper">
           
-        </Link>
+          {/* LAYER 3: Bottom - Static Theme Background */}
+          <div 
+            className={`theme-layer-3 ${theme === 'dark' ? 'bg-dark-layer' : 'bg-light-layer'}`} 
+          />
 
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#mainNavbar"
-          aria-controls="mainNavbar"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon" />
-        </button>
-
-        <div className="collapse navbar-collapse" id="mainNavbar">
-          <ul className="navbar-nav portfolio-nav-list mb-3 mb-lg-0">
-            {NAV_LINKS.map((link) => (
-              <li className="nav-item" key={link.to}>
-                <Link
-                  to={link.to}
-                  className={`nav-link portfolio-nav-link ${isActive(link.to) ? 'active' : ''}`}
-                  aria-current={isActive(link.to) ? 'page' : undefined}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          <div className="portfolio-profile-wrap d-flex align-items-center">
-            <ProfileMenu
-              theme={theme}
-              toggleTheme={toggleTheme}
-              onLogout={handleLogout}
+          {/* LAYER 2: Middle - The Lottie Animation */}
+          <div className="theme-layer-2">
+            <DotLottieReact
+              src={theme === 'dark' ? '/animations/dark-theme-loader.json' : '/animations/light-theme-loader.json'}
+              autoplay
+              className="theme-transition-lottie"
             />
           </div>
+
+          {/* LAYER 1: Top - The Animating Curtain */}
+          <div 
+            className={`theme-layer-1 ${theme === 'dark' ? 'bg-dark-layer' : 'bg-light-layer'}`} 
+          />
+
         </div>
-      </div>
-    </nav>
+      )}
+
+      {/* --- ORIGINAL NAVBAR CODE --- */}
+      <nav
+        className={`navbar navbar-expand-lg sticky-top portfolio-navbar ${
+          theme === 'dark' ? 'navbar-dark' : 'navbar-light'
+        }`}
+      >
+        <div className="container-fluid portfolio-navbar-container">
+          <Link to="/" className="navbar-brand portfolio-brand d-flex align-items-center gap-2 m-0">
+            <img
+              src={theme === 'dark' ? '/10xdevs-white.png' : '/10xdevs-black.png'}
+              alt="10x Devs"
+              className="portfolio-logo-img"
+            />
+          </Link>
+
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNavbar"
+            aria-controls="mainNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon" />
+          </button>
+
+          <div className="collapse navbar-collapse" id="mainNavbar">
+            <ul className="navbar-nav portfolio-nav-list mb-3 mb-lg-0">
+              {NAV_LINKS.map((link) => (
+                <li className="nav-item" key={link.to}>
+                  <Link
+                    to={link.to}
+                    className={`nav-link portfolio-nav-link ${isActive(link.to) ? 'active' : ''}`}
+                    aria-current={isActive(link.to) ? 'page' : undefined}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <div className="portfolio-profile-wrap d-flex align-items-center">
+              <ProfileMenu
+                theme={theme}
+                toggleTheme={toggleTheme}
+                onLogout={handleLogout}
+              />
+            </div>
+          </div>
+        </div>
+      </nav>
+    </>
   );
 }
