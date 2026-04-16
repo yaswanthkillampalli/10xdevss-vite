@@ -75,7 +75,7 @@ export default function Navbar() {
 
           {/* LAYER 1: Top - The Animating Curtain */}
           <div 
-            className={`theme-layer-1 ${theme === 'dark' ? 'bg-dark-layer' : 'bg-light-layer'}`} 
+            className={`theme-layer-1 ${theme === 'dark' ? 'bg-light-layer' : 'bg-dark-layer'}`} 
           />
 
         </div>
