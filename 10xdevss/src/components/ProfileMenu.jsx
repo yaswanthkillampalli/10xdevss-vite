@@ -2,7 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/components/ProfileMenu.css';
 
-export default function ProfileMenu({ theme, toggleTheme, onLogout }) {
+export default function ProfileMenu({ theme, toggleTheme, onLogout, profileAvatar, profileName }) {
+  const initials = (profileName || 'JD')
+    .split(' ')
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
     <div className="dropdown">
       {/* ── Profile trigger button with IG story ring ── */}
@@ -16,7 +23,7 @@ export default function ProfileMenu({ theme, toggleTheme, onLogout }) {
       >
         <div className="portfolio-profile-circle">
           <img
-            src="/profile-pic.jpg"
+            src={profileAvatar || '/profile-pic.jpg'}
             alt="Profile"
             className="portfolio-profile-image"
             onError={(e) => {
@@ -30,7 +37,7 @@ export default function ProfileMenu({ theme, toggleTheme, onLogout }) {
           />
           {/* Fallback initials — hidden by default */}
           <span className="portfolio-profile-initials" style={{ display: 'none' }}>
-            JD
+            {initials}
           </span>
         </div>
       </button>
@@ -44,10 +51,10 @@ export default function ProfileMenu({ theme, toggleTheme, onLogout }) {
         <li>
           <div className="portfolio-dropdown-header">
             <div className="portfolio-dropdown-avatar">
-              <img src="/profile-pic.jpg" alt="Profile" />
+              <img src={profileAvatar || '/profile-pic.jpg'} alt="Profile" />
             </div>
             <div className="portfolio-dropdown-info">
-              <div className="portfolio-dropdown-name">John Doe</div>
+              <div className="portfolio-dropdown-name">{profileName || 'John Doe'}</div>
               <div className="portfolio-dropdown-role">Full-Stack Developer</div>
               <div className="portfolio-dropdown-location">Hyderabad, India</div>
             </div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Trophy,
   GraduationCap,
@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import "../../styles/portfolio/Achievements.css";
 import AchievementCard from "../../components/achievements/AchievementCard.jsx";
+import { getDiscoverAchievements } from "../../authentication/api";
 
 const FILTER_TYPE_CONFIG = {
   award:       { Icon: Trophy,        label: "Award"       },
@@ -21,60 +22,60 @@ const FILTER_TYPE_CONFIG = {
   other:       { Icon: BadgeCheck,    label: "Other"       },
 };
 
-const MOCK_ACHIEVEMENTS = [
-  {
-    id: 1,
-    title: "Best Paper Award",
-    description: "Received Best Paper Award at IEEE ICML 2023 for federated learning research.",
-    issuingOrganization: "IEEE",
-    date: "Oct 2023",
-    type: "award",
-    url: "https://ieee.org",
-  },
-  {
-    id: 2,
-    title: "Google Summer of Code",
-    description: "Selected as a GSoC contributor to work on open-source machine learning tooling.",
-    issuingOrganization: "Google",
-    date: "May 2023",
-    type: "fellowship",
-    url: "https://summerofcode.withgoogle.com",
-  },
-  {
-    id: 3,
-    title: "National Hackathon Runner-Up",
-    description: "Secured 2nd place at Smart India Hackathon with a real-time flood prediction system.",
-    issuingOrganization: "Government of India",
-    date: "Dec 2022",
-    type: "competition",
-    url: null,
-  },
-  {
-    id: 4,
-    title: "Merit Scholarship",
-    description: "Awarded academic merit scholarship for strong performance in computer science coursework.",
-    issuingOrganization: "University Board",
-    date: "Aug 2021",
-    type: "scholarship",
-    url: null,
-  },
-  {
-    id: 5,
-    title: "Outstanding Research Recognition",
-    description: "Recognized for innovative applied AI research contribution in an academic showcase.",
-    issuingOrganization: "Research Council",
-    date: "Jan 2024",
-    type: "recognition",
-    url: null,
-  },
-];
-
 const ACHIEVEMENT_TYPES = Object.keys(FILTER_TYPE_CONFIG);
 
 export default function Achievements() {
-  const [achievements] = useState(MOCK_ACHIEVEMENTS);
+  const [achievements, setAchievements] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedTypes, setSelectedTypes] = useState(new Set());
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const formatMonthYear = (dateValue) => {
+    if (!dateValue) return "-";
+    const parsed = new Date(dateValue);
+    if (Number.isNaN(parsed.getTime())) return String(dateValue);
+    return parsed.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadAchievements = async () => {
+      try {
+        const response = await getDiscoverAchievements({ limit: 100 });
+        const list = response?.data || [];
+
+        if (!isMounted) return;
+
+        setAchievements(
+          list.map((item) => ({
+            ...item,
+            id: item.id || item._id,
+            date: formatMonthYear(item.date),
+            title: item.title || "Untitled achievement",
+            issuingOrganization: item.issuingOrganization || "Unknown organization",
+            description: item.description || "",
+            type: item.type || "other",
+            url: item.url || null,
+          }))
+        );
+        setError("");
+      } catch (loadError) {
+        if (!isMounted) return;
+        setError(loadError?.response?.data?.message || "Could not load achievements.");
+        setAchievements([]);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    loadAchievements();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const toggleType = (type) => {
     const next = new Set(selectedTypes);
@@ -90,18 +91,22 @@ export default function Achievements() {
 
   const isFiltered = selectedTypes.size > 0 || search.trim() !== "";
 
-  const filteredAchievements = achievements.filter((item) => {
-    const query = search.trim().toLowerCase();
-    const matchesType = selectedTypes.size === 0 || selectedTypes.has(item.type);
-    const matchesSearch =
-      query === "" ||
-      item.title.toLowerCase().includes(query) ||
-      item.issuingOrganization.toLowerCase().includes(query) ||
-      item.description.toLowerCase().includes(query) ||
-      item.type.toLowerCase().includes(query) ||
-      item.date.toLowerCase().includes(query);
-    return matchesType && matchesSearch;
-  });
+  const filteredAchievements = useMemo(
+    () =>
+      achievements.filter((item) => {
+        const query = search.trim().toLowerCase();
+        const matchesType = selectedTypes.size === 0 || selectedTypes.has(item.type);
+        const matchesSearch =
+          query === "" ||
+          item.title.toLowerCase().includes(query) ||
+          item.issuingOrganization.toLowerCase().includes(query) ||
+          item.description.toLowerCase().includes(query) ||
+          item.type.toLowerCase().includes(query) ||
+          item.date.toLowerCase().includes(query);
+        return matchesType && matchesSearch;
+      }),
+    [achievements, search, selectedTypes]
+  );
 
   return (
     <div className="container-fluid">
@@ -124,6 +129,18 @@ export default function Achievements() {
           </button>
         )}
       </div>
+
+      {isLoading && (
+        <div className="card" style={{ padding: 16, marginBottom: 20 }}>
+          Loading achievements...
+        </div>
+      )}
+
+      {error && (
+        <div className="card" style={{ padding: 16, marginBottom: 20 }}>
+          {error}
+        </div>
+      )}
 
       <div className="achievements-layout">
         {/* ── Left Filters ── */}
@@ -188,7 +205,15 @@ export default function Achievements() {
           </div>
 
           {/* Results */}
-          {filteredAchievements.length === 0 ? (
+          {!isLoading && achievements.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-state__icon">
+                <Trophy size={28} strokeWidth={1.4} />
+              </div>
+              <h3 className="empty-state__heading">No achievements</h3>
+              <p className="empty-state__body">No achievements found right now.</p>
+            </div>
+          ) : filteredAchievements.length === 0 ? (
             <div className="empty-state">
               <div className="empty-state__icon">
                 <Trophy size={28} strokeWidth={1.4} />

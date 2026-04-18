@@ -5,10 +5,17 @@ const getAuthParams = async (req, res) => {
   try {
     const auth = createImageKitAuthParams();
 
+    // Extract role and rollnumber from the authenticated user
+    const { role, rollId } = req.user;
+
     return successResponse(res, {
       statusCode: 200,
       message: "ImageKit auth parameters generated successfully.",
-      data: auth,
+      data: {
+        ...auth,
+        role,
+        rollnumber: rollId,
+      },
     });
   } catch (error) {
     console.error("ImageKit auth error:", error);

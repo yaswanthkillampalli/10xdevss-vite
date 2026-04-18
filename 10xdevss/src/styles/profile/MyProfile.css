@@ -419,6 +419,12 @@
 
 .pf-btn:active { transform: scale(0.97); }
 
+.pf-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .pf-btn--primary {
   background: var(--pf-btn-primary-bg);
   color: var(--pf-btn-primary-text);
@@ -584,6 +590,63 @@
 }
 
 /* ─────────────────────────────────────────
+   Profile photo upload
+   ───────────────────────────────────────── */
+.pf-photo-editor {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border: 1px solid var(--pf-input-border);
+  border-radius: 12px;
+  background: var(--pf-input-bg);
+}
+
+.pf-photo-preview {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--pf-avatar-bg);
+  color: var(--pf-avatar-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pf-photo-preview__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pf-photo-preview__initials {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.pf-photo-actions {
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.pf-photo-input-hidden {
+  display: none;
+}
+
+.pf-photo-help {
+  width: 100%;
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--pf-field-label);
+}
+
+/* ─────────────────────────────────────────
    Bio
    ───────────────────────────────────────── */
 .pf-bio-text {
@@ -691,5 +754,10 @@
 
   .pf-social-view-grid {
     grid-template-columns: 1fr;
+  }
+
+  .pf-photo-editor {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

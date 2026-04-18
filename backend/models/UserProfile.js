@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { isValidHttpUrl, normalizeOptionalString } = require("./modelHelpers");
 
 const userProfileSchema = new mongoose.Schema(
   {
@@ -11,6 +12,7 @@ const userProfileSchema = new mongoose.Schema(
     username: {
       type: String,
       unique: true,
+      sparse: true,
       trim: true,
       lowercase: true,
       minlength: [3, "Username must be at least 3 characters"],
@@ -20,6 +22,11 @@ const userProfileSchema = new mongoose.Schema(
     avatar: {
       type: String, // URL to image
       default: null,
+      set: normalizeOptionalString,
+      validate: {
+        validator: isValidHttpUrl,
+        message: "Avatar URL must be a valid http/https URL",
+      },
     },
     bio: {
       type: String,
@@ -42,10 +49,42 @@ const userProfileSchema = new mongoose.Schema(
       default: null,
     },
     socialLinks: {
-      github: { type: String, default: null },
-      linkedin: { type: String, default: null },
-      twitter: { type: String, default: null },
-      portfolio: { type: String, default: null },
+      github: {
+        type: String,
+        default: null,
+        set: normalizeOptionalString,
+        validate: {
+          validator: isValidHttpUrl,
+          message: "GitHub URL must be a valid http/https URL",
+        },
+      },
+      linkedin: {
+        type: String,
+        default: null,
+        set: normalizeOptionalString,
+        validate: {
+          validator: isValidHttpUrl,
+          message: "LinkedIn URL must be a valid http/https URL",
+        },
+      },
+      twitter: {
+        type: String,
+        default: null,
+        set: normalizeOptionalString,
+        validate: {
+          validator: isValidHttpUrl,
+          message: "Twitter URL must be a valid http/https URL",
+        },
+      },
+      portfolio: {
+        type: String,
+        default: null,
+        set: normalizeOptionalString,
+        validate: {
+          validator: isValidHttpUrl,
+          message: "Portfolio URL must be a valid http/https URL",
+        },
+      },
     },
     isPublic: {
       type: Boolean,

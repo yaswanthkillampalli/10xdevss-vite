@@ -5,6 +5,7 @@ const achievementController = require("../../controllers/portfolio/achievementCo
 
 const router = express.Router();
 
+router.get("/achievements/discover", protect, achievementController.getDiscover);
 router.get("/achievements", protect, achievementController.getAll);
 router.post("/achievements", protect, achievementController.create);
 router.get("/achievements/:id", protect, achievementController.getOne);

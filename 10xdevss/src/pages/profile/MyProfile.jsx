@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   User,
   Mail,
@@ -16,21 +16,31 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
+import {
+  createMyProfile,
+  getMyProfile,
+  getMyUser,
+  updateMyProfile,
+  updateMyUser,
+} from "../../authentication/api";
+import useImageKitUpload from "../../hooks/useImageKitUpload";
+import { writeProfileSnapshot } from "../../utils/profileSync";
 import "../../styles/profile/MyProfile.css";
 
 const INITIAL_PROFILE = {
-  fullName: "Killampalli Yaswanth Vardhan",
-  emailId: "yaswanthkillampalli@gmail.com",
-  rollId: "238T1A4252",
-  headline: "Full-Stack Developer",
-  avatar: "",
-  location: "Vijayawada, India",
-  bio: "Building scalable products and mentoring dev communities. Passionate about open-source, distributed systems, and turning caffeine into code.",
+  fullName: "",
+  emailId: "",
+  rollId: "",
+  headline: "",
+  avatar:"/profile-pic.jpg",
+  // avatar: "https://res.cloudinary.com/dz7moyhci/image/upload/q_auto/f_auto/v1770744513/users/hd52qexlr7vvx2px0abr.png",
+  location: "",
+  bio: "",
   socialLinks: {
-    github: "https://github.com/yaswanthkillampalli",
-    linkedin: "https://linkedin.com/in/yaswanthkillampalli",
-    twitter: "https://twitter.com/yaswanthkillampalli",
-    portfolio: "https://yashdev.tech",
+    github: "",
+    linkedin: "",
+    twitter: "",
+    portfolio: "",
   },
 };
 
@@ -79,6 +89,73 @@ export default function MyProfile() {
   const [profile, setProfile] = useState(INITIAL_PROFILE);
   const [draft, setDraft] = useState(INITIAL_PROFILE);
   const [savedMessage, setSavedMessage] = useState("");
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState("");
+  const fileInputRef = useRef(null);
+  const { uploadFile, isUploading, uploadError, reset: resetUploadState } = useImageKitUpload();
+
+  const extractApiData = (response) => response?.data || null;
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadProfile = async () => {
+      try {
+        const [userResult, profileResult] = await Promise.allSettled([
+          getMyUser(),
+          getMyProfile(),
+        ]);
+
+        const userData = userResult.status === "fulfilled" ? extractApiData(userResult.value) : null;
+        const profileData = profileResult.status === "fulfilled" ? extractApiData(profileResult.value) : null;
+
+        if (!isMounted) return;
+
+        const mergedProfile = {
+          ...INITIAL_PROFILE,
+          fullName: userData?.fullName || INITIAL_PROFILE.fullName,
+          emailId: userData?.emailId || INITIAL_PROFILE.emailId,
+          rollId: userData?.rollId || INITIAL_PROFILE.rollId,
+          avatar: profileData?.avatar || INITIAL_PROFILE.avatar,
+          headline: profileData?.headline || INITIAL_PROFILE.headline,
+          location: profileData?.location || INITIAL_PROFILE.location,
+          bio: profileData?.bio || INITIAL_PROFILE.bio,
+          socialLinks: {
+            ...INITIAL_PROFILE.socialLinks,
+            ...(profileData?.socialLinks || {}),
+          },
+        };
+
+        setProfile(mergedProfile);
+        setDraft(mergedProfile);
+        writeProfileSnapshot(mergedProfile);
+      } catch {
+        if (isMounted) {
+          setSavedMessage("Using local profile data. Could not fetch server profile right now.");
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoadingProfile(false);
+        }
+      }
+    };
+
+    loadProfile();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (avatarPreview.startsWith("blob:")) {
+        URL.revokeObjectURL(avatarPreview);
+      }
+    };
+  }, [avatarPreview]);
 
   const initials = useMemo(() => {
     return profile.fullName
@@ -100,20 +177,133 @@ export default function MyProfile() {
 
   const onEdit = () => {
     setDraft(profile);
+    setAvatarFile(null);
+    setAvatarPreview("");
+    resetUploadState();
     setIsEditing(true);
     setSavedMessage("");
   };
 
   const onCancel = () => {
     setDraft(profile);
+    setAvatarFile(null);
+    if (avatarPreview.startsWith("blob:")) {
+      URL.revokeObjectURL(avatarPreview);
+    }
+    setAvatarPreview("");
+    resetUploadState();
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
     setIsEditing(false);
     setSavedMessage("");
   };
 
-  const onSave = () => {
-    setProfile(draft);
-    setIsEditing(false);
-    setSavedMessage("Changes saved locally. Backend sync is on hold.");
+  const handleAvatarSelect = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setSavedMessage("Please select a valid image file.");
+      return;
+    }
+
+    if (avatarPreview.startsWith("blob:")) {
+      URL.revokeObjectURL(avatarPreview);
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+    setAvatarFile(file);
+    setAvatarPreview(objectUrl);
+    setSavedMessage("");
+  };
+
+  const clearSelectedAvatar = () => {
+    if (avatarPreview.startsWith("blob:")) {
+      URL.revokeObjectURL(avatarPreview);
+    }
+    setAvatarFile(null);
+    setAvatarPreview("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const onSave = async () => {
+    setIsSaving(true);
+    setSavedMessage("");
+
+    const nextProfile = {
+      ...draft,
+      fullName: draft.fullName.trim(),
+      emailId: draft.emailId.trim(),
+      rollId: draft.rollId.trim(),
+      headline: draft.headline.trim(),
+      location: draft.location.trim(),
+      bio: draft.bio.trim(),
+      socialLinks: {
+        github: draft.socialLinks.github.trim(),
+        linkedin: draft.socialLinks.linkedin.trim(),
+        twitter: draft.socialLinks.twitter.trim(),
+        portfolio: draft.socialLinks.portfolio.trim(),
+      },
+    };
+
+    try {
+      if (avatarFile) {
+        const uploadResult = await uploadFile(avatarFile, {
+          allowedType: "image",
+          maxFileSizeMb: 5,
+          uploadType: "profile-pic",
+          fileName: `${nextProfile.rollId || "profile"}-${Date.now()}`,
+          tags: ["profile", "avatar"],
+        });
+
+        nextProfile.avatar = uploadResult?.cdnUrl || uploadResult?.url || "";
+      }
+
+      await updateMyUser({
+        fullName: nextProfile.fullName,
+        emailId: nextProfile.emailId,
+        rollId: nextProfile.rollId,
+      });
+
+      const profilePayload = {
+        avatar: nextProfile.avatar || null,
+        headline: nextProfile.headline || null,
+        location: nextProfile.location || null,
+        bio: nextProfile.bio || null,
+        socialLinks: {
+          github: nextProfile.socialLinks.github || null,
+          linkedin: nextProfile.socialLinks.linkedin || null,
+          twitter: nextProfile.socialLinks.twitter || null,
+          portfolio: nextProfile.socialLinks.portfolio || null,
+        },
+      };
+
+      try {
+        await updateMyProfile(profilePayload);
+      } catch (error) {
+        if (error?.response?.status === 404) {
+          await createMyProfile(profilePayload);
+        } else {
+          throw error;
+        }
+      }
+
+      setProfile(nextProfile);
+      setDraft(nextProfile);
+      writeProfileSnapshot(nextProfile);
+      setIsEditing(false);
+      clearSelectedAvatar();
+      resetUploadState();
+      setSavedMessage("Profile updated successfully. Photo uploaded to ImageKit.");
+    } catch (error) {
+      const apiMessage = error?.response?.data?.message;
+      setSavedMessage(apiMessage || error?.message || "Could not save profile. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -198,13 +388,13 @@ export default function MyProfile() {
                 </button>
               ) : (
                 <>
-                  <button type="button" className="pf-btn pf-btn--ghost" onClick={onCancel}>
+                  <button type="button" className="pf-btn pf-btn--ghost" onClick={onCancel} disabled={isSaving || isUploading}>
                     <X size={14} strokeWidth={2} />
                     Cancel
                   </button>
-                  <button type="button" className="pf-btn pf-btn--primary" onClick={onSave}>
+                  <button type="button" className="pf-btn pf-btn--primary" onClick={onSave} disabled={isSaving || isUploading}>
                     <Check size={14} strokeWidth={2} />
-                    Save Changes
+                    {isSaving || isUploading ? "Saving..." : "Save Changes"}
                   </button>
                 </>
               )}
@@ -216,6 +406,20 @@ export default function MyProfile() {
             <div className="pf-notice">
               <Check size={14} strokeWidth={2.5} />
               {savedMessage}
+            </div>
+          )}
+
+          {uploadError && (
+            <div className="pf-notice">
+              <X size={14} strokeWidth={2.5} />
+              {uploadError}
+            </div>
+          )}
+
+          {isLoadingProfile && (
+            <div className="pf-notice">
+              <Check size={14} strokeWidth={2.5} />
+              Loading profile details...
             </div>
           )}
 
@@ -231,10 +435,65 @@ export default function MyProfile() {
               <div className="pf-grid">
                 {isEditing ? (
                   <>
+                    <div className="pf-field pf-field--full">
+                      <label className="pf-field__label" htmlFor="avatarUpload">
+                        <Image size={12} strokeWidth={2.2} />
+                        Profile Photo
+                      </label>
+
+                      <div className="pf-photo-editor">
+                        <div className="pf-photo-preview">
+                          {avatarPreview || draft.avatar ? (
+                            <img src={avatarPreview || draft.avatar} alt="Profile preview" className="pf-photo-preview__img" />
+                          ) : (
+                            <span className="pf-photo-preview__initials">
+                              {draft.fullName
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")
+                                .slice(0, 2)
+                                .toUpperCase()}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="pf-photo-actions">
+                          <input
+                            id="avatarUpload"
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/*"
+                            className="pf-photo-input-hidden"
+                            onChange={handleAvatarSelect}
+                          />
+                          <button
+                            type="button"
+                            className="pf-btn pf-btn--ghost"
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={isSaving || isUploading}
+                          >
+                            Choose Photo
+                          </button>
+                          {avatarFile && (
+                            <button
+                              type="button"
+                              className="pf-btn pf-btn--ghost"
+                              onClick={clearSelectedAvatar}
+                              disabled={isSaving || isUploading}
+                            >
+                              Remove
+                            </button>
+                          )}
+                          <p className="pf-photo-help">
+                            JPG, PNG, WEBP up to 5MB. Uploaded to ImageKit on Save.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
                     <FieldEdit icon={User}      label="Full Name"  id="fullName"  value={draft.fullName}  onChange={(v) => onFieldChange("fullName", v)}  placeholder="Your full name" />
                     <FieldEdit icon={Mail}      label="Email"      id="emailId"   value={draft.emailId}   onChange={(v) => onFieldChange("emailId", v)}   type="email" placeholder="you@example.com" />
                     <FieldEdit icon={Hash}      label="Roll ID"    id="rollId"    value={draft.rollId}    onChange={(v) => onFieldChange("rollId", v)}    placeholder="22BCEXXXX" />
-                    <FieldEdit icon={Image}     label="Avatar URL" id="avatar"    value={draft.avatar}    onChange={(v) => onFieldChange("avatar", v)}    placeholder="https://..." />
                     <FieldEdit icon={Briefcase} label="Headline"   id="headline"  value={draft.headline}  onChange={(v) => onFieldChange("headline", v)}  placeholder="Your role or tagline" />
                     <FieldEdit icon={MapPin}    label="Location"   id="location"  value={draft.location}  onChange={(v) => onFieldChange("location", v)}  placeholder="City, Country" />
                   </>

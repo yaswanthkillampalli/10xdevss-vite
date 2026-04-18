@@ -1,47 +1,20 @@
+import { useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
+import Navbar from "../../components/Navbar.jsx";
+import api from "../../authentication/api";
 import "../../styles/profile/PublicProfile.css";
 
-// Mock data — replace with API call using username from URL params
-const PROFILE = {
-  name: "John Doe",
-  username: "johndoe",
-  headline: "Full Stack Developer · Researcher · Open Source Enthusiast",
-  bio: "Building scalable systems and exploring ML research. Currently pursuing my B.Tech in Computer Science while contributing to open-source projects and doing research in federated learning.",
-  location: "Hyderabad, India",
+const EMPTY_PROFILE = {
+  name: "Unknown User",
+  username: "",
+  headline: "",
+  bio: "",
+  location: "",
   avatar: null,
-  socialLinks: {
-    github: "https://github.com/johndoe",
-    linkedin: "https://linkedin.com/in/johndoe",
-    twitter: "https://twitter.com/johndoe",
-    portfolio: "https://johndoe.dev",
-  },
+  socialLinks: {},
 };
 
-const PROJECTS = [
-  { title: "Portfolio CMS", techStack: ["React", "Node.js", "MongoDB"], status: "completed", githubUrl: "#", liveUrl: "#" },
-  { title: "ML Dashboard",  techStack: ["Python", "FastAPI", "D3.js"],  status: "ongoing",   githubUrl: "#", liveUrl: null },
-  { title: "Auth Microservice", techStack: ["Express", "JWT"],          status: "completed", githubUrl: "#", liveUrl: null },
-];
-
-const SKILLS = {
-  frontend: ["React", "TypeScript", "D3.js"],
-  backend:  ["Node.js", "Express", "FastAPI"],
-  database: ["MongoDB", "PostgreSQL", "Redis"],
-  devops:   ["Docker", "Kubernetes"],
-};
-
-const CERTS = [
-  { title: "AWS Solutions Architect", org: "Amazon Web Services", date: "Mar 2024" },
-  { title: "Google Professional Cloud Developer", org: "Google Cloud", date: "Jan 2024" },
-];
-
-const PUBS = [
-  { title: "Federated Learning for Privacy-Preserving Healthcare Analytics", venue: "IEEE ICML 2023", citations: 14 },
-];
-
-const EXPERIENCE = [
-  { company: "Google", role: "Software Engineering Intern", period: "May 2023 – Aug 2023", type: "internship" },
-  { company: "StartupXYZ", role: "Full Stack Developer", period: "Sep 2023 – Present", type: "part-time" },
-];
+const EMPTY_SECTION_MESSAGE = "Public data for this section is not available yet.";
 
 function SocialIcon({ type }) {
   const icons = {
@@ -57,26 +30,140 @@ function SocialIcon({ type }) {
   );
 }
 
+function SectionEmptyState({ title }) {
+  return (
+    <div className="card" style={{ padding: 18 }}>
+      <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15, marginBottom: 8 }}>
+        {title}
+      </h3>
+      <p style={{ fontSize: 13, color: "var(--text-muted)", margin: 0 }}>
+        {EMPTY_SECTION_MESSAGE}
+      </p>
+    </div>
+  );
+}
+
+const formatProfile = (profileResponse) => {
+  const profile = profileResponse?.data?.data || profileResponse?.data || {};
+  const user = profile.userId || {};
+
+  const displayName = user.fullName || profile.name || user.username || profile.username || "Unknown User";
+  const username = profile.username || user.username || "";
+
+  return {
+    name: displayName,
+    username,
+    headline: profile.headline || "",
+    bio: profile.bio || "",
+    location: profile.location || "",
+    avatar: profile.avatar || null,
+    socialLinks: {
+      github: profile.socialLinks?.github || null,
+      linkedin: profile.socialLinks?.linkedin || null,
+      twitter: profile.socialLinks?.twitter || null,
+      portfolio: profile.socialLinks?.portfolio || null,
+    },
+  };
+};
+
 export default function PublicProfile() {
+  const { username } = useParams();
+  const [profile, setProfile] = useState(EMPTY_PROFILE);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadProfile = async () => {
+      if (!username) {
+        if (isMounted) {
+          setError("Profile username is missing.");
+          setIsLoading(false);
+        }
+        return;
+      }
+
+      try {
+        const response = await api.get(`/api/profile/${username}`);
+        if (!isMounted) return;
+        setProfile(formatProfile(response));
+        setError("");
+      } catch (loadError) {
+        if (!isMounted) return;
+        setError(loadError?.response?.data?.message || "Could not load profile.");
+        setProfile(EMPTY_PROFILE);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    loadProfile();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [username]);
+
+  const initials = useMemo(() => {
+    return profile.name
+      .split(" ")
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0])
+      .join("")
+      .toUpperCase() || "U";
+  }, [profile.name]);
+
+  const socialEntries = useMemo(
+    () => Object.entries(profile.socialLinks).filter(([, url]) => Boolean(url)),
+    [profile.socialLinks]
+  );
+
   return (
     <>
       <Navbar />
       <main>
+        {isLoading && (
+          <div className="container" style={{ paddingTop: 20 }}>
+            <div className="card" style={{ padding: 16 }}>Loading public profile...</div>
+          </div>
+        )}
+
+        {error && (
+          <div className="container" style={{ paddingTop: 20 }}>
+            <div className="card" style={{ padding: 16 }}>{error}</div>
+          </div>
+        )}
 
         {/* Hero banner */}
         <div style={{ background: "var(--accent)", padding: "48px 0 80px" }}>
           <div className="container">
             <div style={{ display: "flex", gap: 24, alignItems: "flex-end", flexWrap: "wrap" }}>
-              <div className="avatar" style={{ width: 96, height: 96, fontSize: 32, border: "4px solid rgba(255,255,255,0.3)" }}>
-                {PROFILE.name.charAt(0)}
+              <div className="avatar" style={{ width: 96, height: 96, fontSize: 32, border: "4px solid rgba(255,255,255,0.3)", overflow: "hidden" }}>
+                {profile.avatar ? (
+                  <img
+                    src={profile.avatar}
+                    alt={profile.name}
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                ) : (
+                  initials
+                )}
               </div>
               <div style={{ color: "white" }}>
-                <h1 style={{ fontSize: 36, letterSpacing: "-0.02em", color: "white" }}>{PROFILE.name}</h1>
-                <p style={{ fontSize: 14, opacity: 0.85, marginTop: 4 }}>@{PROFILE.username} · {PROFILE.location}</p>
-                <p style={{ fontSize: 15, opacity: 0.9, marginTop: 6, fontStyle: "italic" }}>{PROFILE.headline}</p>
+                <h1 style={{ fontSize: 36, letterSpacing: "-0.02em", color: "white" }}>{profile.name}</h1>
+                <p style={{ fontSize: 14, opacity: 0.85, marginTop: 4 }}>
+                  {profile.username ? `@${profile.username}` : ""}
+                  {profile.username && profile.location ? " · " : ""}
+                  {profile.location}
+                </p>
+                {profile.headline && (
+                  <p style={{ fontSize: 15, opacity: 0.9, marginTop: 6, fontStyle: "italic" }}>{profile.headline}</p>
+                )}
                 <div style={{ display: "flex", gap: 12, marginTop: 12 }}>
-                  {Object.entries(PROFILE.socialLinks).map(([key, url]) => (
-                    <a key={key} href={url} target="_blank" style={{ color: "white", opacity: 0.8, transition: "opacity 0.2s" }}
+                  {socialEntries.map(([key, url]) => (
+                    <a key={key} href={url} target="_blank" rel="noreferrer" style={{ color: "white", opacity: 0.8, transition: "opacity 0.2s" }}
                        onMouseEnter={(e) => e.target.style.opacity = 1}
                        onMouseLeave={(e) => e.target.style.opacity = 0.8}>
                       <SocialIcon type={key} />
@@ -96,31 +183,19 @@ export default function PublicProfile() {
               {/* Bio */}
               <div className="card">
                 <h3 style={{ fontFamily: "var(--font-display)", fontSize: 14, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--text-muted)", marginBottom: 10 }}>About</h3>
-                <p style={{ fontSize: 14, lineHeight: 1.7, color: "var(--text-muted)" }}>{PROFILE.bio}</p>
+                <p style={{ fontSize: 14, lineHeight: 1.7, color: "var(--text-muted)" }}>{profile.bio || EMPTY_SECTION_MESSAGE}</p>
               </div>
 
               {/* Skills */}
               <div className="card">
                 <h3 style={{ fontFamily: "var(--font-display)", fontSize: 14, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--text-muted)", marginBottom: 12 }}>Skills</h3>
-                {Object.entries(SKILLS).map(([cat, items]) => (
-                  <div key={cat} style={{ marginBottom: 12 }}>
-                    <p style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 6, textTransform: "capitalize" }}>{cat}</p>
-                    <div className="tags">
-                      {items.map((s) => <span key={s} className="tag">{s}</span>)}
-                    </div>
-                  </div>
-                ))}
+                <p style={{ fontSize: 13, color: "var(--text-muted)", margin: 0 }}>{EMPTY_SECTION_MESSAGE}</p>
               </div>
 
               {/* Certifications */}
               <div className="card">
                 <h3 style={{ fontFamily: "var(--font-display)", fontSize: 14, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--text-muted)", marginBottom: 12 }}>Certifications</h3>
-                {CERTS.map((c) => (
-                  <div key={c.title} style={{ marginBottom: 12, paddingBottom: 12, borderBottom: "1px solid var(--border)" }}>
-                    <p style={{ fontSize: 13, fontWeight: 600 }}>{c.title}</p>
-                    <p style={{ fontSize: 12, color: "var(--text-muted)" }}>{c.org} · {c.date}</p>
-                  </div>
-                ))}
+                <p style={{ fontSize: 13, color: "var(--text-muted)", margin: 0 }}>{EMPTY_SECTION_MESSAGE}</p>
               </div>
             </div>
 
@@ -130,49 +205,25 @@ export default function PublicProfile() {
               {/* Experience */}
               <div>
                 <h2 className="section-title" style={{ marginBottom: 16 }}>Experience</h2>
-                {EXPERIENCE.map((exp) => (
-                  <div key={exp.company} className="card" style={{ marginBottom: 12, display: "flex", gap: 16 }}>
-                    <div className="avatar" style={{ width: 44, height: 44, fontSize: 16 }}>{exp.company.charAt(0)}</div>
-                    <div>
-                      <p style={{ fontWeight: 600 }}>{exp.role}</p>
-                      <p style={{ fontSize: 13, color: "var(--accent)" }}>{exp.company}</p>
-                      <p style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 2 }}>{exp.period} · {exp.type}</p>
-                    </div>
-                  </div>
-                ))}
+                <SectionEmptyState title="No public experience data" />
               </div>
 
               {/* Projects */}
               <div>
                 <h2 className="section-title" style={{ marginBottom: 16 }}>Projects</h2>
-                <div className="grid-2">
-                  {PROJECTS.map((p) => (
-                    <div key={p.title} className="card">
-                      <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <h3 style={{ fontFamily: "var(--font-display)", fontSize: 16 }}>{p.title}</h3>
-                        <span className={`badge ${p.status === "ongoing" ? "badge-red" : "badge-gray"}`}>{p.status}</span>
-                      </div>
-                      <div className="tags" style={{ marginTop: 10 }}>
-                        {p.techStack.map((t) => <span key={t} className="tag">{t}</span>)}
-                      </div>
-                      <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
-                        {p.githubUrl && <a href={p.githubUrl} className="btn btn-outline" style={{ fontSize: 12, padding: "5px 12px" }}>GitHub</a>}
-                        {p.liveUrl && <a href={p.liveUrl} className="btn btn-outline" style={{ fontSize: 12, padding: "5px 12px" }}>Live ↗</a>}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <SectionEmptyState title="No public projects data" />
               </div>
 
               {/* Publications */}
               <div>
                 <h2 className="section-title" style={{ marginBottom: 16 }}>Publications</h2>
-                {PUBS.map((pub) => (
-                  <div key={pub.title} className="card">
-                    <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15, lineHeight: 1.4 }}>{pub.title}</h3>
-                    <p style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 6 }}>{pub.venue} · {pub.citations} citations</p>
-                  </div>
-                ))}
+                <SectionEmptyState title="No public publications data" />
+              </div>
+
+              {/* Achievements */}
+              <div>
+                <h2 className="section-title" style={{ marginBottom: 16 }}>Achievements</h2>
+                <SectionEmptyState title="No public achievements data" />
               </div>
 
             </div>

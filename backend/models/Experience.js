@@ -1,4 +1,10 @@
 const mongoose = require("mongoose");
+const {
+  isValidHttpUrl,
+  normalizeOptionalString,
+  normalizeStringArray,
+  parseFlexibleDate,
+} = require("./modelHelpers");
 
 const experienceSchema = new mongoose.Schema(
   {
@@ -42,10 +48,12 @@ const experienceSchema = new mongoose.Schema(
     startDate: {
       type: Date,
       required: [true, "Start date is required"],
+      set: parseFlexibleDate,
     },
     endDate: {
       type: Date,
       default: null,
+      set: parseFlexibleDate,
     },
     isCurrent: {
       type: Boolean,
@@ -54,10 +62,16 @@ const experienceSchema = new mongoose.Schema(
     skills: {
       type: [String], // Skills used in this role
       default: [],
+      set: normalizeStringArray,
     },
     companyLogo: {
       type: String, // URL
       default: null,
+      set: normalizeOptionalString,
+      validate: {
+        validator: isValidHttpUrl,
+        message: "Company logo URL must be a valid http/https URL",
+      },
     },
   },
   { timestamps: true }

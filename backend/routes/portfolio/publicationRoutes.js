@@ -5,6 +5,7 @@ const publicationController = require("../../controllers/portfolio/publicationCo
 
 const router = express.Router();
 
+router.get("/publications/discover", protect, publicationController.getDiscover);
 router.get("/publications", protect, publicationController.getAll);
 router.post("/publications", protect, publicationController.create);
 router.get("/publications/:id", protect, publicationController.getOne);

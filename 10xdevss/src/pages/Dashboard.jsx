@@ -1,69 +1,96 @@
+import { useEffect, useMemo, useState } from "react";
 import "../styles/Dashboard.css";
 import RecentProjects from "../components/dashboard/RecentProjects";
 import RecentActivity from "../components/dashboard/RecentActivity";
+import { getDashboardOverview } from "../authentication/api";
 
-const stats = [
-  { label: "Projects", value: "12", accent: true },
-  { label: "Skills", value: "24", accent: false },
-  { label: "Certifications", value: "8", accent: false },
-  { label: "Publications", value: "3", accent: true },
-];
+const formatRelativeTime = (timestamp) => {
+  if (!timestamp) return "just now";
 
-const recentProjects = [
-  {
-    title: "Portfolio CMS",
-    owner: { name: "John Doe", avatar: "JD" },
-    stack: ["React", "Node.js", "MongoDB"],
-    status: "completed",
-  },
-  {
-    title: "ML Dashboard",
-    owner: { name: "Sarah Kim", avatar: "SK" },
-    stack: ["Python", "FastAPI", "D3.js"],
-    status: "ongoing",
-  },
-  {
-    title: "Auth Microservice",
-    owner: { name: "Alex Ray", avatar: "AR" },
-    stack: ["Express", "JWT", "Redis"],
-    status: "completed",
-  },
-];
+  const date = new Date(timestamp);
+  if (Number.isNaN(date.getTime())) return "just now";
 
-const recentActivity = [
-  {
-    user: { name: "John Doe", avatar: "JD" },
-    action: "Added certification",
-    detail: "AWS Solutions Architect",
-    time: "2h ago",
-  },
-  {
-    user: { name: "John Doe", avatar: "JD" },
-    action: "Updated project",
-    detail: "Portfolio CMS",
-    time: "5h ago",
-  },
-  {
-    user: { name: "Team Bot", avatar: "TB" },
-    action: "New project created",
-    detail: "ML Dashboard",
-    time: "1d ago",
-  },
-  {
-    user: { name: "John Doe", avatar: "JD" },
-    action: "Added publication",
-    detail: "Federated Learning Survey",
-    time: "2d ago",
-  },
-  {
-    user: { name: "John Doe", avatar: "JD" },
-    action: "New skill added",
-    detail: "Kubernetes",
-    time: "2d ago",
-  },
-];
+  const diffMs = Date.now() - date.getTime();
+  const minute = 60 * 1000;
+  const hour = 60 * minute;
+  const day = 24 * hour;
+
+  if (diffMs < hour) return `${Math.max(1, Math.floor(diffMs / minute))}m ago`;
+  if (diffMs < day) return `${Math.floor(diffMs / hour)}h ago`;
+  return `${Math.floor(diffMs / day)}d ago`;
+};
 
 export default function Dashboard() {
+  const [dashboardData, setDashboardData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadDashboard = async () => {
+      try {
+        const response = await getDashboardOverview({ limit: 5 });
+        const data = response?.data || null;
+
+        if (!isMounted) return;
+        setDashboardData(data);
+        setError("");
+      } catch (loadError) {
+        if (!isMounted) return;
+        setError(loadError?.response?.data?.message || "Could not load dashboard data.");
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    loadDashboard();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const stats = useMemo(() => {
+    const rawStats = dashboardData?.stats || {};
+    return [
+      { label: "Projects", value: String(rawStats.projects || 0), accent: true },
+      { label: "Skills", value: String(rawStats.skills || 0), accent: false },
+      { label: "Certifications", value: String(rawStats.certifications || 0), accent: false },
+      { label: "Publications", value: String(rawStats.publications || 0), accent: true },
+    ];
+  }, [dashboardData]);
+
+  const recentProjects = useMemo(
+    () =>
+      (dashboardData?.recentProjects || []).map((project) => ({
+        title: project.title,
+        owner: {
+          name: project.owner?.name || "Unknown",
+          avatar: project.owner?.avatar || "U",
+        },
+        stack: project.stack || [],
+        status: project.status || "ongoing",
+      })),
+    [dashboardData]
+  );
+
+  const recentActivity = useMemo(
+    () =>
+      (dashboardData?.recentCertifications || []).map((certification) => ({
+        user: {
+          name: certification.owner?.name || "Unknown",
+          avatar: certification.owner?.avatar || "U",
+        },
+        action: "Added certification",
+        detail: certification.title,
+        time: formatRelativeTime(certification.createdAt),
+      })),
+    [dashboardData]
+  );
+
+  const welcomeName = dashboardData?.user?.fullName || "User";
+
   return (
     <>
       <div className="container-fluid dashboard-page">
@@ -95,7 +122,7 @@ export default function Dashboard() {
                   fontWeight: 700,
                 }}
               >
-                John Doe
+                {welcomeName}
               </h1>
             </div>
 
@@ -174,6 +201,18 @@ export default function Dashboard() {
             </p>
           </div>
         </div>
+
+        {isLoading && (
+          <div className="card" style={{ padding: 16, marginBottom: 20 }}>
+            Loading dashboard...
+          </div>
+        )}
+
+        {error && (
+          <div className="card" style={{ padding: 16, marginBottom: 20 }}>
+            {error}
+          </div>
+        )}
 
         {/* Stats row */}
         <div className="grid-4 animate-in delay-1" style={{ marginBottom: 40 }}>

@@ -35,6 +35,25 @@ export const IMAGEKIT_FILE_TYPES = {
 
 const toBytes = (sizeInMb) => sizeInMb * 1024 * 1024
 
+const sanitizeFolderSegment = (value, fallback = 'unknown') => {
+  const normalized = String(value || '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-zA-Z0-9-_]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+
+  return normalized || fallback
+}
+
+const buildUploadFolder = ({ role, rollnumber, uploadType = 'misc' } = {}) => {
+  const safeRole = sanitizeFolderSegment(role, 'unknown-role').toLowerCase()
+  const safeRollNumber = sanitizeFolderSegment(rollnumber, 'unknown-roll')
+  const safeUploadType = sanitizeFolderSegment(uploadType, 'misc').toLowerCase()
+
+  return `/uploads/${safeRole}/${safeRollNumber}/${safeUploadType}`
+}
+
 const assertImageKitClientConfig = () => {
   const missing = []
 
@@ -80,21 +99,26 @@ const getAuthParams = async ({ authEndpoint = IMAGEKIT_AUTH_ENDPOINT, authToken 
   }
 
   const data = await response.json()
-  if (!data?.signature || !data?.expire || !data?.token) {
+  const authData = data?.data || data
+
+  if (!authData?.signature || !authData?.expire || !authData?.token) {
     throw new Error('Invalid ImageKit auth response. Expected signature, expire and token')
   }
 
   return {
-    signature: data.signature,
-    expire: data.expire,
-    token: data.token,
+    signature: authData.signature,
+    expire: authData.expire,
+    token: authData.token,
+    role: authData.role,
+    rollnumber: authData.rollnumber || authData.rollId || authData.rollNumber,
   }
 }
 
 export const uploadToImageKit = async ({
   file,
   fileName,
-  folder = '/',
+  folder,
+  uploadType = 'misc',
   tags = [],
   customMetadata,
   useUniqueFileName = true,
@@ -109,10 +133,12 @@ export const uploadToImageKit = async ({
   validateUploadFile({ file, allowedType, maxFileSizeMb })
 
   const resolvedAuthToken = authToken || getAccessToken()
-  const { signature, expire, token } = await getAuthParams({
+  const { signature, expire, token, role, rollnumber } = await getAuthParams({
     authEndpoint,
     authToken: resolvedAuthToken,
   })
+
+  const resolvedFolder = folder || buildUploadFolder({ role, rollnumber, uploadType })
 
   const formData = new FormData()
   formData.append('file', file)
@@ -121,7 +147,7 @@ export const uploadToImageKit = async ({
   formData.append('signature', signature)
   formData.append('expire', String(expire))
   formData.append('token', token)
-  formData.append('folder', folder)
+  formData.append('folder', resolvedFolder)
   formData.append('useUniqueFileName', String(useUniqueFileName))
   formData.append('isPrivateFile', String(isPrivateFile))
 
@@ -150,6 +176,9 @@ export const uploadToImageKit = async ({
     ...data,
     cdnUrl: data.url,
     filePath: data.filePath,
+    folder: resolvedFolder,
+    role,
+    rollnumber,
     thumbnailUrl: data.thumbnailUrl,
     imagekitUrlEndpoint: IMAGEKIT_URL_ENDPOINT,
   }

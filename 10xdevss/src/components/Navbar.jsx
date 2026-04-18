@@ -4,18 +4,23 @@ import ProfileMenu from './ProfileMenu';
 import { logoutUser } from '../authentication/auth';
 import '../styles/components/Navbar.css';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import {
+  getStoredProfileSnapshot,
+  subscribeToProfileSnapshot,
+} from '../utils/profileSync';
 
 const NAV_LINKS = [
   { to: "/", label: "Dashboard" },
   { to: "/projects", label: "Projects" },
   { to: "/publications", label: "Publications" },
-  { to: "/achievements", label: "Achievements" },
+  { to: "/portfolio/achievements", label: "Achievements" },
 ];
 
 export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const [theme, setTheme] = useState('light');
+  const [profileSnapshot, setProfileSnapshot] = useState(() => getStoredProfileSnapshot());
   
   // State to control when the animation is visible
   const [showThemeAnimation, setShowThemeAnimation] = useState(false);
@@ -23,6 +28,14 @@ export default function Navbar() {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    setProfileSnapshot(getStoredProfileSnapshot());
+    return subscribeToProfileSnapshot((nextProfile) => {
+      if (!nextProfile) return;
+      setProfileSnapshot(nextProfile);
+    });
+  }, []);
 
   const isActive = (to) => {
     if (to === "/") return location.pathname === "/";
@@ -128,6 +141,8 @@ export default function Navbar() {
                 theme={theme}
                 toggleTheme={toggleTheme}
                 onLogout={handleLogout}
+                profileAvatar={profileSnapshot?.avatar || ''}
+                profileName={profileSnapshot?.fullName || ''}
               />
             </div>
           </div>

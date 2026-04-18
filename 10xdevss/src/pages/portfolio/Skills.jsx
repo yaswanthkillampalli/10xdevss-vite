@@ -1,5 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "../../styles/portfolio/Skills.css";
+import {
+  createSkill,
+  deleteSkill,
+  getMySkills,
+  updateSkill,
+} from "../../authentication/api";
 
 const CATEGORIES = [
   "all",
@@ -19,21 +25,6 @@ const PROFICIENCY_COLORS = {
   advanced: { bg: "#FFF3E0", color: "#C06A00" },
   expert: { bg: "#FDEAEA", color: "#A11D2D" },
 };
-
-const MOCK_SKILLS = [
-  { id: 1, name: "React", category: "frontend", proficiency: "expert" },
-  { id: 2, name: "TypeScript", category: "frontend", proficiency: "advanced" },
-  { id: 3, name: "Node.js", category: "backend", proficiency: "expert" },
-  { id: 4, name: "Express", category: "backend", proficiency: "advanced" },
-  { id: 5, name: "MongoDB", category: "database", proficiency: "advanced" },
-  { id: 6, name: "PostgreSQL", category: "database", proficiency: "intermediate" },
-  { id: 7, name: "Docker", category: "devops", proficiency: "intermediate" },
-  { id: 8, name: "Python", category: "language", proficiency: "advanced" },
-  { id: 9, name: "TensorFlow", category: "ai-ml", proficiency: "beginner" },
-  { id: 10, name: "Redis", category: "backend", proficiency: "intermediate" },
-  { id: 11, name: "Figma", category: "tools", proficiency: "intermediate" },
-  { id: 12, name: "Kubernetes", category: "devops", proficiency: "beginner" },
-];
 
 const EMPTY_FORM = {
   name: "",
@@ -80,12 +71,50 @@ function DeleteSkillModal({ open, onClose, onConfirm, skill }) {
 }
 
 export default function Skills() {
-  const [skills, setSkills] = useState(MOCK_SKILLS);
+  const [skills, setSkills] = useState([]);
   const [activePanel, setActivePanel] = useState("view");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedSkill, setSelectedSkill] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [formData, setFormData] = useState(EMPTY_FORM);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const normalizeSkill = (item) => ({
+    ...item,
+    id: item.id || item._id,
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadSkills = async () => {
+      try {
+        const response = await getMySkills();
+        const list = Array.isArray(response?.data)
+          ? response.data
+          : Array.isArray(response?.data?.data)
+            ? response.data.data
+            : [];
+
+        if (!isMounted) return;
+        setSkills(list.map(normalizeSkill));
+        setMessage("");
+      } catch (error) {
+        if (!isMounted) return;
+        setMessage(error?.response?.data?.message || "Could not load skills.");
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    loadSkills();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const filteredSkills = useMemo(() => {
     return selectedCategory === "all"
@@ -124,46 +153,90 @@ export default function Skills() {
   };
 
   const handleAddSkill = () => {
-    const newSkill = {
-      id: Date.now(),
-      name: formData.name.trim(),
-      category: formData.category,
-      proficiency: formData.proficiency,
+    const save = async () => {
+      const payload = {
+        name: formData.name.trim(),
+        category: formData.category,
+        proficiency: formData.proficiency,
+      };
+
+      if (!payload.name) return;
+
+      try {
+        setIsSaving(true);
+        const response = await createSkill(payload);
+        const created = response?.data;
+
+        if (created) {
+          setSkills((prev) => [normalizeSkill(created), ...prev]);
+        }
+
+        setMessage("Skill added successfully.");
+        setFormData(EMPTY_FORM);
+        setActivePanel("view");
+      } catch (error) {
+        setMessage(error?.response?.data?.message || error?.message || "Could not create skill.");
+      } finally {
+        setIsSaving(false);
+      }
     };
 
-    if (!newSkill.name) return;
-
-    setSkills((prev) => [newSkill, ...prev]);
-    setFormData(EMPTY_FORM);
-    setActivePanel("view");
+    save();
   };
 
   const handleEditSkill = () => {
-    if (!selectedSkill || !formData.name.trim()) return;
+    const save = async () => {
+      if (!selectedSkill || !formData.name.trim()) return;
 
-    setSkills((prev) =>
-      prev.map((skill) =>
-        skill.id === selectedSkill.id
-          ? {
-              ...skill,
-              name: formData.name.trim(),
-              category: formData.category,
-              proficiency: formData.proficiency,
-            }
-          : skill
-      )
-    );
+      const payload = {
+        name: formData.name.trim(),
+        category: formData.category,
+        proficiency: formData.proficiency,
+      };
 
-    setSelectedSkill(null);
-    setFormData(EMPTY_FORM);
-    setActivePanel("view");
+      try {
+        setIsSaving(true);
+        const response = await updateSkill(selectedSkill.id, payload);
+        const updated = response?.data;
+
+        if (updated) {
+          setSkills((prev) =>
+            prev.map((skill) =>
+              skill.id === selectedSkill.id ? normalizeSkill(updated) : skill
+            )
+          );
+        }
+
+        setMessage("Skill updated successfully.");
+        setSelectedSkill(null);
+        setFormData(EMPTY_FORM);
+        setActivePanel("view");
+      } catch (error) {
+        setMessage(error?.response?.data?.message || error?.message || "Could not update skill.");
+      } finally {
+        setIsSaving(false);
+      }
+    };
+
+    save();
   };
 
   const handleDeleteSkill = () => {
-    if (!deleteTarget) return;
+    const remove = async () => {
+      if (!deleteTarget) return;
 
-    setSkills((prev) => prev.filter((skill) => skill.id !== deleteTarget.id));
-    setDeleteTarget(null);
+      try {
+        await deleteSkill(deleteTarget.id);
+        setSkills((prev) => prev.filter((skill) => skill.id !== deleteTarget.id));
+        setMessage("Skill deleted successfully.");
+      } catch (error) {
+        setMessage(error?.response?.data?.message || "Could not delete skill.");
+      } finally {
+        setDeleteTarget(null);
+      }
+    };
+
+    remove();
   };
 
   return (
@@ -179,6 +252,12 @@ export default function Skills() {
               </p>
             </div>
           </div>
+
+          {message && (
+            <div className="skills-empty-state" style={{ marginBottom: 12, padding: "0.9rem" }}>
+              <p>{message}</p>
+            </div>
+          )}
 
           <div className="skills-layout">
             <aside className="skills-sidebar">
@@ -230,7 +309,11 @@ export default function Skills() {
                     ))}
                   </div>
 
-                  {Object.keys(groupedSkills).length > 0 ? (
+                  {isLoading ? (
+                    <div className="skills-empty-state">
+                      <h3>Loading skills...</h3>
+                    </div>
+                  ) : Object.keys(groupedSkills).length > 0 ? (
                     <div className="skills-group-list">
                       {Object.entries(groupedSkills).map(([category, items]) => (
                         <div className="skills-group-block" key={category}>
@@ -353,8 +436,8 @@ export default function Skills() {
                     <button type="button" className="btn btn-outline-dark" onClick={openViewPanel}>
                       Cancel
                     </button>
-                    <button type="button" className="btn btn-danger" onClick={handleAddSkill}>
-                      Save Skill
+                    <button type="button" className="btn btn-danger" onClick={handleAddSkill} disabled={isSaving}>
+                      {isSaving ? "Saving..." : "Save Skill"}
                     </button>
                   </div>
                 </div>
@@ -421,8 +504,8 @@ export default function Skills() {
                     <button type="button" className="btn btn-outline-dark" onClick={openViewPanel}>
                       Cancel
                     </button>
-                    <button type="button" className="btn btn-danger" onClick={handleEditSkill}>
-                      Update Skill
+                    <button type="button" className="btn btn-danger" onClick={handleEditSkill} disabled={isSaving}>
+                      {isSaving ? "Saving..." : "Update Skill"}
                     </button>
                   </div>
                 </div>

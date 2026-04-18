@@ -1,4 +1,9 @@
 const mongoose = require("mongoose");
+const {
+  isValidHttpUrl,
+  normalizeOptionalString,
+  parseFlexibleDate,
+} = require("./modelHelpers");
 
 const achievementSchema = new mongoose.Schema(
   {
@@ -27,6 +32,7 @@ const achievementSchema = new mongoose.Schema(
     date: {
       type: Date,
       required: [true, "Achievement date is required"],
+      set: parseFlexibleDate,
     },
     type: {
       type: String,
@@ -36,10 +42,20 @@ const achievementSchema = new mongoose.Schema(
     url: {
       type: String, // Link to proof/certificate
       default: null,
+      set: normalizeOptionalString,
+      validate: {
+        validator: isValidHttpUrl,
+        message: "Reference URL must be a valid http/https URL",
+      },
     },
     image: {
       type: String, // URL to award image/certificate
       default: null,
+      set: normalizeOptionalString,
+      validate: {
+        validator: isValidHttpUrl,
+        message: "Image URL must be a valid http/https URL",
+      },
     },
   },
   { timestamps: true }

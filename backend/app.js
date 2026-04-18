@@ -6,6 +6,7 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const portfolioRoutes = require("./routes/portfolioRoutes");
 const imagekitRoutes = require("./routes/imagekitRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
@@ -58,6 +59,7 @@ app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api", portfolioRoutes);
 app.use("/api/imagekit", imagekitRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 // ─── 404 handler ─────────────────────────────────────────────────────────────
 app.use((req, res) => {

@@ -35,16 +35,17 @@ const skillSchema = new mongoose.Schema(
       default: "intermediate",
     },
     icon: {
-      type: String,     isFeatured: {
+      type: String,
+      default: null,
+    },
+    isFeatured: {
       type: Boolean,
-      default: false, // Pin to top of portfolio
+      default: false,
     },
     teamMembers: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "User",
-      default: [], // Array of user IDs who contributed
-    },
-      default: null,
+      default: [],
     },
   },
   { timestamps: true }

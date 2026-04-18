@@ -155,6 +155,171 @@ const getCurrentUser = async () => {
   return response.data
 }
 
+const getMyUser = async () => {
+  const response = await api.get('/api/users/me')
+  return response.data
+}
+
+const updateMyUser = async (payload) => {
+  const response = await api.put('/api/users/me', payload)
+  return response.data
+}
+
+const getMyProfile = async () => {
+  const response = await api.get('/api/profile/me')
+  return response.data
+}
+
+const createMyProfile = async (payload) => {
+  const response = await api.post('/api/profile', payload)
+  return response.data
+}
+
+const updateMyProfile = async (payload) => {
+  const response = await api.put('/api/profile', payload)
+  return response.data
+}
+
+const getDashboardOverview = async (params = {}) => {
+  const response = await api.get('/api/dashboard/overview', { params })
+  return response.data
+}
+
+const getDiscoverProjects = async (params = {}) => {
+  const response = await api.get('/api/projects/discover', { params })
+  return response.data
+}
+
+const getDiscoverPublications = async (params = {}) => {
+  const response = await api.get('/api/publications/discover', { params })
+  return response.data
+}
+
+const getDiscoverAchievements = async (params = {}) => {
+  const response = await api.get('/api/achievements/discover', { params })
+  return response.data
+}
+
+const getMyProjects = async () => {
+  const response = await api.get('/api/projects')
+  return response.data
+}
+
+const createProject = async (payload) => {
+  const response = await api.post('/api/projects', payload)
+  return response.data
+}
+
+const updateProject = async (id, payload) => {
+  const response = await api.put(`/api/projects/${id}`, payload)
+  return response.data
+}
+
+const deleteProject = async (id) => {
+  const response = await api.delete(`/api/projects/${id}`)
+  return response.data
+}
+
+const getMyAchievements = async () => {
+  const response = await api.get('/api/achievements')
+  return response.data
+}
+
+const createAchievement = async (payload) => {
+  const response = await api.post('/api/achievements', payload)
+  return response.data
+}
+
+const updateAchievement = async (id, payload) => {
+  const response = await api.put(`/api/achievements/${id}`, payload)
+  return response.data
+}
+
+const deleteAchievement = async (id) => {
+  const response = await api.delete(`/api/achievements/${id}`)
+  return response.data
+}
+
+const getMyPublications = async () => {
+  const response = await api.get('/api/publications')
+  return response.data
+}
+
+const createPublication = async (payload) => {
+  const response = await api.post('/api/publications', payload)
+  return response.data
+}
+
+const updatePublication = async (id, payload) => {
+  const response = await api.put(`/api/publications/${id}`, payload)
+  return response.data
+}
+
+const deletePublication = async (id) => {
+  const response = await api.delete(`/api/publications/${id}`)
+  return response.data
+}
+
+const getMyExperience = async () => {
+  const response = await api.get('/api/experience')
+  return response.data
+}
+
+const createExperience = async (payload) => {
+  const response = await api.post('/api/experience', payload)
+  return response.data
+}
+
+const updateExperience = async (id, payload) => {
+  const response = await api.put(`/api/experience/${id}`, payload)
+  return response.data
+}
+
+const deleteExperience = async (id) => {
+  const response = await api.delete(`/api/experience/${id}`)
+  return response.data
+}
+
+const getMySkills = async () => {
+  const response = await api.get('/api/skills')
+  return response.data
+}
+
+const createSkill = async (payload) => {
+  const response = await api.post('/api/skills', payload)
+  return response.data
+}
+
+const updateSkill = async (id, payload) => {
+  const response = await api.put(`/api/skills/${id}`, payload)
+  return response.data
+}
+
+const deleteSkill = async (id) => {
+  const response = await api.delete(`/api/skills/${id}`)
+  return response.data
+}
+
+const getMyCertifications = async () => {
+  const response = await api.get('/api/certifications')
+  return response.data
+}
+
+const createCertification = async (payload) => {
+  const response = await api.post('/api/certifications', payload)
+  return response.data
+}
+
+const updateCertification = async (id, payload) => {
+  const response = await api.put(`/api/certifications/${id}`, payload)
+  return response.data
+}
+
+const deleteCertification = async (id) => {
+  const response = await api.delete(`/api/certifications/${id}`)
+  return response.data
+}
+
 export {
   api,
   authHeaders,
@@ -162,6 +327,39 @@ export {
   getAccessToken,
   getAccessTokenExpiry,
   getCurrentUser,
+  getMyUser,
+  updateMyUser,
+  getMyProfile,
+  createMyProfile,
+  updateMyProfile,
+  getDashboardOverview,
+  getDiscoverProjects,
+  getDiscoverPublications,
+  getDiscoverAchievements,
+  getMyProjects,
+  createProject,
+  updateProject,
+  deleteProject,
+  getMyAchievements,
+  createAchievement,
+  updateAchievement,
+  deleteAchievement,
+  getMyPublications,
+  createPublication,
+  updatePublication,
+  deletePublication,
+  getMyExperience,
+  createExperience,
+  updateExperience,
+  deleteExperience,
+  getMySkills,
+  createSkill,
+  updateSkill,
+  deleteSkill,
+  getMyCertifications,
+  createCertification,
+  updateCertification,
+  deleteCertification,
   getRefreshToken,
   getRefreshTokenExpiry,
   isAuthenticated,

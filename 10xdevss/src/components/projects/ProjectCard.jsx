@@ -6,15 +6,18 @@ export default function ProjectCard({
   onEdit,
   onDelete,
 }) {
+  const ownerName = project?.owner?.name || "Community Member";
+  const ownerAvatar = project?.owner?.avatar || "CM";
+
   return (
     <div className="card animate-in project-card">
       <div className="project-card__submitted-row">
         <div className="project-card__avatar">
-          YV
+          {ownerAvatar}
         </div>
         <span>Submitted</span>
         <span className="project-card__submitted-by">
-          by Yaswanth Vardhan
+          by {ownerName}
         </span>
       </div>
 

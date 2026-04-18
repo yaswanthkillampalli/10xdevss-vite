@@ -5,6 +5,7 @@ const projectController = require("../../controllers/portfolio/projectController
 
 const router = express.Router();
 
+router.get("/projects/discover", protect, projectController.getDiscover);
 router.get("/projects", protect, projectController.getAll);
 router.post("/projects", protect, projectController.create);
 router.get("/projects/:id", protect, projectController.getOne);

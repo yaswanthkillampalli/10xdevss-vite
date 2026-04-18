@@ -1,49 +1,8 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import "../../styles/portfolio/Projects.css";
 import ProjectCard from "../../components/projects/ProjectCard.jsx";
-
-const MOCK_PROJECTS = [
-  {
-    id: 1,
-    title: "Portfolio CMS",
-    description:
-      "A full‑stack CMS for managing developer portfolios with real‑time preview and ImageKit integration.",
-    techStack: ["React", "Node.js", "MongoDB", "ImageKit"],
-    githubUrl: "https://github.com",
-    liveUrl: "https://example.com",
-    status: "completed",
-    startDate: "Jan 2024",
-    endDate: "Mar 2024",
-    isFeatured: true,
-  },
-  {
-    id: 2,
-    title: "ML Dashboard",
-    description:
-      "Interactive dashboard for visualizing machine learning model performance metrics and training logs.",
-    techStack: ["Python", "FastAPI", "D3.js", "PostgreSQL"],
-    githubUrl: "https://github.com",
-    liveUrl: null,
-    status: "ongoing",
-    startDate: "Feb 2024",
-    endDate: null,
-    isFeatured: false,
-  },
-  {
-    id: 3,
-    title: "Auth Microservice",
-    description:
-      "JWT‑based authentication microservice with refresh token rotation and role‑based access control.",
-    techStack: ["Express", "JWT", "Redis", "Docker"],
-    githubUrl: "https://github.com",
-    liveUrl: null,
-    status: "completed",
-    startDate: "Dec 2023",
-    endDate: "Jan 2024",
-    isFeatured: true,
-  },
-];
+import { getDiscoverProjects } from "../../authentication/api";
 
 // Keep this modal definition for now; you can reuse it in Profile later
 function Modal({ show, onClose, title, children }) {
@@ -108,24 +67,71 @@ function Modal({ show, onClose, title, children }) {
 }
 
 export default function Projects() {
-  const [projects] = useState(MOCK_PROJECTS);
+  const [projects, setProjects] = useState([]);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [showModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const formatMonthYear = (dateValue) => {
+    if (!dateValue) return null;
+    const parsed = new Date(dateValue);
+    if (Number.isNaN(parsed.getTime())) return String(dateValue);
+    return parsed.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadProjects = async () => {
+      try {
+        const response = await getDiscoverProjects({ limit: 100 });
+        const list = response?.data || [];
+
+        if (!isMounted) return;
+
+        setProjects(
+          list.map((item) => ({
+            ...item,
+            id: item.id || item._id,
+            startDate: formatMonthYear(item.startDate),
+            endDate: item.endDate ? formatMonthYear(item.endDate) : null,
+          }))
+        );
+        setError("");
+      } catch (loadError) {
+        if (!isMounted) return;
+        setError(loadError?.response?.data?.message || "Could not load projects.");
+        setProjects([]);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    loadProjects();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Filter by status + search
-  const filtered = projects.filter((p) => {
-    const matchesStatus =
-      filter === "all" || p.status === filter;
-    const textQuery = search.toLowerCase().trim();
-    const matchesSearch =
-      textQuery === "" ||
-      p.title.toLowerCase().includes(textQuery) ||
-      p.description.toLowerCase().includes(textQuery) ||
-      p.techStack.some((t) => t.toLowerCase().includes(textQuery));
+  const filtered = useMemo(
+    () =>
+      projects.filter((p) => {
+        const matchesStatus = filter === "all" || p.status === filter;
+        const textQuery = search.toLowerCase().trim();
+        const matchesSearch =
+          textQuery === "" ||
+          p.title?.toLowerCase().includes(textQuery) ||
+          p.description?.toLowerCase().includes(textQuery) ||
+          (p.techStack || []).some((t) => t.toLowerCase().includes(textQuery));
 
-    return matchesStatus && matchesSearch;
-  });
+        return matchesStatus && matchesSearch;
+      }),
+    [projects, filter, search]
+  );
 
   return (
     <>
@@ -153,6 +159,12 @@ export default function Projects() {
             </p>
           </div>
         </div>
+
+        {error && (
+          <div className="card" style={{ padding: 16, marginBottom: 20 }}>
+            {error}
+          </div>
+        )}
 
         {/* Search bar */}
         <div
@@ -210,7 +222,52 @@ export default function Projects() {
         </div>
 
         {/* Empty state or grid */}
-        {filtered.length === 0 ? (
+        {isLoading ? (
+          <div className="empty-state" style={{ marginTop: 24 }}>
+            <div
+              className="empty-state-icon"
+              style={{
+                fontSize: 28,
+                lineHeight: 1,
+              }}
+            >
+              📁
+            </div>
+            <h3
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: 18,
+                margin: "12px 0 6px",
+              }}
+            >
+              Loading projects...
+            </h3>
+          </div>
+        ) : projects.length === 0 ? (
+          <div className="empty-state" style={{ marginTop: 24 }}>
+            <div
+              className="empty-state-icon"
+              style={{
+                fontSize: 28,
+                lineHeight: 1,
+              }}
+            >
+              📁
+            </div>
+            <h3
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: 18,
+                margin: "12px 0 6px",
+              }}
+            >
+              No projects
+            </h3>
+            <p style={{ fontSize: 14, color: "var(--text-muted)" }}>
+              No projects found right now.
+            </p>
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="empty-state" style={{ marginTop: 24 }}>
             <div
               className="empty-state-icon"

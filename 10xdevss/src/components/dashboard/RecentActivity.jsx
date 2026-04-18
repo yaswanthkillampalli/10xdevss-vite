@@ -8,56 +8,80 @@ const RecentActivity = ({ activities = [] }) => {
       </div>
 
       <div className="card activity-card" style={{ padding: 0, overflow: "hidden" }}>
-        {activities.map((item, i) => (
-          <div
-            key={i}
-            className="activity-row"
-            style={{
-              borderBottom:
-                i < activities.length - 1
-                  ? "1px solid var(--border)"
-                  : "none",
-            }}
-          >
-            <div className="activity-avatar">{item.user.avatar}</div>
-
+        {activities.length === 0 ? (
+          <div className="activity-row">
             <div style={{ flex: 1 }}>
-              <div
+              <strong
                 style={{
-                  display: "flex",
-                  alignItems: "baseline",
-                  gap: 6,
-                  marginBottom: 4,
-                  flexWrap: "wrap",
+                  fontSize: 13,
+                  color: "var(--text-strong)",
                 }}
               >
-                <strong
-                  style={{
-                    fontSize: 13,
-                    color: "var(--text-strong)",
-                  }}
-                >
-                  {item.user.name}
-                </strong>
-                <span style={{ fontSize: 13, color: "var(--text-muted)" }}>
-                  {item.action}
-                </span>
-              </div>
-
+                No recent activity
+              </strong>
               <p
                 style={{
                   fontSize: 13,
                   color: "var(--text-muted)",
-                  margin: 0,
+                  margin: "6px 0 0",
                 }}
               >
-                {item.detail}
+                Recent certifications from other users will appear here.
               </p>
             </div>
-
-            <span className="activity-time">{item.time}</span>
           </div>
-        ))}
+        ) : (
+          activities.map((item, i) => (
+            <div
+              key={i}
+              className="activity-row"
+              style={{
+                borderBottom:
+                  i < activities.length - 1
+                    ? "1px solid var(--border)"
+                    : "none",
+              }}
+            >
+              <div className="activity-avatar">{item.user.avatar}</div>
+
+              <div style={{ flex: 1 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    gap: 6,
+                    marginBottom: 4,
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <strong
+                    style={{
+                      fontSize: 13,
+                      color: "var(--text-strong)",
+                    }}
+                  >
+                    {item.user.name}
+                  </strong>
+                  <span style={{ fontSize: 13, color: "var(--text-muted)" }}>
+                    {item.action}
+                  </span>
+                </div>
+
+                <p
+                  style={{
+                    fontSize: 13,
+                    color: "var(--text-muted)",
+                    margin: 0,
+                  }}
+                >
+                  {item.detail}
+                </p>
+              </div>
+
+              <span className="activity-time">{item.time}</span>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

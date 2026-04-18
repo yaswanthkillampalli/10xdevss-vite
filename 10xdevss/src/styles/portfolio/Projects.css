@@ -1,13 +1,15 @@
+/* ─────────────────────────────────────────
+   Projects Page – Design Tokens
+   ───────────────────────────────────────── */
 :root,
 [data-theme="light"] {
   --text-strong: #111111;
   --text-muted: #666666;
   --border: rgba(0, 0, 0, 0.12);
 
-  /* Red accent */
   --accent: #c1121f;
   --accent-hover: #a30f1a;
-  --accent-bg: #fdf0f0;
+  --accent-bg: rgba(193, 18, 31, 0.07);
 
   --white: #ffffff;
   --bg: #f9f9f9;
@@ -16,6 +18,9 @@
 
   --radius-md: 0.6rem;
   --radius-xl: 1rem;
+
+  --proj-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
+  --proj-transition: 0.25s ease;
 }
 
 [data-theme="dark"] {
@@ -25,19 +30,17 @@
 
   --accent: #ef233c;
   --accent-hover: #ff4d6d;
-  --accent-bg: #2c0000;
+  --accent-bg: rgba(239, 35, 60, 0.12);
 
   --white: #ffffff;
   --bg: #111112;
   --card-bg: #1a1a1c;
   --card-border: #303032;
+
+  --proj-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
 }
 
-.project-search-input {
-  background: var(--card-bg);
-  color: var(--text-strong);
-}
-
+/* ─── Search & Filter ─── */
 .project-searchbar {
   position: relative;
 }
@@ -53,14 +56,38 @@
   pointer-events: none;
 }
 
+.project-search-input {
+  width: 100%;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text-strong);
+  padding: 0 38px 0 40px;
+  font-size: 13px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color var(--proj-transition), box-shadow var(--proj-transition);
+}
+
 .project-search-input::placeholder {
   color: var(--text-muted);
+}
+
+.project-search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg);
 }
 
 .project-filter-btn {
   background: var(--card-bg);
   color: var(--text-strong);
   border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all var(--proj-transition);
 }
 
 .project-filter-btn:hover {
@@ -72,4 +99,210 @@
   background: var(--accent);
   color: var(--white);
   border-color: var(--accent);
+}
+
+/* ─── Grid ─── */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 1280px) {
+  .grid-2 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1680px) {
+  .grid-2 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* ─────────────────────────────────────────
+   Modal – Backdrop & Shell
+   ───────────────────────────────────────── */
+.proj-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  z-index: 1080;
+  backdrop-filter: blur(2px);
+}
+
+.proj-modal {
+  width: min(100%, 460px);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.proj-modal-lg {
+  width: min(100%, 620px);
+}
+
+/* ─── Modal Header ─── */
+.proj-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.proj-modal-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.proj-modal-subtitle {
+  margin: 0.2rem 0 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.proj-modal-close {
+  flex-shrink: 0;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--proj-transition);
+  line-height: 1;
+}
+
+.proj-modal-close:hover {
+  background: var(--accent-bg);
+  color: var(--accent);
+  border-color: rgba(193, 18, 31, 0.25);
+}
+
+/* ─── Modal Body ─── */
+.proj-modal-body {
+  padding: 1.1rem 1.25rem;
+}
+
+.proj-modal-scroll {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.proj-modal-copy {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--text-strong);
+  line-height: 1.6;
+}
+
+/* ─── Modal Footer ─── */
+.proj-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  padding: 0.9rem 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+/* ─── Form Grid ─── */
+.proj-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.proj-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.proj-field-full {
+  grid-column: 1 / -1;
+}
+
+.proj-field-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ─────────────────────────────────────────
+   Reuse cert-input from Certifications.css
+   These are defined globally; listed here
+   as a fallback for isolated imports.
+   ───────────────────────────────────────── */
+.cert-input {
+  width: 100%;
+  background: var(--bg);
+  color: var(--text-strong);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.78rem 0.9rem;
+  font-size: 0.92rem;
+  outline: none;
+  transition: var(--proj-transition);
+  box-sizing: border-box;
+  appearance: none;
+}
+
+.cert-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.75;
+}
+
+.cert-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-bg);
+  background: var(--card-bg);
+}
+
+.cert-textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 991.98px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .proj-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .proj-field-full {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .proj-modal-header {
+    flex-wrap: wrap;
+  }
+
+  .proj-modal-footer .btn {
+    flex: 1;
+  }
 }

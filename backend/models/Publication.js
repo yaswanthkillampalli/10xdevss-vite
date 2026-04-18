@@ -1,4 +1,10 @@
 const mongoose = require("mongoose");
+const {
+  isValidHttpUrl,
+  normalizeOptionalString,
+  normalizeStringArray,
+  parseFlexibleDate,
+} = require("./modelHelpers");
 
 const publicationSchema = new mongoose.Schema(
   {
@@ -37,6 +43,7 @@ const publicationSchema = new mongoose.Schema(
     publishedDate: {
       type: Date,
       default: null,
+      set: parseFlexibleDate,
     },
     doi: {
       type: String,
@@ -47,10 +54,33 @@ const publicationSchema = new mongoose.Schema(
       type: String,
       trim: true,
       default: null,
+      set: normalizeOptionalString,
+      validate: {
+        validator: isValidHttpUrl,
+        message: "Publication URL must be a valid http/https URL",
+      },
+    },
+    fileUrl: {
+      type: String,
+      trim: true,
+      default: null,
+      set: normalizeOptionalString,
+      validate: {
+        validator: isValidHttpUrl,
+        message: "File URL must be a valid http/https URL",
+      },
+    },
+    fileName: {
+      type: String,
+      trim: true,
+      maxlength: [260, "File name cannot exceed 260 characters"],
+      default: null,
+      set: normalizeOptionalString,
     },
     tags: {
       type: [String], // Research keywords/topics
       default: [],
+      set: normalizeStringArray,
     },
     citationCount: {
       type: Number,

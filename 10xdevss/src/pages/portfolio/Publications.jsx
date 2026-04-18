@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Search,
   SlidersHorizontal,
@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import "../../styles/portfolio/Publications.css";
 import PublicationCard from "../../components/publications/PublicationCard.jsx";
+import { getDiscoverPublications } from "../../authentication/api";
 
 const VENUE_TYPE_CONFIG = {
   journal: { Icon: BookOpen, label: "Journal" },
@@ -18,38 +19,6 @@ const VENUE_TYPE_CONFIG = {
   workshop: { Icon: Microscope, label: "Workshop" },
   other: { Icon: BadgeCheck, label: "Other" },
 };
-
-const MOCK_PUBS = [
-  {
-    id: 1,
-    title: "Federated Learning for Privacy-Preserving Healthcare Analytics",
-    abstract:
-      "We present a novel federated learning framework designed for distributed healthcare environments, enabling collaborative model training without centralizing sensitive patient data.",
-    authors: ["John Doe", "Jane Smith", "Bob Johnson"],
-    venue: "IEEE International Conference on Machine Learning",
-    venueType: "conference",
-    publishedDate: "Oct 2023",
-    doi: "10.1109/ICML.2023.123456",
-    citationCount: 14,
-    tags: ["Federated Learning", "Privacy", "Healthcare", "ML"],
-  },
-  {
-    id: 2,
-    title: "Efficient Transformer Architectures for Edge Computing",
-    abstract:
-      "This paper explores lightweight transformer architectures optimized for deployment on resource‑constrained edge devices with minimal accuracy trade‑offs.",
-    authors: ["John Doe", "Alice Wang"],
-    venue: "Nature Machine Intelligence",
-    venueType: "journal",
-    publishedDate: "Jan 2024",
-    doi: "10.1038/s42256-024-00123",
-    citationCount: 6,
-    tags: ["Transformers", "Edge Computing", "Optimization"],
-  },
-];
-
-// Extract all possible tags for filter checkboxes
-const ALL_TAGS = [...new Set(MOCK_PUBS.flatMap((pub) => pub.tags))];
 
 // Modal can stay as scaffolding, but not wired here
 function Modal({ show, onClose }) {
@@ -91,13 +60,66 @@ function Modal({ show, onClose }) {
 }
 
 export default function Publications() {
-  const [pubs] = useState(MOCK_PUBS); // only show "others" / public
+  const [pubs, setPubs] = useState([]); // show others/public publications
   const [showModal] = useState(false); // keep as placeholder, no add button here
   const [search, setSearch] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
   // Filters
   const [selectedVenueTypes, setSelectedVenueTypes] = useState(new Set());
   const [selectedTags, setSelectedTags] = useState(new Set());
+
+  const ALL_TAGS = useMemo(
+    () => [...new Set(pubs.flatMap((pub) => pub.tags || []))],
+    [pubs]
+  );
+
+  const formatMonthYear = (dateValue) => {
+    if (!dateValue) return "-";
+    const parsed = new Date(dateValue);
+    if (Number.isNaN(parsed.getTime())) return String(dateValue);
+    return parsed.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadPublications = async () => {
+      try {
+        const response = await getDiscoverPublications({ limit: 100 });
+        const list = response?.data || [];
+        if (!isMounted) return;
+
+        setPubs(
+          list.map((item) => ({
+            ...item,
+            id: item.id || item._id,
+            publishedDate: formatMonthYear(item.publishedDate),
+            tags: item.tags || [],
+            authors: item.authors || [],
+            venueType: item.venueType || "other",
+            title: item.title || "Untitled publication",
+            venue: item.venue || "Unknown venue",
+            abstract: item.abstract || "No abstract provided.",
+          }))
+        );
+        setError("");
+      } catch (loadError) {
+        if (!isMounted) return;
+        setError(loadError?.response?.data?.message || "Could not load publications.");
+        setPubs([]);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    loadPublications();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const toggleVenueType = (type) => {
     const next = new Set(selectedVenueTypes);
@@ -168,6 +190,12 @@ export default function Publications() {
             </button>
           )}
         </div>
+
+        {error && (
+          <div className="card" style={{ padding: 16, marginBottom: 20 }}>
+            {error}
+          </div>
+        )}
 
         <div className="publications-layout">
           <aside className="publications-filters">
@@ -249,7 +277,18 @@ export default function Publications() {
               )}
             </div>
 
-            {filteredPubs.length === 0 ? (
+            {isLoading ? (
+              <div className="empty-state">
+                <div className="empty-state-icon">📄</div>
+                <h3 style={{ fontFamily: "var(--font-display)" }}>Loading publications...</h3>
+              </div>
+            ) : pubs.length === 0 ? (
+              <div className="empty-state">
+                <div className="empty-state-icon">📄</div>
+                <h3 style={{ fontFamily: "var(--font-display)" }}>No publications</h3>
+                <p>No publications found right now.</p>
+              </div>
+            ) : filteredPubs.length === 0 ? (
               <div className="empty-state">
                 <div className="empty-state-icon">📄</div>
                 <h3 style={{ fontFamily: "var(--font-display)" }}>No publications match filters</h3>

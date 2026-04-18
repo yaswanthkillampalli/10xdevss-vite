@@ -29,22 +29,22 @@
   --ach-search-text:          #111;
   --ach-search-placeholder:   #aaa;
   --ach-search-icon:          #bbb;
-  --ach-search-clear:         #bbb;
-  --ach-search-clear-hover:   #888;
-
-  --ach-clear-btn-text:       #888;
-  --ach-clear-btn-border:     rgba(0,0,0,0.10);
-  --ach-clear-btn-hover-bg:   #f3f4f6;
-  --ach-clear-btn-hover-text: #333;
 
   --ach-empty-bg:             #fafafa;
   --ach-empty-border:         rgba(0, 0, 0, 0.08);
   --ach-empty-icon:           #ccc;
   --ach-empty-heading:        #333;
   --ach-empty-body:           #999;
-  --ach-empty-btn-border:     rgba(0, 0, 0, 0.12);
-  --ach-empty-btn-text:       #555;
-  --ach-empty-btn-hover-bg:   #f0f0f0;
+
+  --ach-modal-bg:             #ffffff;
+  --ach-modal-border:         rgba(0, 0, 0, 0.08);
+  --ach-input-bg:             #f7f7f8;
+  --ach-muted:                #666;
+  --ach-black:                #181818;
+
+  --ach-red:                  #c1121f;
+  --ach-red-dark:             #8f0f18;
+  --ach-red-soft:             rgba(193, 18, 31, 0.08);
 
   --ach-page-transition:      180ms cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -76,26 +76,26 @@
   --ach-search-text:          #f4f4f5;
   --ach-search-placeholder:   #52525b;
   --ach-search-icon:          #52525b;
-  --ach-search-clear:         #52525b;
-  --ach-search-clear-hover:   #a1a1aa;
-
-  --ach-clear-btn-text:       #71717a;
-  --ach-clear-btn-border:     rgba(255,255,255,0.10);
-  --ach-clear-btn-hover-bg:   #27272a;
-  --ach-clear-btn-hover-text: #d4d4d8;
 
   --ach-empty-bg:             #18181b;
   --ach-empty-border:         rgba(255, 255, 255, 0.07);
   --ach-empty-icon:           #3f3f46;
   --ach-empty-heading:        #d4d4d8;
   --ach-empty-body:           #71717a;
-  --ach-empty-btn-border:     rgba(255, 255, 255, 0.10);
-  --ach-empty-btn-text:       #a1a1aa;
-  --ach-empty-btn-hover-bg:   #27272a;
+
+  --ach-modal-bg:             #121315;
+  --ach-modal-border:         rgba(255, 255, 255, 0.08);
+  --ach-input-bg:             #1a1b1e;
+  --ach-muted:                #aaaaaa;
+  --ach-black:                #f2f2f2;
+
+  --ach-red:                  #ef233c;
+  --ach-red-dark:             #c1121f;
+  --ach-red-soft:             rgba(239, 35, 60, 0.14);
 }
 
 /* ─────────────────────────────────────────
-   Page header
+   Existing page styles
    ───────────────────────────────────────── */
 .achievements-page-header {
   display: flex;
@@ -119,32 +119,6 @@
   margin: 0;
 }
 
-.achievements-clear-btn {
-  display: inline-flex;
-  align-items: center;
-  font-size: 12px;
-  font-weight: 500;
-  padding: 6px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--ach-clear-btn-border);
-  color: var(--ach-clear-btn-text);
-  background: transparent;
-  cursor: pointer;
-  transition:
-    background var(--ach-page-transition),
-    color var(--ach-page-transition);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.achievements-clear-btn:hover {
-  background: var(--ach-clear-btn-hover-bg);
-  color: var(--ach-clear-btn-hover-text);
-}
-
-/* ─────────────────────────────────────────
-   Two-column layout
-   ───────────────────────────────────────── */
 .achievements-layout {
   display: grid;
   grid-template-columns: 240px minmax(0, 1fr);
@@ -153,9 +127,6 @@
   margin-top: 20px;
 }
 
-/* ─────────────────────────────────────────
-   Filter sidebar
-   ───────────────────────────────────────── */
 .achievements-filters {
   position: sticky;
   top: 96px;
@@ -199,7 +170,6 @@
   margin-bottom: 6px;
 }
 
-/* ── Checkbox row ── */
 .filter-check {
   display: flex;
   align-items: center;
@@ -210,9 +180,7 @@
   border-radius: 8px;
   border: 1px solid transparent;
   cursor: pointer;
-  transition:
-    background var(--ach-page-transition),
-    color var(--ach-page-transition),
+  transition: background var(--ach-page-transition), color var(--ach-page-transition),
     border-color var(--ach-page-transition);
   user-select: none;
 }
@@ -227,16 +195,10 @@
   color: var(--ach-filter-active-text);
 }
 
-.filter-check--active .filter-check__icon {
-  color: var(--ach-filter-active-icon);
-}
-
-/* hide native checkbox */
 .filter-check input[type="checkbox"] {
   display: none;
 }
 
-/* custom checkbox box */
 .filter-check::before {
   content: "";
   width: 14px;
@@ -245,15 +207,12 @@
   border: 1.5px solid var(--ach-filter-border);
   background: transparent;
   flex-shrink: 0;
-  transition:
-    background var(--ach-page-transition),
-    border-color var(--ach-page-transition);
+  transition: background var(--ach-page-transition), border-color var(--ach-page-transition);
 }
 
 .filter-check--active::before {
   background: var(--ach-filter-check-accent);
   border-color: var(--ach-filter-check-accent);
-  /* checkmark via clip-path on background */
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 10 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4l2.5 2.5L9 1' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: center;
@@ -268,14 +227,15 @@
   transition: color var(--ach-page-transition);
 }
 
+.filter-check--active .filter-check__icon {
+  color: var(--ach-filter-active-icon);
+}
+
 .filter-check__label {
   flex: 1;
   line-height: 1;
 }
 
-/* ─────────────────────────────────────────
-   Search bar
-   ───────────────────────────────────────── */
 .achievements-content {
   min-width: 0;
 }
@@ -307,9 +267,7 @@
   font-size: 13px;
   outline: none;
   box-sizing: border-box;
-  transition:
-    border-color var(--ach-page-transition),
-    box-shadow var(--ach-page-transition);
+  transition: border-color var(--ach-page-transition), box-shadow var(--ach-page-transition);
 }
 
 .achievements-search-input::placeholder {
@@ -321,38 +279,12 @@
   box-shadow: var(--ach-search-shadow-focus);
 }
 
-.achievements-search-clear {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 12px;
-  color: var(--ach-search-clear);
-  padding: 4px;
-  line-height: 1;
-  border-radius: 4px;
-  transition: color var(--ach-page-transition);
-}
-
-.achievements-search-clear:hover {
-  color: var(--ach-search-clear-hover);
-}
-
-/* ─────────────────────────────────────────
-   Results list
-   ───────────────────────────────────────── */
 .achievements-list {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-/* ─────────────────────────────────────────
-   Empty state
-   ───────────────────────────────────────── */
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -376,7 +308,6 @@
   font-weight: 700;
   color: var(--ach-empty-heading);
   margin: 0;
-  letter-spacing: -0.01em;
 }
 
 .empty-state__body {
@@ -385,30 +316,267 @@
   margin: 0;
 }
 
-.empty-state__reset {
-  margin-top: 8px;
-  display: inline-flex;
-  align-items: center;
-  font-size: 12px;
-  font-weight: 500;
-  padding: 6px 14px;
-  border-radius: 8px;
-  border: 1px solid var(--ach-empty-btn-border);
-  color: var(--ach-empty-btn-text);
-  background: transparent;
-  cursor: pointer;
-  transition:
-    background var(--ach-page-transition),
-    color var(--ach-page-transition);
-}
-
-.empty-state__reset:hover {
-  background: var(--ach-empty-btn-hover-bg);
-}
-
 /* ─────────────────────────────────────────
-   Responsive
+   Modal – Backdrop & Shell
    ───────────────────────────────────────── */
+.ach-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  z-index: 1080;
+  backdrop-filter: blur(2px);
+}
+
+.ach-modal {
+  width: min(100%, 460px);
+  background: var(--ach-modal-bg);
+  border: 1px solid var(--ach-modal-border);
+  border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.ach-modal-lg {
+  width: min(100%, 600px);
+}
+
+/* ─── Modal Header ─── */
+.ach-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem 1rem;
+  border-bottom: 1px solid var(--ach-modal-border);
+}
+
+.ach-modal-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ach-black);
+}
+
+.ach-modal-subtitle {
+  margin: 0.2rem 0 0;
+  font-size: 0.85rem;
+  color: var(--ach-muted);
+}
+
+.ach-modal-close {
+  flex-shrink: 0;
+  background: var(--ach-input-bg);
+  border: 1px solid var(--ach-modal-border);
+  color: var(--ach-muted);
+  font-size: 0.9rem;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s ease;
+  line-height: 1;
+}
+
+.ach-modal-close:hover {
+  background: var(--ach-red-soft);
+  color: var(--ach-red);
+  border-color: rgba(193, 18, 31, 0.25);
+}
+
+/* ─── Modal Body ─── */
+.ach-modal-body {
+  padding: 1.1rem 1.25rem;
+}
+
+.ach-modal-scroll {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.ach-modal-copy {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--ach-black);
+  line-height: 1.6;
+}
+
+/* ─── Modal Footer ─── */
+.ach-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  padding: 0.9rem 1.25rem;
+  border-top: 1px solid var(--ach-modal-border);
+}
+
+/* ─── Image Upload ─── */
+.ach-upload-section {
+  margin-bottom: 1.25rem;
+}
+
+.ach-upload-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ach-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.55rem;
+}
+
+.ach-dropzone {
+  border: 2px dashed var(--ach-modal-border);
+  border-radius: 14px;
+  padding: 1.4rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  transition: 0.2s ease;
+  background: var(--ach-input-bg);
+  text-align: center;
+}
+
+.ach-dropzone:hover {
+  border-color: var(--ach-red);
+  background: var(--ach-red-soft);
+}
+
+.ach-dropzone-icon {
+  color: var(--ach-muted);
+  margin-bottom: 0.2rem;
+  transition: 0.2s ease;
+}
+
+.ach-dropzone:hover .ach-dropzone-icon {
+  color: var(--ach-red);
+}
+
+.ach-dropzone-primary {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ach-black);
+  font-weight: 500;
+}
+
+.ach-dropzone-link {
+  color: var(--ach-red);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ach-dropzone-secondary {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--ach-muted);
+}
+
+.ach-file-hidden {
+  display: none;
+}
+
+/* Image preview */
+.ach-image-preview-wrap {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--ach-modal-border);
+  height: 160px;
+}
+
+.ach-image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ach-image-remove {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.ach-image-remove:hover {
+  background: var(--ach-red);
+}
+
+/* ─── Form Grid ─── */
+.ach-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.ach-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.ach-field-full {
+  grid-column: 1 / -1;
+}
+
+.ach-field-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ach-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ach-input {
+  width: 100%;
+  background: var(--ach-input-bg);
+  color: var(--ach-black);
+  border: 1px solid var(--ach-modal-border);
+  border-radius: 12px;
+  padding: 0.78rem 0.9rem;
+  font-size: 0.92rem;
+  outline: none;
+  transition: 0.2s ease;
+  box-sizing: border-box;
+  appearance: none;
+}
+
+.ach-input::placeholder {
+  color: var(--ach-muted);
+  opacity: 0.75;
+}
+
+.ach-input:focus {
+  border-color: var(--ach-red);
+  box-shadow: 0 0 0 4px var(--ach-red-soft);
+  background: var(--ach-modal-bg);
+}
+
+.ach-textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+/* ─── Responsive ─── */
 @media (max-width: 991px) {
   .achievements-layout {
     grid-template-columns: 1fr;
@@ -418,9 +586,12 @@
     position: static;
   }
 
-  .filters-card {
-    /* horizontal scroll chip-style on mobile */
-    padding: 14px;
+  .ach-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ach-field-full {
+    grid-column: 1;
   }
 }
 
@@ -428,5 +599,9 @@
   .achievements-page-header {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .ach-modal-footer .btn {
+    flex: 1;
   }
 }
