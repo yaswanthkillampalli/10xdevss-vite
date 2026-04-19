@@ -1,20 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import ProfileMenu from './ProfileMenu';
-import { logoutUser } from '../authentication/auth';
+import { getMyProfile, getMyUser, logoutUser } from '../authentication/api';
 import '../styles/components/Navbar.css';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import {
   getStoredProfileSnapshot,
   subscribeToProfileSnapshot,
+  writeProfileSnapshot,
 } from '../utils/profileSync';
 
 const NAV_LINKS = [
   { to: "/", label: "Dashboard" },
   { to: "/projects", label: "Projects" },
   { to: "/publications", label: "Publications" },
-  { to: "/portfolio/achievements", label: "Achievements" },
+  { to: "/achievements", label: "Achievements" },
 ];
+
+const normalizeProfileData = (userResponse, profileResponse, fallbackProfile = {}) => {
+  const user = userResponse?.data?.data || userResponse?.data || {};
+  const profile = profileResponse?.data?.data || profileResponse?.data || {};
+
+  return {
+    fullName: user.fullName || fallbackProfile.fullName || '',
+    avatar: profile.avatar || fallbackProfile.avatar || '',
+    headline: profile.headline || fallbackProfile.headline || '',
+    location: profile.location || fallbackProfile.location || '',
+    username: profile.username || user.username || fallbackProfile.username || '',
+  };
+};
 
 export default function Navbar() {
   const location = useLocation();
@@ -35,6 +49,40 @@ export default function Navbar() {
       if (!nextProfile) return;
       setProfileSnapshot(nextProfile);
     });
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadNavbarProfile = async () => {
+      try {
+        const [userResult, profileResult] = await Promise.allSettled([
+          getMyUser(),
+          getMyProfile(),
+        ]);
+
+        if (!isMounted) return;
+
+        const nextProfile = normalizeProfileData(
+          userResult.status === 'fulfilled' ? userResult.value : null,
+          profileResult.status === 'fulfilled' ? profileResult.value : null,
+          getStoredProfileSnapshot() || {}
+        );
+
+        setProfileSnapshot(nextProfile);
+        writeProfileSnapshot(nextProfile);
+      } catch (error) {
+        if (import.meta.env.DEV) {
+          console.error('Could not load navbar profile:', error);
+        }
+      }
+    };
+
+    loadNavbarProfile();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const isActive = (to) => {
@@ -143,6 +191,8 @@ export default function Navbar() {
                 onLogout={handleLogout}
                 profileAvatar={profileSnapshot?.avatar || ''}
                 profileName={profileSnapshot?.fullName || ''}
+                profileHeadline={profileSnapshot?.headline || ''}
+                profileLocation={profileSnapshot?.location || ''}
               />
             </div>
           </div>

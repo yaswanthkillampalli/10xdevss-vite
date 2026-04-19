@@ -1,3 +1,4 @@
+const mongoose      = require("mongoose");
 const User          = require("../models/User");
 const UserProfile   = require("../models/UserProfile");
 const { successResponse, errorResponse } = require("../utils/response");
@@ -116,6 +117,21 @@ const userController = {
 
 const userProfileController = {
 
+  getDuplicateFieldFromError: (error) => {
+    if (!error || error.code !== 11000) return null;
+    return Object.keys(error.keyPattern || error.keyValue || {})[0] || null;
+  },
+
+  cleanProfileData: (data) => {
+    const cleaned = {};
+    for (const [key, value] of Object.entries(data)) {
+      if (value !== undefined && value !== null) {
+        cleaned[key] = value;
+      }
+    }
+    return cleaned;
+  },
+
   // GET /api/profile/me  — get own profile
   getMyProfile: async (req, res) => {
     try {
@@ -129,20 +145,48 @@ const userProfileController = {
     }
   },
 
-  // GET /api/profile/:username  — public view of someone's profile
-  getByUsername: async (req, res) => {
+  // GET /api/profile/user/:userId  — public profile by user id (safe fields only)
+  getPublicByUserId: async (req, res) => {
     try {
-      const profile = await UserProfile.findOne({
-        username: req.params.username.toLowerCase(),
-        isPublic: true,
-      }).populate("userId", "fullName emailId role");
+      const { userId } = req.params;
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return errorResponse(res, { statusCode: 400, message: "Invalid user id." });
+      }
+
+      const profile = await UserProfile.findOne({ userId, isPublic: true })
+        .select("userId avatar headline bio location socialLinks isPublic updatedAt")
+        .populate("userId", "fullName role")
+        .lean();
 
       if (!profile) {
-        return errorResponse(res, { statusCode: 404, message: "Profile not found." });
+        return errorResponse(res, { statusCode: 404, message: "Public profile not found." });
       }
-      return successResponse(res, { message: "Profile fetched.", data: profile });
+
+      return successResponse(res, {
+        message: "Public profile fetched.",
+        data: {
+          user: {
+            id: profile.userId?._id,
+            fullName: profile.userId?.fullName || "Unknown",
+            role: profile.userId?.role || "student",
+          },
+          profile: {
+            avatar: profile.avatar || null,
+            headline: profile.headline || "",
+            bio: profile.bio || "",
+            location: profile.location || "",
+            socialLinks: {
+              github: profile.socialLinks?.github || null,
+              linkedin: profile.socialLinks?.linkedin || null,
+              twitter: profile.socialLinks?.twitter || null,
+              portfolio: profile.socialLinks?.portfolio || null,
+            },
+            updatedAt: profile.updatedAt,
+          },
+        },
+      });
     } catch (error) {
-      return errorResponse(res, { statusCode: 500, message: "Could not fetch profile." });
+      return errorResponse(res, { statusCode: 500, message: "Could not fetch public profile." });
     }
   },
 
@@ -153,11 +197,16 @@ const userProfileController = {
       if (exists) {
         return errorResponse(res, { statusCode: 409, message: "Profile already exists. Use PUT to update." });
       }
-      const profile = await UserProfile.create({ ...req.body, userId: req.user._id });
+      const cleanData = userProfileController.cleanProfileData(req.body);
+      const profile = await UserProfile.create({ ...cleanData, userId: req.user._id });
       return successResponse(res, { statusCode: 201, message: "Profile created.", data: profile });
     } catch (error) {
       if (error.code === 11000) {
-        return errorResponse(res, { statusCode: 409, message: "Username already taken." });
+        const duplicateField = userProfileController.getDuplicateFieldFromError(error);
+        if (duplicateField === "userId") {
+          return errorResponse(res, { statusCode: 409, message: "Profile already exists. Use PUT to update." });
+        }
+        return errorResponse(res, { statusCode: 409, message: "A duplicate value already exists." });
       }
       if (error.name === "ValidationError") {
         const errors = Object.values(error.errors).map((e) => ({ field: e.path, message: e.message }));
@@ -171,18 +220,29 @@ const userProfileController = {
   update: async (req, res) => {
     try {
       const { userId, ...updateData } = req.body;
-      const profile = await UserProfile.findOneAndUpdate(
-        { userId: req.user._id },
-        updateData,
-        { new: true, runValidators: true }
-      );
+      const cleanData = userProfileController.cleanProfileData(updateData);
+      
+      let profile = await UserProfile.findOne({ userId: req.user._id });
+      
       if (!profile) {
-        return errorResponse(res, { statusCode: 404, message: "Profile not found. Please create one first." });
+        // Create if doesn't exist
+        profile = await UserProfile.create({
+          userId: req.user._id,
+          ...cleanData,
+        });
+      } else {
+        // Update if exists
+        profile = await UserProfile.findOneAndUpdate(
+          { userId: req.user._id },
+          cleanData,
+          { new: true, runValidators: true }
+        );
       }
+      
       return successResponse(res, { message: "Profile updated.", data: profile });
     } catch (error) {
       if (error.code === 11000) {
-        return errorResponse(res, { statusCode: 409, message: "Username already taken." });
+        return errorResponse(res, { statusCode: 409, message: "A duplicate value already exists." });
       }
       if (error.name === "ValidationError") {
         const errors = Object.values(error.errors).map((e) => ({ field: e.path, message: e.message }));

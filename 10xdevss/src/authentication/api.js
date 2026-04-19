@@ -170,6 +170,11 @@ const getMyProfile = async () => {
   return response.data
 }
 
+const getPublicProfileByUserId = async (userId) => {
+  const response = await api.get(`/api/profile/user/${userId}`)
+  return response.data
+}
+
 const createMyProfile = async (payload) => {
   const response = await api.post('/api/profile', payload)
   return response.data
@@ -330,6 +335,7 @@ export {
   getMyUser,
   updateMyUser,
   getMyProfile,
+  getPublicProfileByUserId,
   createMyProfile,
   updateMyProfile,
   getDashboardOverview,

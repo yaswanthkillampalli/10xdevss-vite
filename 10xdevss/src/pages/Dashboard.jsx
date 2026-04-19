@@ -66,8 +66,11 @@ export default function Dashboard() {
       (dashboardData?.recentProjects || []).map((project) => ({
         title: project.title,
         owner: {
+          id: project.owner?.id || null,
           name: project.owner?.name || "Unknown",
           avatar: project.owner?.avatar || "U",
+          profileLink: project.owner?.profileLink || (project.owner?.id ? `/profile/${project.owner.id}` : null),
+          role: project.owner?.role || "student", // Falls back to "student" if role not provided
         },
         stack: project.stack || [],
         status: project.status || "ongoing",
@@ -127,7 +130,7 @@ export default function Dashboard() {
             </div>
 
             <a
-              href="/profile/johndoe"
+              href={dashboardData?.user?.id ? `/profile/${dashboardData.user.id}` : "/profile"}
               target="_blank"
               rel="noreferrer"
               className="btn btn-outline"

@@ -15,6 +15,14 @@ export default function PublicationCard({
   onDelete,
   animationDelay,
 }) {
+  const toDoiUrl = (value) => {
+    if (!value) return null;
+    const doiValue = String(value).trim();
+    if (!doiValue) return null;
+    if (/^https?:\/\//i.test(doiValue)) return doiValue;
+    return `https://doi.org/${doiValue}`;
+  };
+
   const {
     id,
     title,
@@ -24,9 +32,12 @@ export default function PublicationCard({
     venueType,
     publishedDate,
     doi,
+    fileUrl,
     citationCount = 0,
     tags = [],
   } = publication;
+
+  const doiLink = toDoiUrl(doi);
 
   return (
     <div
@@ -70,14 +81,25 @@ export default function PublicationCard({
       )}
 
       <div className="publication-card__actions">
-        {doi && (
+        {fileUrl && (
           <a
-            href={`https://doi.org/${doi}`}
+            href={fileUrl}
             target="_blank"
             rel="noreferrer"
             className="btn btn-outline publication-card__action-btn"
           >
             View Paper ↗
+          </a>
+        )}
+
+        {doiLink && (
+          <a
+            href={doiLink}
+            target="_blank"
+            rel="noreferrer"
+            className="btn btn-outline publication-card__action-btn"
+          >
+            View DOI ↗
           </a>
         )}
 

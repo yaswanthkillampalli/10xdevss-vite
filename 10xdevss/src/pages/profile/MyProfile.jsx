@@ -17,7 +17,6 @@ import {
 } from "lucide-react";
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
 import {
-  createMyProfile,
   getMyProfile,
   getMyUser,
   updateMyProfile,
@@ -281,15 +280,7 @@ export default function MyProfile() {
         },
       };
 
-      try {
-        await updateMyProfile(profilePayload);
-      } catch (error) {
-        if (error?.response?.status === 404) {
-          await createMyProfile(profilePayload);
-        } else {
-          throw error;
-        }
-      }
+      await updateMyProfile(profilePayload);
 
       setProfile(nextProfile);
       setDraft(nextProfile);
@@ -300,7 +291,16 @@ export default function MyProfile() {
       setSavedMessage("Profile updated successfully. Photo uploaded to ImageKit.");
     } catch (error) {
       const apiMessage = error?.response?.data?.message;
-      setSavedMessage(apiMessage || error?.message || "Could not save profile. Please try again.");
+      const validationErrors = error?.response?.data?.errors;
+      const firstValidationMessage = Array.isArray(validationErrors)
+        ? validationErrors[0]?.message
+        : null;
+      setSavedMessage(
+        firstValidationMessage ||
+          apiMessage ||
+          error?.message ||
+          "Could not save profile. Please try again."
+      );
     } finally {
       setIsSaving(false);
     }

@@ -23,7 +23,7 @@ export default function App() {
         <Routes>
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
-            <Route path="profile/:username" element={<PublicProfile />} />
+            <Route path="profile/:userId" element={<PublicProfile />} />
             
             <Route element={<ProtectedRoute />}>
                 <Route element={<Layout />}>

@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar.jsx";
-import api from "../../authentication/api";
+import { getPublicProfileByUserId } from "../../authentication/api";
 import "../../styles/profile/PublicProfile.css";
 
 const EMPTY_PROFILE = {
   name: "Unknown User",
-  username: "",
+  role: "student",
   headline: "",
   bio: "",
   location: "",
@@ -44,15 +44,14 @@ function SectionEmptyState({ title }) {
 }
 
 const formatProfile = (profileResponse) => {
-  const profile = profileResponse?.data?.data || profileResponse?.data || {};
-  const user = profile.userId || {};
-
-  const displayName = user.fullName || profile.name || user.username || profile.username || "Unknown User";
-  const username = profile.username || user.username || "";
+  const data = profileResponse?.data || {};
+  const user = data.user || {};
+  const profile = data.profile || {};
+  const displayName = user.fullName || "Unknown User";
 
   return {
     name: displayName,
-    username,
+    role: user.role || "student",
     headline: profile.headline || "",
     bio: profile.bio || "",
     location: profile.location || "",
@@ -67,7 +66,7 @@ const formatProfile = (profileResponse) => {
 };
 
 export default function PublicProfile() {
-  const { username } = useParams();
+  const { userId } = useParams();
   const [profile, setProfile] = useState(EMPTY_PROFILE);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -76,16 +75,16 @@ export default function PublicProfile() {
     let isMounted = true;
 
     const loadProfile = async () => {
-      if (!username) {
+      if (!userId) {
         if (isMounted) {
-          setError("Profile username is missing.");
+          setError("Profile user id is missing.");
           setIsLoading(false);
         }
         return;
       }
 
       try {
-        const response = await api.get(`/api/profile/${username}`);
+        const response = await getPublicProfileByUserId(userId);
         if (!isMounted) return;
         setProfile(formatProfile(response));
         setError("");
@@ -103,7 +102,7 @@ export default function PublicProfile() {
     return () => {
       isMounted = false;
     };
-  }, [username]);
+  }, [userId]);
 
   const initials = useMemo(() => {
     return profile.name
@@ -154,8 +153,8 @@ export default function PublicProfile() {
               <div style={{ color: "white" }}>
                 <h1 style={{ fontSize: 36, letterSpacing: "-0.02em", color: "white" }}>{profile.name}</h1>
                 <p style={{ fontSize: 14, opacity: 0.85, marginTop: 4 }}>
-                  {profile.username ? `@${profile.username}` : ""}
-                  {profile.username && profile.location ? " · " : ""}
+                  {profile.role}
+                  {profile.role && profile.location ? " · " : ""}
                   {profile.location}
                 </p>
                 {profile.headline && (

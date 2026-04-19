@@ -21,7 +21,7 @@ const getDiscover = async (req, res) => {
 		const projects = await Project.find({ userId: { $ne: req.user._id } })
 			.sort({ createdAt: -1 })
 			.limit(limit)
-			.populate("userId", "fullName rollId")
+			.populate("userId", "fullName rollId role")
 			.lean();
 
 		const ownerIds = [...new Set(projects.map((item) => String(item.userId?._id || item.userId)).filter(Boolean))];
@@ -29,7 +29,14 @@ const getDiscover = async (req, res) => {
 			.select("userId avatar")
 			.lean();
 
-		const avatarByUserId = new Map(profiles.map((profile) => [String(profile.userId), profile.avatar || null]));
+		const profileByUserId = new Map(
+			profiles.map((profile) => [
+				String(profile.userId),
+				{
+					avatar: profile.avatar || null,
+				},
+			])
+		);
 
 		return res.status(200).json({
 			success: true,
@@ -37,6 +44,8 @@ const getDiscover = async (req, res) => {
 			data: projects.map((item) => {
 				const ownerId = String(item.userId?._id || item.userId);
 				const ownerName = item.userId?.fullName || "Unknown";
+				const ownerRole = item.userId?.role || "student";
+				const ownerProfile = profileByUserId.get(ownerId) || {};
 
 				return {
 					id: item._id,
@@ -53,8 +62,10 @@ const getDiscover = async (req, res) => {
 					owner: {
 						id: ownerId,
 						name: ownerName,
+						role: ownerRole,
 						rollId: item.userId?.rollId || null,
-						avatar: avatarByUserId.get(ownerId) || toInitials(ownerName),
+						avatar: ownerProfile.avatar || toInitials(ownerName),
+						profileLink: `/profile/${ownerId}`,
 					},
 				};
 			}),

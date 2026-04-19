@@ -2,7 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/components/ProfileMenu.css';
 
-export default function ProfileMenu({ theme, toggleTheme, onLogout, profileAvatar, profileName }) {
+export default function ProfileMenu({
+  theme,
+  toggleTheme,
+  onLogout,
+  profileAvatar,
+  profileName,
+  profileHeadline,
+  profileLocation,
+}) {
   const initials = (profileName || 'JD')
     .split(' ')
     .map((part) => part[0])
@@ -55,8 +63,8 @@ export default function ProfileMenu({ theme, toggleTheme, onLogout, profileAvata
             </div>
             <div className="portfolio-dropdown-info">
               <div className="portfolio-dropdown-name">{profileName || 'John Doe'}</div>
-              <div className="portfolio-dropdown-role">Full-Stack Developer</div>
-              <div className="portfolio-dropdown-location">Hyderabad, India</div>
+              <div className="portfolio-dropdown-role">{profileHeadline || 'Full-Stack Developer'}</div>
+              <div className="portfolio-dropdown-location">{profileLocation || 'Hyderabad, India'}</div>
             </div>
           </div>
         </li>

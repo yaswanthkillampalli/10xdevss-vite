@@ -1,5 +1,37 @@
 import PropTypes from 'prop-types';
 
+const getInitials = (name = 'Unknown') => {
+  return String(name)
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase() || 'U';
+};
+
+function ActivityAvatar({ name, avatar }) {
+  const isImage = Boolean(avatar) && /^https?:\/\//i.test(avatar);
+
+  if (isImage) {
+    return (
+      <img
+        src={avatar}
+        alt={name}
+        className="activity-avatar"
+        onError={(event) => {
+          event.currentTarget.style.display = 'none';
+          const fallback = event.currentTarget.parentElement.querySelector('.activity-avatar-fallback');
+          if (fallback) fallback.style.display = 'flex';
+        }}
+      />
+    );
+  }
+
+  return <div className="activity-avatar activity-avatar-fallback">{getInitials(name)}</div>;
+}
+
 const RecentActivity = ({ activities = [] }) => {
   return (
     <div>
@@ -42,7 +74,7 @@ const RecentActivity = ({ activities = [] }) => {
                     : "none",
               }}
             >
-              <div className="activity-avatar">{item.user.avatar}</div>
+              <ActivityAvatar name={item.user.name} avatar={item.user.avatar} />
 
               <div style={{ flex: 1 }}>
                 <div
@@ -92,7 +124,7 @@ RecentActivity.propTypes = {
     PropTypes.shape({
       user: PropTypes.shape({
         name: PropTypes.string.isRequired,
-        avatar: PropTypes.string.isRequired,
+        avatar: PropTypes.string,
       }).isRequired,
       action: PropTypes.string.isRequired,
       detail: PropTypes.string.isRequired,

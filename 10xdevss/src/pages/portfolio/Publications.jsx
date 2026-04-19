@@ -102,6 +102,9 @@ export default function Publications() {
             title: item.title || "Untitled publication",
             venue: item.venue || "Unknown venue",
             abstract: item.abstract || "No abstract provided.",
+            doi: item.doi || "",
+            fileUrl: item.fileUrl || null,
+            fileName: item.fileName || null,
           }))
         );
         setError("");

@@ -31,22 +31,31 @@ const attachOwners = async (items) => {
     .select("userId avatar")
     .lean();
 
-  const avatarByUserId = new Map(
-    profiles.map((profile) => [String(profile.userId), profile.avatar || null])
+  const profileByUserId = new Map(
+    profiles.map((profile) => [
+      String(profile.userId),
+      {
+        avatar: profile.avatar || null,
+      },
+    ])
   );
 
   return items.map((item) => {
     const user = item.userId || {};
     const userId = String(user._id || user);
     const ownerName = user.fullName || "Unknown";
+    const ownerRole = user.role || "student";
+    const ownerProfile = profileByUserId.get(userId) || {};
 
     return {
       ...item,
       owner: {
         id: userId,
         name: ownerName,
+        role: ownerRole,
         rollId: user.rollId || null,
-        avatar: avatarByUserId.get(userId) || toInitials(ownerName),
+        avatar: ownerProfile.avatar || toInitials(ownerName),
+        profileLink: `/profile/${userId}`,
       },
     };
   });
@@ -73,16 +82,16 @@ const getDashboardOverview = async (req, res) => {
       Publication.countDocuments({ userId: req.user._id }),
       Achievement.countDocuments({ userId: req.user._id }),
       Experience.countDocuments({ userId: req.user._id }),
-      UserProfile.findOne({ userId: req.user._id }).select("avatar username").lean(),
+      UserProfile.findOne({ userId: req.user._id }).select("avatar").lean(),
       Project.find({ userId: { $ne: req.user._id } })
         .sort({ createdAt: -1 })
         .limit(recentLimit)
-        .populate("userId", "fullName rollId")
+        .populate("userId", "fullName rollId role")
         .lean(),
       Certification.find({ userId: { $ne: req.user._id } })
         .sort({ createdAt: -1 })
         .limit(recentLimit)
-        .populate("userId", "fullName rollId")
+        .populate("userId", "fullName rollId role")
         .lean(),
     ]);
 
@@ -98,7 +107,6 @@ const getDashboardOverview = async (req, res) => {
           rollId: req.user.rollId,
           role: req.user.role,
           avatar: profile?.avatar || toInitials(req.user.fullName),
-          username: profile?.username || null,
         },
         stats: {
           projects: projectCount,

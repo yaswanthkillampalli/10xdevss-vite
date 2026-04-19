@@ -30,9 +30,9 @@ router.get("/users", protect, restrictTo("admin"), userController.getAll);
 router.delete("/users/:id", protect, restrictTo("admin"), userController.deleteUser);
 
 router.get("/profile/me", protect, userProfileController.getMyProfile);
+router.get("/profile/user/:userId", userProfileController.getPublicByUserId);
 router.post("/profile", protect, userProfileController.create);
 router.put("/profile", protect, userProfileController.update);
 router.delete("/profile", protect, userProfileController.remove);
-router.get("/profile/:username", userProfileController.getByUsername);
 
 module.exports = router;
