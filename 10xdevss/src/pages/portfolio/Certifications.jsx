@@ -20,6 +20,38 @@ const EMPTY_FORM = {
   imagePreview: null,
 };
 
+const resolveBadgeImage = (certification) =>
+  certification?.badgeImage || certification?.image || certification?.cdnUrl || certification?.url || null;
+
+const validateImageDimensions = (file, maxWidth = 4000, maxHeight = 4000) =>
+  new Promise((resolve, reject) => {
+    if (!(file instanceof File)) {
+      reject(new Error("Please select a valid image file."));
+      return;
+    }
+
+    const image = new Image();
+    const objectUrl = URL.createObjectURL(file);
+
+    image.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+
+      if (image.width > maxWidth || image.height > maxHeight) {
+        reject(new Error(`Image must be ${maxWidth}x${maxHeight} pixels or smaller.`));
+        return;
+      }
+
+      resolve(true);
+    };
+
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error("Could not read the selected image."));
+    };
+
+    image.src = objectUrl;
+  });
+
 /* ─── Delete confirmation modal ─── */
 function DeleteModal({ open, onClose, onConfirm, certification }) {
   if (!open || !certification) return null;
@@ -264,7 +296,7 @@ export default function Certifications() {
             id: item.id || item._id,
             issuer: item.issuingOrganization || "",
             url: item.credentialUrl || "",
-            image: item.badgeImage || null,
+            badgeImage: resolveBadgeImage(item),
             skills: Array.isArray(item.skills) ? item.skills : [],
             description: item.description || "",
             issueDate: item.issueDate ? String(item.issueDate).slice(0, 10) : "",
@@ -307,7 +339,7 @@ export default function Certifications() {
       skills: item.skills.join(", "),
       description: item.description,
       image: null,
-      imagePreview: item.image || null,
+      imagePreview: resolveBadgeImage(item),
     });
     setEditModalOpen(true);
   };
@@ -331,6 +363,7 @@ export default function Certifications() {
         setIsSaving(true);
 
         if (formData.image instanceof File) {
+          await validateImageDimensions(formData.image, 4000, 4000);
           const uploaded = await uploadFile(formData.image, {
             allowedType: "image",
             maxFileSizeMb: 5,
@@ -351,7 +384,7 @@ export default function Certifications() {
               id: created.id || created._id,
               issuer: created.issuingOrganization || "",
               url: created.credentialUrl || "",
-              image: created.badgeImage || null,
+              badgeImage: resolveBadgeImage(created),
               skills: [],
               description: "",
               issueDate: created.issueDate ? String(created.issueDate).slice(0, 10) : "",
@@ -394,6 +427,7 @@ export default function Certifications() {
         setIsSaving(true);
 
         if (formData.image instanceof File) {
+          await validateImageDimensions(formData.image, 4000, 4000);
           const uploaded = await uploadFile(formData.image, {
             allowedType: "image",
             maxFileSizeMb: 5,
@@ -418,7 +452,7 @@ export default function Certifications() {
                     id: updated.id || updated._id,
                     issuer: updated.issuingOrganization || "",
                     url: updated.credentialUrl || "",
-                    image: updated.badgeImage || null,
+                    badgeImage: resolveBadgeImage(updated),
                     skills: Array.isArray(item.skills) ? item.skills : [],
                     description: item.description || "",
                     issueDate: updated.issueDate ? String(updated.issueDate).slice(0, 10) : "",
@@ -522,9 +556,9 @@ export default function Certifications() {
                   <div className="cert-card-grid">
                     {certifications.map((item) => (
                       <article className="cert-card" key={item.id}>
-                        {item.image && (
+                        {item.badgeImage && (
                           <div className="cert-card-image-wrap">
-                            <img src={item.image} alt={item.title} className="cert-card-image" />
+                            <img src={item.badgeImage} alt={item.title} className="cert-card-image" />
                           </div>
                         )}
 

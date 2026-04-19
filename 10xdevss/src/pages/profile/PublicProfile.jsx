@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import { BookOpenText, FolderKanban, Trophy } from "lucide-react";
 import Navbar from "../../components/Navbar.jsx";
 import { getPublicProfileByUserId } from "../../authentication/api";
 import "../../styles/profile/PublicProfile.css";
@@ -30,15 +31,14 @@ function SocialIcon({ type }) {
   );
 }
 
-function SectionEmptyState({ title }) {
+function SectionEmptyState({ title, icon: Icon = Trophy }) {
   return (
-    <div className="card" style={{ padding: 18 }}>
-      <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15, marginBottom: 8 }}>
-        {title}
-      </h3>
-      <p style={{ fontSize: 13, color: "var(--text-muted)", margin: 0 }}>
-        {EMPTY_SECTION_MESSAGE}
-      </p>
+    <div className="public-profile-empty-state">
+      <div className="public-profile-empty-state__icon">
+        <Icon size={22} strokeWidth={1.8} />
+      </div>
+      <h3 className="public-profile-empty-state__title">{title}</h3>
+      <p className="public-profile-empty-state__body">{EMPTY_SECTION_MESSAGE}</p>
     </div>
   );
 }
@@ -210,13 +210,13 @@ export default function PublicProfile() {
               {/* Projects */}
               <div>
                 <h2 className="section-title" style={{ marginBottom: 16 }}>Projects</h2>
-                <SectionEmptyState title="No public projects data" />
+                <SectionEmptyState title="No public projects data" icon={FolderKanban} />
               </div>
 
               {/* Publications */}
               <div>
                 <h2 className="section-title" style={{ marginBottom: 16 }}>Publications</h2>
-                <SectionEmptyState title="No public publications data" />
+                <SectionEmptyState title="No public publications data" icon={BookOpenText} />
               </div>
 
               {/* Achievements */}

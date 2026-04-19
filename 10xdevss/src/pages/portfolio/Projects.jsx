@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { FolderKanban, Search, SearchX } from "lucide-react";
 import "../../styles/portfolio/Projects.css";
 import ProjectCard from "../../components/projects/ProjectCard.jsx";
 import { getDiscoverProjects } from "../../authentication/api";
@@ -66,13 +66,73 @@ function Modal({ show, onClose, title, children }) {
   );
 }
 
+/* ─────────────────────────────────────────
+   Project card skeleton
+   ───────────────────────────────────────── */
+
+// Each skeleton card gets a slightly varied tag layout so they don't look identical.
+const TAG_LAYOUTS = [
+  [52, 68, 44],
+  [60, 80],
+  [44, 56, 72, 36],
+  [70, 48, 60],
+  [50, 66],
+  [42, 74, 50, 44],
+];
+
+function ProjectCardSkeleton({ index = 0 }) {
+  const tagWidths = TAG_LAYOUTS[index % TAG_LAYOUTS.length];
+
+  return (
+    <div className="skeleton-proj-card">
+      {/* Title */}
+      <span className="skeleton skeleton-proj-title" />
+
+      {/* Description lines */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <span className="skeleton skeleton-proj-desc-1" />
+        <span className="skeleton skeleton-proj-desc-2" />
+      </div>
+
+      {/* Tech-stack tags */}
+      <div className="skeleton-proj-tags">
+        {tagWidths.map((w, i) => (
+          <span key={i} className="skeleton skeleton-proj-tag" style={{ width: w }} />
+        ))}
+      </div>
+
+      {/* Footer: owner + status badge */}
+      <div className="skeleton-proj-footer">
+        <div className="skeleton-proj-avatar-row">
+          <span className="skeleton skeleton-proj-avatar" />
+          <span className="skeleton skeleton-proj-owner-name" />
+        </div>
+        <span className="skeleton skeleton-proj-badge" />
+      </div>
+    </div>
+  );
+}
+
+function ProjectsGridSkeleton({ count = 6 }) {
+  return (
+    <div className="grid-2 animate-in delay-2" style={{ marginTop: 8 }}>
+      {Array.from({ length: count }, (_, i) => (
+        <ProjectCardSkeleton key={i} index={i} />
+      ))}
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────
+   Projects page
+   ───────────────────────────────────────── */
 export default function Projects() {
   const [projects, setProjects] = useState([]);
-  const [filter, setFilter] = useState("all");
-  const [search, setSearch] = useState("");
-  const [showModal] = useState(false);
+  const [filter, setFilter]     = useState("all");
+  const [search, setSearch]     = useState("");
+  const [showModal]             = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError]       = useState("");
 
   const formatMonthYear = (dateValue) => {
     if (!dateValue) return null;
@@ -94,9 +154,9 @@ export default function Projects() {
         setProjects(
           list.map((item) => ({
             ...item,
-            id: item.id || item._id,
+            id:        item.id || item._id,
             startDate: formatMonthYear(item.startDate),
-            endDate: item.endDate ? formatMonthYear(item.endDate) : null,
+            endDate:   item.endDate ? formatMonthYear(item.endDate) : null,
           }))
         );
         setError("");
@@ -136,43 +196,32 @@ export default function Projects() {
   return (
     <>
       <div className="container-fluid">
-        {/* Section header – no CTA button for this page */}
+
+        {/* ── Section header ── */}
         <div className="section-header animate-in">
           <div>
-            <h1
-              style={{
-                fontSize: 28,
-                letterSpacing: "-0.02em",
-                marginTop: 0,
-              }}
-            >
+            <h1 style={{ fontSize: 28, letterSpacing: "-0.02em", marginTop: 0 }}>
               Projects
             </h1>
-            <p
-              style={{
-                fontSize: 13,
-                color: "var(--text-muted)",
-                margin: "6px 0 0",
-              }}
-            >
-              {projects.length} projects total
+            <p style={{ fontSize: 13, color: "var(--text-muted)", margin: "6px 0 0" }}>
+              {isLoading ? (
+                <span className="skeleton" style={{ display: "inline-block", width: 110, height: 13 }} />
+              ) : (
+                `${projects.length} projects total`
+              )}
             </p>
           </div>
         </div>
 
+        {/* ── Error ── */}
         {error && (
           <div className="card" style={{ padding: 16, marginBottom: 20 }}>
             {error}
           </div>
         )}
 
-        {/* Search bar */}
-        <div
-          className="project-searchbar"
-          style={{
-            marginBottom: 24,
-          }}
-        >
+        {/* ── Search bar ── */}
+        <div className="project-searchbar" style={{ marginBottom: 24 }}>
           <span className="project-search-icon">
             <Search size={15} strokeWidth={2} />
           </span>
@@ -182,38 +231,38 @@ export default function Projects() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="project-search-input"
+            disabled={isLoading}
             style={{
               width: "100%",
               padding: "10px 16px 10px 40px",
               borderRadius: "var(--radius-md)",
               border: "1px solid var(--border)",
               fontSize: 14,
+              opacity: isLoading ? 0.5 : 1,
+              cursor: isLoading ? "not-allowed" : "text",
             }}
           />
         </div>
 
-        {/* Filters */}
+        {/* ── Filters ── */}
         <div
-          style={{
-            display: "flex",
-            gap: 8,
-            marginBottom: 24,
-            flexWrap: "wrap",
-          }}
+          style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" }}
           className="animate-in delay-1"
         >
           {["all", "ongoing", "completed", "on-hold"].map((f) => (
             <button
               key={f}
-              onClick={() => setFilter(f)}
+              onClick={() => !isLoading && setFilter(f)}
               className={`project-filter-btn ${filter === f ? "is-active" : ""}`}
+              disabled={isLoading}
               style={{
                 padding: "6px 16px",
                 borderRadius: "100px",
                 fontSize: 13,
                 fontWeight: filter === f ? 600 : 400,
-                cursor: "pointer",
+                cursor: isLoading ? "not-allowed" : "pointer",
                 whiteSpace: "nowrap",
+                opacity: isLoading ? 0.6 : 1,
               }}
             >
               {f}
@@ -221,94 +270,37 @@ export default function Projects() {
           ))}
         </div>
 
-        {/* Empty state or grid */}
+        {/* ── Content area ── */}
         {isLoading ? (
-          <div className="empty-state" style={{ marginTop: 24 }}>
-            <div
-              className="empty-state-icon"
-              style={{
-                fontSize: 28,
-                lineHeight: 1,
-              }}
-            >
-              📁
-            </div>
-            <h3
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: 18,
-                margin: "12px 0 6px",
-              }}
-            >
-              Loading projects...
-            </h3>
-          </div>
+          <ProjectsGridSkeleton count={6} />
         ) : projects.length === 0 ? (
           <div className="empty-state" style={{ marginTop: 24 }}>
-            <div
-              className="empty-state-icon"
-              style={{
-                fontSize: 28,
-                lineHeight: 1,
-              }}
-            >
-              📁
+            <div className="empty-state__icon">
+              <FolderKanban size={28} strokeWidth={1.4} />
             </div>
-            <h3
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: 18,
-                margin: "12px 0 6px",
-              }}
-            >
-              No projects
-            </h3>
-            <p style={{ fontSize: 14, color: "var(--text-muted)" }}>
-              No projects found right now.
-            </p>
+            <h3 className="empty-state__heading">No projects</h3>
+            <p className="empty-state__body">No projects found right now.</p>
           </div>
         ) : filtered.length === 0 ? (
           <div className="empty-state" style={{ marginTop: 24 }}>
-            <div
-              className="empty-state-icon"
-              style={{
-                fontSize: 28,
-                lineHeight: 1,
-              }}
-            >
-              📁
+            <div className="empty-state__icon">
+              <SearchX size={28} strokeWidth={1.4} />
             </div>
-            <h3
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: 18,
-                margin: "12px 0 6px",
-              }}
-            >
-              No projects match your search
-            </h3>
-            <p style={{ fontSize: 14, color: "var(--text-muted)" }}>
-              Try changing the filters or search term.
-            </p>
+            <h3 className="empty-state__heading">No projects match your search</h3>
+            <p className="empty-state__body">Try changing the filters or search term.</p>
           </div>
         ) : (
-          <div
-            className="grid-2 animate-in delay-2"
-            style={{ marginTop: 8 }}
-          >
+          <div className="grid-2 animate-in delay-2" style={{ marginTop: 8 }}>
             {filtered.map((p) => (
               <ProjectCard key={p.id} project={p} isEdit={false} />
             ))}
           </div>
         )}
+
       </div>
 
-      {/* Reuse modal here for structure; not wired to any button yet */}
-      <Modal
-        show={showModal}
-        onClose={() => {}}
-        title="Add Project"
-      >
+      {/* Modal stub – wired in Profile */}
+      <Modal show={showModal} onClose={() => {}} title="Add Project">
         <div>
           <p>
             Add and edit projects are managed in the <strong>Profile</strong> section.

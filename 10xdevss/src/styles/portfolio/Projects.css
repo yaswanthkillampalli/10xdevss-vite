@@ -21,6 +21,10 @@
 
   --proj-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
   --proj-transition: 0.25s ease;
+
+  /* Skeleton shimmer tokens */
+  --skeleton-base: #f0e8e8;
+  --skeleton-shine: #fdf6f6;
 }
 
 [data-theme="dark"] {
@@ -38,6 +42,119 @@
   --card-border: #303032;
 
   --proj-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
+
+  /* Skeleton shimmer tokens – dark */
+  --skeleton-base: #211a1b;
+  --skeleton-shine: #2c2224;
+}
+
+/* ─────────────────────────────────────────
+   Shimmer keyframe
+   ───────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+
+.skeleton {
+  display: block;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-base) 25%,
+    var(--skeleton-shine) 50%,
+    var(--skeleton-base) 75%
+  );
+  background-size: 1200px 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+
+/* ─── Project card skeleton ─── */
+.skeleton-proj-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--proj-shadow);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow: hidden;
+}
+
+/* Mimic the coloured top stripe real cards have */
+.skeleton-proj-card::before {
+  content: "";
+  display: block;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-base) 25%,
+    var(--skeleton-shine) 50%,
+    var(--skeleton-base) 75%
+  );
+  background-size: 1200px 100%;
+  animation: shimmer 1.6s infinite linear;
+  margin: -20px -20px 0;   /* bleed to edges */
+}
+
+.skeleton-proj-title {
+  height: 18px;
+  width: 70%;
+}
+
+.skeleton-proj-desc-1 {
+  height: 13px;
+  width: 100%;
+}
+
+.skeleton-proj-desc-2 {
+  height: 13px;
+  width: 80%;
+}
+
+.skeleton-proj-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.skeleton-proj-tag {
+  height: 24px;
+  border-radius: 999px;
+}
+
+.skeleton-proj-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.skeleton-proj-avatar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.skeleton-proj-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.skeleton-proj-owner-name {
+  height: 12px;
+  width: 80px;
+}
+
+.skeleton-proj-badge {
+  height: 24px;
+  width: 64px;
+  border-radius: 999px;
 }
 
 /* ─── Search & Filter ─── */
@@ -99,6 +216,37 @@
   background: var(--accent);
   color: var(--white);
   border-color: var(--accent);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  background: var(--card-bg);
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.empty-state__icon {
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.empty-state__heading {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-strong);
+  margin: 0;
+}
+
+.empty-state__body {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
 }
 
 /* ─── Grid ─── */
@@ -248,9 +396,7 @@
 }
 
 /* ─────────────────────────────────────────
-   Reuse cert-input from Certifications.css
-   These are defined globally; listed here
-   as a fallback for isolated imports.
+   cert-input fallback
    ───────────────────────────────────────── */
 .cert-input {
   width: 100%;

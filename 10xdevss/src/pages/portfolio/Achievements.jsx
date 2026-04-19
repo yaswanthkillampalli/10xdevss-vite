@@ -24,12 +24,107 @@ const FILTER_TYPE_CONFIG = {
 
 const ACHIEVEMENT_TYPES = Object.keys(FILTER_TYPE_CONFIG);
 
+/* ─────────────────────────────────────────
+   Skeleton sub-components
+   ───────────────────────────────────────── */
+
+/**
+ * Sidebar filter skeleton – mirrors the real filters-card shape.
+ */
+function FilterSidebarSkeleton() {
+  // Approximate label widths for each achievement type row
+  const rowWidths = [50, 82, 78, 72, 68, 42];
+
+  return (
+    <div className="skeleton-ach-filter-card">
+      {/* Header */}
+      <div className="skeleton-ach-filter-header">
+        <span className="skeleton skeleton-ach-filter-icon" />
+        <span className="skeleton skeleton-ach-filter-title" />
+      </div>
+
+      {/* Type group */}
+      <div className="skeleton-ach-filter-group">
+        <span className="skeleton skeleton-ach-filter-section-label" />
+        {rowWidths.map((w, i) => (
+          <div key={i} className="skeleton-ach-filter-row">
+            <span className="skeleton skeleton-ach-filter-checkbox" />
+            <span
+              className="skeleton"
+              style={{ width: 16, height: 16, borderRadius: 4, flexShrink: 0 }}
+            />
+            <span className="skeleton" style={{ width: w, height: 13, borderRadius: 4 }} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Varied description-line widths so cards feel unique
+const ACH_DESC_LAYOUTS = [
+  ["100%", "82%"],
+  ["100%", "90%", "68%"],
+  ["100%", "76%"],
+  ["100%", "88%", "60%"],
+];
+
+function AchievementCardSkeleton({ index = 0 }) {
+  const descWidths = ACH_DESC_LAYOUTS[index % ACH_DESC_LAYOUTS.length];
+
+  return (
+    <div className="skeleton-ach-card">
+      {/* Left icon column */}
+      <span className="skeleton skeleton-ach-icon-col" />
+
+      {/* Right body */}
+      <div className="skeleton-ach-body">
+        {/* Title row + badge */}
+        <div className="skeleton-ach-top">
+          <span className="skeleton skeleton-ach-title" />
+          <span className="skeleton skeleton-ach-badge" />
+        </div>
+
+        {/* Org + date */}
+        <div className="skeleton-ach-org-row">
+          <span className="skeleton skeleton-ach-org" />
+          <span className="skeleton skeleton-ach-date" />
+        </div>
+
+        {/* Description lines */}
+        <div className="skeleton-ach-desc">
+          {descWidths.map((w, i) => (
+            <span
+              key={i}
+              className="skeleton skeleton-ach-desc-line"
+              style={{ width: w }}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AchievementsListSkeleton({ count = 5 }) {
+  return (
+    <div className="achievements-list">
+      {Array.from({ length: count }, (_, i) => (
+        <AchievementCardSkeleton key={i} index={i} />
+      ))}
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────
+   Achievements page
+   ───────────────────────────────────────── */
 export default function Achievements() {
   const [achievements, setAchievements] = useState([]);
-  const [search, setSearch] = useState("");
+  const [search, setSearch]             = useState("");
   const [selectedTypes, setSelectedTypes] = useState(new Set());
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [isLoading, setIsLoading]       = useState(true);
+  const [error, setError]               = useState("");
 
   const formatMonthYear = (dateValue) => {
     if (!dateValue) return "-";
@@ -51,13 +146,13 @@ export default function Achievements() {
         setAchievements(
           list.map((item) => ({
             ...item,
-            id: item.id || item._id,
-            date: formatMonthYear(item.date),
-            title: item.title || "Untitled achievement",
+            id:                  item.id || item._id,
+            date:                formatMonthYear(item.date),
+            title:               item.title               || "Untitled achievement",
             issuingOrganization: item.issuingOrganization || "Unknown organization",
-            description: item.description || "",
-            type: item.type || "other",
-            url: item.url || null,
+            description:         item.description         || "",
+            type:                item.type                || "other",
+            url:                 item.url                 || null,
           }))
         );
         setError("");
@@ -72,15 +167,12 @@ export default function Achievements() {
 
     loadAchievements();
 
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, []);
 
   const toggleType = (type) => {
     const next = new Set(selectedTypes);
-    if (next.has(type)) next.delete(type);
-    else next.add(type);
+    if (next.has(type)) next.delete(type); else next.add(type);
     setSelectedTypes(next);
   };
 
@@ -95,7 +187,7 @@ export default function Achievements() {
     () =>
       achievements.filter((item) => {
         const query = search.trim().toLowerCase();
-        const matchesType = selectedTypes.size === 0 || selectedTypes.has(item.type);
+        const matchesType   = selectedTypes.size === 0 || selectedTypes.has(item.type);
         const matchesSearch =
           query === "" ||
           item.title.toLowerCase().includes(query) ||
@@ -110,75 +202,72 @@ export default function Achievements() {
 
   return (
     <div className="container-fluid">
-      {/* ── Page Header ── */}
+
+      {/* ── Page header ── */}
       <div className="section-header animate-in achievements-page-header">
         <div>
           <h1 className="achievements-page-title">Achievements</h1>
           <p className="achievements-page-count">
-            {filteredAchievements.length} of {achievements.length} results
+            {isLoading ? (
+              <span className="skeleton" style={{ display: "inline-block", width: 100, height: 12 }} />
+            ) : (
+              `${filteredAchievements.length} of ${achievements.length} results`
+            )}
           </p>
         </div>
 
-        {isFiltered && (
-          <button
-            type="button"
-            className="achievements-clear-btn"
-            onClick={clearFilters}
-          >
+        {!isLoading && isFiltered && (
+          <button type="button" className="achievements-clear-btn" onClick={clearFilters}>
             Clear filters
           </button>
         )}
       </div>
 
-      {isLoading && (
-        <div className="card" style={{ padding: 16, marginBottom: 20 }}>
-          Loading achievements...
-        </div>
-      )}
-
+      {/* ── Error ── */}
       {error && (
         <div className="card" style={{ padding: 16, marginBottom: 20 }}>
           {error}
         </div>
       )}
 
+      {/* ── Main layout: sidebar + content ── */}
       <div className="achievements-layout">
-        {/* ── Left Filters ── */}
+
+        {/* Sidebar */}
         <aside className="achievements-filters">
-          <div className="filters-card">
-            <div className="filters-card__header">
-              <SlidersHorizontal size={14} strokeWidth={2} />
-              <h3 className="filters-title">Filters</h3>
-            </div>
+          {isLoading ? (
+            <FilterSidebarSkeleton />
+          ) : (
+            <div className="filters-card">
+              <div className="filters-card__header">
+                <SlidersHorizontal size={14} strokeWidth={2} />
+                <h3 className="filters-title">Filters</h3>
+              </div>
 
-            <div className="filter-group">
-              <div className="filter-label">Type</div>
-
-              {ACHIEVEMENT_TYPES.map((type) => {
-                const { Icon, label } = FILTER_TYPE_CONFIG[type];
-                const checked = selectedTypes.has(type);
-                return (
-                  <label
-                    key={type}
-                    className={`filter-check${checked ? " filter-check--active" : ""}`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={checked}
-                      onChange={() => toggleType(type)}
-                    />
-                    <span className="filter-check__icon">
-                      <Icon size={13} strokeWidth={2} />
-                    </span>
-                    <span className="filter-check__label">{label}</span>
-                  </label>
-                );
-              })}
+              <div className="filter-group">
+                <div className="filter-label">Type</div>
+                {ACHIEVEMENT_TYPES.map((type) => {
+                  const { Icon, label } = FILTER_TYPE_CONFIG[type];
+                  const checked = selectedTypes.has(type);
+                  return (
+                    <label
+                      key={type}
+                      className={`filter-check${checked ? " filter-check--active" : ""}`}
+                    >
+                      <input type="checkbox" checked={checked} onChange={() => toggleType(type)} />
+                      <span className="filter-check__icon">
+                        <Icon size={13} strokeWidth={2} />
+                      </span>
+                      <span className="filter-check__label">{label}</span>
+                    </label>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
         </aside>
 
-        {/* ── Right: Search + Results ── */}
+        {/* Content */}
         <section className="achievements-content">
           {/* Search */}
           <div className="achievements-searchbar">
@@ -191,8 +280,10 @@ export default function Achievements() {
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by title, organization, date, or keyword…"
               className="achievements-search-input"
+              disabled={isLoading}
+              style={{ opacity: isLoading ? 0.5 : 1, cursor: isLoading ? "not-allowed" : "text" }}
             />
-            {search && (
+            {!isLoading && search && (
               <button
                 type="button"
                 className="achievements-search-clear"
@@ -205,7 +296,9 @@ export default function Achievements() {
           </div>
 
           {/* Results */}
-          {!isLoading && achievements.length === 0 ? (
+          {isLoading ? (
+            <AchievementsListSkeleton count={5} />
+          ) : achievements.length === 0 ? (
             <div className="empty-state">
               <div className="empty-state__icon">
                 <Trophy size={28} strokeWidth={1.4} />
@@ -219,14 +312,8 @@ export default function Achievements() {
                 <Trophy size={28} strokeWidth={1.4} />
               </div>
               <h3 className="empty-state__heading">No achievements found</h3>
-              <p className="empty-state__body">
-                Try adjusting the filters or search term.
-              </p>
-              <button
-                type="button"
-                className="empty-state__reset"
-                onClick={clearFilters}
-              >
+              <p className="empty-state__body">Try adjusting the filters or search term.</p>
+              <button type="button" className="empty-state__reset" onClick={clearFilters}>
                 Reset filters
               </button>
             </div>

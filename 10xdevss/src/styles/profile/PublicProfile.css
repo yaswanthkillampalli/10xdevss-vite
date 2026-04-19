@@ -1,1 +1,41 @@
 /* Styles for PublicProfile page */
+
+.public-profile-empty-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 30px 20px;
+	border: 1px dashed var(--border, rgba(0, 0, 0, 0.12));
+	border-radius: 16px;
+	background: var(--card-bg, #ffffff);
+	text-align: center;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+.public-profile-empty-state__icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	border-radius: 12px;
+	color: var(--accent, #c1121f);
+	background: color-mix(in srgb, var(--accent, #c1121f) 10%, transparent);
+}
+
+.public-profile-empty-state__title {
+	margin: 0;
+	font-family: var(--font-display, inherit);
+	font-size: 15px;
+	font-weight: 700;
+	color: var(--text-strong, #111111);
+}
+
+.public-profile-empty-state__body {
+	margin: 0;
+	font-size: 12px;
+	line-height: 1.55;
+	color: var(--text-muted, #666666);
+}

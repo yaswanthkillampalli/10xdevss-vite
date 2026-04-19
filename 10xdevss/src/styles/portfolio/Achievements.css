@@ -47,6 +47,10 @@
   --ach-red-soft:             rgba(193, 18, 31, 0.08);
 
   --ach-page-transition:      180ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Skeleton shimmer tokens */
+  --skeleton-base:            #f0e8e8;
+  --skeleton-shine:           #fdf6f6;
 }
 
 [data-theme="dark"] {
@@ -92,6 +96,165 @@
   --ach-red:                  #ef233c;
   --ach-red-dark:             #c1121f;
   --ach-red-soft:             rgba(239, 35, 60, 0.14);
+
+  /* Skeleton shimmer tokens – dark */
+  --skeleton-base:            #211a1b;
+  --skeleton-shine:           #2c2224;
+}
+
+/* ─────────────────────────────────────────
+   Shimmer keyframe + base utility
+   ───────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+
+.skeleton {
+  display: block;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-base) 25%,
+    var(--skeleton-shine) 50%,
+    var(--skeleton-base) 75%
+  );
+  background-size: 1200px 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+
+/* ─────────────────────────────────────────
+   Filter sidebar skeleton
+   ───────────────────────────────────────── */
+.skeleton-ach-filter-card {
+  background: var(--ach-filter-bg);
+  border: 1px solid var(--ach-filter-border);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: var(--ach-filter-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.skeleton-ach-filter-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.skeleton-ach-filter-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.skeleton-ach-filter-title {
+  width: 56px;
+  height: 14px;
+}
+
+.skeleton-ach-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeleton-ach-filter-section-label {
+  width: 36px;
+  height: 10px;
+  margin-bottom: 2px;
+}
+
+.skeleton-ach-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.skeleton-ach-filter-checkbox {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────
+   Achievement list-card skeleton
+   ───────────────────────────────────────── */
+.skeleton-ach-card {
+  background: var(--ach-filter-bg);
+  border: 1px solid var(--ach-filter-border);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  gap: 16px;
+  box-shadow: var(--ach-filter-shadow);
+  align-items: flex-start;
+}
+
+/* Icon/badge column on the left */
+.skeleton-ach-icon-col {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+}
+
+/* Text column */
+.skeleton-ach-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skeleton-ach-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.skeleton-ach-title {
+  height: 17px;
+  width: 62%;
+}
+
+.skeleton-ach-badge {
+  height: 22px;
+  width: 72px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.skeleton-ach-org-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.skeleton-ach-org {
+  height: 13px;
+  width: 38%;
+}
+
+.skeleton-ach-date {
+  height: 12px;
+  width: 64px;
+}
+
+.skeleton-ach-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.skeleton-ach-desc-line {
+  height: 12px;
 }
 
 /* ─────────────────────────────────────────
@@ -346,7 +509,6 @@
   width: min(100%, 600px);
 }
 
-/* ─── Modal Header ─── */
 .ach-modal-header {
   display: flex;
   align-items: flex-start;
@@ -392,7 +554,6 @@
   border-color: rgba(193, 18, 31, 0.25);
 }
 
-/* ─── Modal Body ─── */
 .ach-modal-body {
   padding: 1.1rem 1.25rem;
 }
@@ -409,7 +570,6 @@
   line-height: 1.6;
 }
 
-/* ─── Modal Footer ─── */
 .ach-modal-footer {
   display: flex;
   justify-content: flex-end;
@@ -418,7 +578,6 @@
   border-top: 1px solid var(--ach-modal-border);
 }
 
-/* ─── Image Upload ─── */
 .ach-upload-section {
   margin-bottom: 1.25rem;
 }
@@ -486,7 +645,6 @@
   display: none;
 }
 
-/* Image preview */
 .ach-image-preview-wrap {
   position: relative;
   border-radius: 14px;
@@ -521,7 +679,6 @@
   background: var(--ach-red);
 }
 
-/* ─── Form Grid ─── */
 .ach-form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
