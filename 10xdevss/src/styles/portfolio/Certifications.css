@@ -118,10 +118,9 @@
 }
 
 .cert-panel {
-  background: var(--cert-white);
-  border: 1px solid var(--cert-border);
+  background: none;
   border-radius: var(--cert-radius-lg);
-  box-shadow: var(--cert-shadow);
+  /* box-shadow: var(--cert-shadow); */
   padding: 1.1rem;
 }
 

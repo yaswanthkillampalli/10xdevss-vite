@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import ProfileMenu from './ProfileMenu';
 import { getMyProfile, getMyUser, logoutUser } from '../authentication/api';
@@ -17,6 +17,19 @@ const NAV_LINKS = [
   { to: "/achievements", label: "Achievements" },
 ];
 
+const THEME_STORAGE_KEY = '10xdevss-theme';
+
+const getInitialTheme = () => {
+  if (typeof window === 'undefined') return 'light';
+
+  const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
+  if (storedTheme === 'light' || storedTheme === 'dark') {
+    return storedTheme;
+  }
+
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+};
+
 const normalizeProfileData = (userResponse, profileResponse, fallbackProfile = {}) => {
   const user = userResponse?.data?.data || userResponse?.data || {};
   const profile = profileResponse?.data?.data || profileResponse?.data || {};
@@ -33,14 +46,15 @@ const normalizeProfileData = (userResponse, profileResponse, fallbackProfile = {
 export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState(getInitialTheme);
   const [profileSnapshot, setProfileSnapshot] = useState(() => getStoredProfileSnapshot());
   
   // State to control when the animation is visible
   const [showThemeAnimation, setShowThemeAnimation] = useState(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
+    window.localStorage.setItem(THEME_STORAGE_KEY, theme);
   }, [theme]);
 
   useEffect(() => {
@@ -158,7 +172,7 @@ export default function Navbar() {
           </Link>
 
           <button
-            className="navbar-toggler"
+            className="navbar-toggler ms-auto me-2"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#mainNavbar"
@@ -168,6 +182,18 @@ export default function Navbar() {
           >
             <span className="navbar-toggler-icon" />
           </button>
+
+          <div className="d-flex d-lg-none align-items-center">
+            <ProfileMenu
+              theme={theme}
+              toggleTheme={toggleTheme}
+              onLogout={handleLogout}
+              profileAvatar={profileSnapshot?.avatar || ''}
+              profileName={profileSnapshot?.fullName || ''}
+              profileHeadline={profileSnapshot?.headline || ''}
+              profileLocation={profileSnapshot?.location || ''}
+            />
+          </div>
 
           <div className="collapse navbar-collapse" id="mainNavbar">
             <ul className="navbar-nav portfolio-nav-list mb-3 mb-lg-0">
@@ -184,7 +210,7 @@ export default function Navbar() {
               ))}
             </ul>
 
-            <div className="portfolio-profile-wrap d-flex align-items-center">
+            <div className="portfolio-profile-wrap d-none d-lg-flex align-items-center">
               <ProfileMenu
                 theme={theme}
                 toggleTheme={toggleTheme}

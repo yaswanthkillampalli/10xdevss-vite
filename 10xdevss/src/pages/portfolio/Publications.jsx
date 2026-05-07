@@ -345,7 +345,7 @@ export default function Publications() {
                   })}
                 </div>
 
-                <div className="publications-filter-group">
+                {/* <div className="publications-filter-group">
                   <div className="publications-filter-label">Tags</div>
                   <div className="filter-tags">
                     {ALL_TAGS.map((tag) => (
@@ -355,7 +355,7 @@ export default function Publications() {
                       </label>
                     ))}
                   </div>
-                </div>
+                </div> */}
               </div>
             )}
           </aside>
