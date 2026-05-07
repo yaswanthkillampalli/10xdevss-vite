@@ -21,3 +21,6 @@ lerna-debug.log*
 .DS_Store
 .vscode/
 .idea/
+
+
+/backend/admin.js

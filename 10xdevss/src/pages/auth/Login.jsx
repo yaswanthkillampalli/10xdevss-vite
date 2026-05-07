@@ -17,8 +17,13 @@ export default function Login() {
     setLoading(true)
 
     try {
-      await loginUser({ email, password })
-      navigate('/')
+      const result = await loginUser({ email, password })
+      const role = result?.data?.role || result?.data?.data?.role
+      if (role === 'admin') {
+        navigate('/admin')
+      } else {
+        navigate('/')
+      }
     } catch (requestError) {
       setError(requestError.response?.data?.message || 'Login failed. Please try again.')
     } finally {

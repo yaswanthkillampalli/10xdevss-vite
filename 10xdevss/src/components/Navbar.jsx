@@ -17,6 +17,16 @@ const NAV_LINKS = [
   { to: "/achievements", label: "Achievements" },
 ];
 
+const FACT_LINKS = [
+  { to: "/search-students", label: "Search Students" },
+]
+
+const ROLE_LINKS = {
+  student: [],
+  faculty: [...FACT_LINKS],
+  admin: [...FACT_LINKS, { to: '/admin', label: 'Admin' }],
+}
+
 const THEME_STORAGE_KEY = '10xdevss-theme';
 
 const getInitialTheme = () => {
@@ -48,6 +58,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [theme, setTheme] = useState(getInitialTheme);
   const [profileSnapshot, setProfileSnapshot] = useState(() => getStoredProfileSnapshot());
+  const [role, setRole] = useState(null);
   
   // State to control when the animation is visible
   const [showThemeAnimation, setShowThemeAnimation] = useState(false);
@@ -85,6 +96,16 @@ export default function Navbar() {
 
         setProfileSnapshot(nextProfile);
         writeProfileSnapshot(nextProfile);
+        // Determine role (robust against different response shapes)
+        try {
+          const userPayload =
+            userResult && userResult.status === 'fulfilled' ? userResult.value : null;
+          const extractedRole =
+            userPayload?.data?.role ?? userPayload?.role ?? userPayload?.data?.data?.role ?? null;
+          setRole(extractedRole || 'student');
+        } catch (err) {
+          setRole('student');
+        }
       } catch (error) {
         if (import.meta.env.DEV) {
           console.error('Could not load navbar profile:', error);
@@ -197,17 +218,21 @@ export default function Navbar() {
 
           <div className="collapse navbar-collapse" id="mainNavbar">
             <ul className="navbar-nav portfolio-nav-list mb-3 mb-lg-0">
-              {NAV_LINKS.map((link) => (
-                <li className="nav-item" key={link.to}>
-                  <Link
-                    to={link.to}
-                    className={`nav-link portfolio-nav-link ${isActive(link.to) ? 'active' : ''}`}
-                    aria-current={isActive(link.to) ? 'page' : undefined}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              {(() => {
+                const roleLinks = ROLE_LINKS[role] || [];
+                const displayed = [...NAV_LINKS, ...roleLinks];
+                return displayed.map((link) => (
+                  <li className="nav-item" key={link.to}>
+                    <Link
+                      to={link.to}
+                      className={`nav-link portfolio-nav-link ${isActive(link.to) ? 'active' : ''}`}
+                      aria-current={isActive(link.to) ? 'page' : undefined}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ));
+              })()}
             </ul>
 
             <div className="portfolio-profile-wrap d-none d-lg-flex align-items-center">

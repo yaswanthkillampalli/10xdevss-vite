@@ -17,6 +17,8 @@ import Settings from './pages/settings/Settings.jsx'
 import NotFound from './pages/NotFound.jsx'
 import Layout from './components/Layout.jsx'
 import ProtectedRoute from './routes/ProtectedRoute.jsx'
+import AdminProtectedRoute from './routes/AdminProtectedRoute.jsx'
+import Admin from './pages/admin/Admin.jsx'
 
 export default function App() {
     return (
@@ -42,6 +44,9 @@ export default function App() {
                     <Route path="achievements" element={<Achievements />} />
                     <Route path="portfolio/skills" element={<Skills />} />
                     <Route path="settings" element={<Settings />} />
+                            <Route element={<AdminProtectedRoute />}>
+                                <Route path="admin" element={<Admin />} />
+                            </Route>
                 </Route>
             </Route>
 
