@@ -358,6 +358,27 @@ const resetPassword = async (payload) => {
   return response.data
 }
 
+// Admin functions
+const adminGetAllUsers = async (params = {}) => {
+  const response = await api.get('/api/admin/users', { params })
+  return response.data
+}
+
+const adminGetUserById = async (id) => {
+  const response = await api.get(`/api/admin/users/${id}`)
+  return response.data
+}
+
+const adminUpdateUserProfile = async (id, payload) => {
+  const response = await api.put(`/api/admin/users/${id}`, payload)
+  return response.data
+}
+
+const adminChangeUserPassword = async (id, payload) => {
+  const response = await api.post(`/api/admin/users/${id}/change-password`, payload)
+  return response.data
+}
+
 export {
   api,
   authHeaders,
@@ -403,6 +424,10 @@ export {
   changePassword,
   forgotPassword,
   resetPassword,
+  adminGetAllUsers,
+  adminGetUserById,
+  adminUpdateUserProfile,
+  adminChangeUserPassword,
   getRefreshToken,
   getRefreshTokenExpiry,
   isAuthenticated,
