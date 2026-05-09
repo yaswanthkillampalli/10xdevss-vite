@@ -12,6 +12,8 @@ const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
 
+app.set("trust proxy", 1);
+
 // ─── CORS ─────────────────────────────────────────────────────────────────────
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || "http://localhost:3000").split(",");
 
