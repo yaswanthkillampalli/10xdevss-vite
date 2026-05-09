@@ -11,6 +11,7 @@ import {
   BadgeCheck,
 } from "lucide-react";
 import "../../styles/portfolio/Publications.css";
+import { toast } from 'react-toastify';
 import PublicationCard from "../../components/publications/PublicationCard.jsx";
 import { getDiscoverPublications } from "../../authentication/api";
 
@@ -229,7 +230,8 @@ export default function Publications() {
         setError("");
       } catch (loadError) {
         if (!isMounted) return;
-        setError(loadError?.response?.data?.message || "Could not load publications.");
+        const msg = loadError?.response?.data?.message || "Could not load publications.";
+        toast.error(msg);
         setPubs([]);
       } finally {
         if (isMounted) setIsLoading(false);
@@ -304,12 +306,7 @@ export default function Publications() {
           )}
         </div>
 
-        {/* ── Error ── */}
-        {error && (
-          <div className="card" style={{ padding: 16, marginBottom: 20 }}>
-            {error}
-          </div>
-        )}
+        {/* Errors are shown via toast notifications (react-toastify) */}
 
         {/* ── Main layout: sidebar + content ── */}
         <div className="publications-layout">

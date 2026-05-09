@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "../../styles/portfolio/Achievements.css";
+import { toast } from 'react-toastify';
 import AchievementCard from "../../components/achievements/AchievementCard.jsx";
 import {
   createAchievement,
@@ -278,10 +279,9 @@ export default function MyAchievements() {
             : [];
         if (!isMounted) return;
         setAchievements(list.map(normalizeAchievement));
-        setMessage("");
       } catch (error) {
         if (!isMounted) return;
-        setMessage(error?.response?.data?.message || "Could not load achievements.");
+        toast.error(error?.response?.data?.message || "Could not load achievements.");
       } finally {
         if (isMounted) setIsLoading(false);
       }
@@ -355,11 +355,11 @@ export default function MyAchievements() {
           setAchievements((prev) => [normalizeAchievement(created), ...prev]);
         }
 
-        setMessage("Achievement added successfully.");
+        toast.success("Achievement added successfully.");
         resetForm();
         setAddModalOpen(false);
       } catch (error) {
-        setMessage(error?.response?.data?.message || error?.message || "Could not create achievement.");
+        toast.error(error?.response?.data?.message || error?.message || "Could not create achievement.");
       } finally {
         setIsSaving(false);
       }
@@ -401,11 +401,11 @@ export default function MyAchievements() {
           );
         }
 
-        setMessage("Achievement updated successfully.");
+        toast.success("Achievement updated successfully.");
         resetForm();
         setEditModalOpen(false);
       } catch (error) {
-        setMessage(error?.response?.data?.message || error?.message || "Could not update achievement.");
+        toast.error(error?.response?.data?.message || error?.message || "Could not update achievement.");
       } finally {
         setIsSaving(false);
       }
@@ -420,9 +420,9 @@ export default function MyAchievements() {
       try {
         await deleteAchievement(deleteTarget.id);
         setAchievements((prev) => prev.filter((item) => item.id !== deleteTarget.id));
-        setMessage("Achievement deleted successfully.");
+        toast.success("Achievement deleted successfully.");
       } catch (error) {
-        setMessage(error?.response?.data?.message || "Could not delete achievement.");
+        toast.error(error?.response?.data?.message || "Could not delete achievement.");
       } finally {
         setDeleteTarget(null);
       }
@@ -442,11 +442,7 @@ export default function MyAchievements() {
             </div>
           </div>
 
-          {message && (
-            <div className="cert-empty-state" style={{ marginBottom: 12, padding: "0.9rem" }}>
-              <p>{message}</p>
-            </div>
-          )}
+          {/* Notifications shown via toast (react-toastify) */}
 
           <div className="cert-layout">
             <aside className="cert-sidebar">

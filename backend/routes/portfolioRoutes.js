@@ -26,6 +26,7 @@ router.put("/users/me", protect, userController.updateMe);
 router.put("/users/me/password", protect, userController.changePassword);
 router.delete("/users/me", protect, userController.deleteMe);
 
+router.get("/users/search", protect, restrictTo("faculty", "admin"), userController.searchDirectory);
 router.get("/users", protect, restrictTo("admin"), userController.getAll);
 router.delete("/users/:id", protect, restrictTo("admin"), userController.deleteUser);
 

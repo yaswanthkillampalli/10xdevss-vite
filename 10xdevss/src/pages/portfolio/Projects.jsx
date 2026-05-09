@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { FolderKanban, Search, SearchX } from "lucide-react";
 import "../../styles/portfolio/Projects.css";
+import { toast } from 'react-toastify';
 import ProjectCard from "../../components/projects/ProjectCard.jsx";
 import { getDiscoverProjects } from "../../authentication/api";
 
@@ -162,7 +163,8 @@ export default function Projects() {
         setError("");
       } catch (loadError) {
         if (!isMounted) return;
-        setError(loadError?.response?.data?.message || "Could not load projects.");
+        const msg = loadError?.response?.data?.message || "Could not load projects.";
+        toast.error(msg);
         setProjects([]);
       } finally {
         if (isMounted) setIsLoading(false);
@@ -213,12 +215,7 @@ export default function Projects() {
           </div>
         </div>
 
-        {/* ── Error ── */}
-        {error && (
-          <div className="card" style={{ padding: 16, marginBottom: 20 }}>
-            {error}
-          </div>
-        )}
+        {/* Errors are shown via toast notifications (react-toastify) */}
 
         {/* ── Search bar ── */}
         <div className="project-searchbar" style={{ marginBottom: 24 }}>

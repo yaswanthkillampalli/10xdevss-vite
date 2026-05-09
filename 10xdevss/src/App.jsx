@@ -1,6 +1,8 @@
 import { Routes, Route } from 'react-router'
 import Login from './pages/auth/Login.jsx'
 import Register from './pages/auth/Register.jsx'
+import ForgotPassword from './pages/auth/ForgotPassword.jsx'
+import ResetPassword from './pages/auth/ResetPassword.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Projects from './pages/portfolio/Projects.jsx'
 import MyProjects from './pages/portfolio/MyProjects.jsx'
@@ -18,13 +20,17 @@ import NotFound from './pages/NotFound.jsx'
 import Layout from './components/Layout.jsx'
 import ProtectedRoute from './routes/ProtectedRoute.jsx'
 import AdminProtectedRoute from './routes/AdminProtectedRoute.jsx'
+import FacultyAdminProtectedRoute from './routes/FacultyAdminProtectedRoute.jsx'
 import Admin from './pages/admin/Admin.jsx'
+import SearchStudents from './pages/faculty/SearchStudents.jsx'
 
 export default function App() {
     return (
         <Routes>
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
+            <Route path="forgot-password" element={<ForgotPassword />} />
+            <Route path="reset-password" element={<ResetPassword />} />
             <Route path="profile/:userId" element={<PublicProfile />} />
             
             <Route element={<ProtectedRoute />}>
@@ -44,6 +50,9 @@ export default function App() {
                     <Route path="achievements" element={<Achievements />} />
                     <Route path="portfolio/skills" element={<Skills />} />
                     <Route path="settings" element={<Settings />} />
+                    <Route element={<FacultyAdminProtectedRoute />}>
+                        <Route path="search-students" element={<SearchStudents />} />
+                    </Route>
                             <Route element={<AdminProtectedRoute />}>
                                 <Route path="admin" element={<Admin />} />
                             </Route>

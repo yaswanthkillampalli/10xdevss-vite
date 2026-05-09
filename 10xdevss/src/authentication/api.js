@@ -165,6 +165,11 @@ const updateMyUser = async (payload) => {
   return response.data
 }
 
+const searchDirectoryUsers = async (params = {}) => {
+  const response = await api.get('/api/users/search', { params })
+  return response.data
+}
+
 const getMyProfile = async () => {
   const response = await api.get('/api/profile/me')
   return response.data
@@ -325,6 +330,34 @@ const deleteCertification = async (id) => {
   return response.data
 }
 
+
+const changePassword = async (payload) => {
+  const response = await api.post('/api/auth/change-password', payload)
+  saveAuthTokens({
+    token: response.data?.token,
+    refreshToken: response.data?.refreshToken,
+    expiresAt: response.data?.expiresAt,
+    refreshExpiresAt: response.data?.refreshExpiresAt,
+  })
+  return response.data
+}
+
+const forgotPassword = async (emailId) => {
+  const response = await api.post('/api/auth/forgot-password', { emailId })
+  return response.data
+}
+
+const resetPassword = async (payload) => {
+  const response = await api.post('/api/auth/reset-password', payload)
+  saveAuthTokens({
+    token: response.data?.token,
+    refreshToken: response.data?.refreshToken,
+    expiresAt: response.data?.expiresAt,
+    refreshExpiresAt: response.data?.refreshExpiresAt,
+  })
+  return response.data
+}
+
 export {
   api,
   authHeaders,
@@ -334,6 +367,7 @@ export {
   getCurrentUser,
   getMyUser,
   updateMyUser,
+  searchDirectoryUsers,
   getMyProfile,
   getPublicProfileByUserId,
   createMyProfile,
@@ -366,6 +400,9 @@ export {
   createCertification,
   updateCertification,
   deleteCertification,
+  changePassword,
+  forgotPassword,
+  resetPassword,
   getRefreshToken,
   getRefreshTokenExpiry,
   isAuthenticated,

@@ -22,8 +22,8 @@ import {
   updateMyProfile,
   updateMyUser,
 } from "../../authentication/api";
+import { useAuth } from "../../context/AuthContext.jsx";
 import useImageKitUpload from "../../hooks/useImageKitUpload";
-import { writeProfileSnapshot } from "../../utils/profileSync";
 import "../../styles/profile/MyProfile.css";
 
 const INITIAL_PROFILE = {
@@ -84,6 +84,7 @@ function FieldEdit({ icon: Icon, label, id, value, onChange, type = "text", plac
 }
 
 export default function MyProfile() {
+  const { session, setSessionFromLoginResponse, refreshSession } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState(INITIAL_PROFILE);
   const [draft, setDraft] = useState(INITIAL_PROFILE);
@@ -129,7 +130,9 @@ export default function MyProfile() {
 
         setProfile(mergedProfile);
         setDraft(mergedProfile);
-        writeProfileSnapshot(mergedProfile);
+        
+        // Also update context to ensure all components have consistent data
+        setSessionFromLoginResponse(userData, profileData);
       } catch {
         if (isMounted) {
           setSavedMessage("Using local profile data. Could not fetch server profile right now.");
@@ -284,7 +287,26 @@ export default function MyProfile() {
 
       setProfile(nextProfile);
       setDraft(nextProfile);
-      writeProfileSnapshot(nextProfile);
+      
+      if (session?.user) {
+        const updatedUser = {
+          ...session.user,
+          fullName: nextProfile.fullName,
+          emailId: nextProfile.emailId,
+          rollId: nextProfile.rollId,
+        };
+        const updatedProfile = {
+          avatar: nextProfile.avatar,
+          headline: nextProfile.headline,
+          location: nextProfile.location,
+          bio: nextProfile.bio,
+          socialLinks: nextProfile.socialLinks,
+        };
+        setSessionFromLoginResponse(updatedUser, updatedProfile);
+      }
+      
+      // Validate and sync with server
+      await refreshSession();
       setIsEditing(false);
       clearSelectedAvatar();
       resetUploadState();

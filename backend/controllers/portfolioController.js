@@ -10,6 +10,11 @@ const projectController = require("./portfolio/projectController");
 const publicationController = require("./portfolio/publicationController");
 const skillController = require("./portfolio/skillController");
 
+const DIRECTORY_ROLES = ["student", "faculty"];
+
+const escapeRegex = (value = "") =>
+  String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 // ─── User controller ──────────────────────────────────────────────────────────
 // Handles the core User document (name, email, role, password change etc.)
 
@@ -97,6 +102,48 @@ const userController = {
       });
     } catch (error) {
       return errorResponse(res, { statusCode: 500, message: "Could not fetch users." });
+    }
+  },
+
+  // GET /api/users/search?q=<query>&role=<student|faculty|all>&limit=<number>
+  // Search is limited to student/faculty users and can be accessed by faculty/admin.
+  searchDirectory: async (req, res) => {
+    try {
+      const q = String(req.query.q || "").trim();
+      const roleParam = String(req.query.role || "all").toLowerCase();
+      const limit = Math.min(Math.max(Number(req.query.limit) || 25, 1), 100);
+
+      let rolesToSearch = DIRECTORY_ROLES;
+      if (roleParam !== "all") {
+        if (!DIRECTORY_ROLES.includes(roleParam)) {
+          return errorResponse(res, {
+            statusCode: 400,
+            message: "role must be one of: all, student, faculty.",
+          });
+        }
+        rolesToSearch = [roleParam];
+      }
+
+      const filter = {
+        role: { $in: rolesToSearch },
+        isActive: true,
+      };
+
+      if (q) {
+        const regex = new RegExp(escapeRegex(q), "i");
+        filter.$or = [{ fullName: regex }, { rollId: regex }, { emailId: regex }];
+      }
+
+      const users = await User.find(filter)
+        .sort({ fullName: 1, createdAt: -1 })
+        .limit(limit);
+
+      return successResponse(res, {
+        message: "Directory users fetched.",
+        data: users.map((u) => u.toSafeObject()),
+      });
+    } catch (error) {
+      return errorResponse(res, { statusCode: 500, message: "Could not search users." });
     }
   },
 

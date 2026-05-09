@@ -1,14 +1,9 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import ProfileMenu from './ProfileMenu';
-import { getMyProfile, getMyUser, logoutUser } from '../authentication/api';
 import '../styles/components/Navbar.css';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import {
-  getStoredProfileSnapshot,
-  subscribeToProfileSnapshot,
-  writeProfileSnapshot,
-} from '../utils/profileSync';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const NAV_LINKS = [
   { to: "/", label: "Dashboard" },
@@ -40,25 +35,11 @@ const getInitialTheme = () => {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 };
 
-const normalizeProfileData = (userResponse, profileResponse, fallbackProfile = {}) => {
-  const user = userResponse?.data?.data || userResponse?.data || {};
-  const profile = profileResponse?.data?.data || profileResponse?.data || {};
-
-  return {
-    fullName: user.fullName || fallbackProfile.fullName || '',
-    avatar: profile.avatar || fallbackProfile.avatar || '',
-    headline: profile.headline || fallbackProfile.headline || '',
-    location: profile.location || fallbackProfile.location || '',
-    username: profile.username || user.username || fallbackProfile.username || '',
-  };
-};
-
 export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { session, signOut } = useAuth();
   const [theme, setTheme] = useState(getInitialTheme);
-  const [profileSnapshot, setProfileSnapshot] = useState(() => getStoredProfileSnapshot());
-  const [role, setRole] = useState(null);
   
   // State to control when the animation is visible
   const [showThemeAnimation, setShowThemeAnimation] = useState(false);
@@ -68,57 +49,8 @@ export default function Navbar() {
     window.localStorage.setItem(THEME_STORAGE_KEY, theme);
   }, [theme]);
 
-  useEffect(() => {
-    setProfileSnapshot(getStoredProfileSnapshot());
-    return subscribeToProfileSnapshot((nextProfile) => {
-      if (!nextProfile) return;
-      setProfileSnapshot(nextProfile);
-    });
-  }, []);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const loadNavbarProfile = async () => {
-      try {
-        const [userResult, profileResult] = await Promise.allSettled([
-          getMyUser(),
-          getMyProfile(),
-        ]);
-
-        if (!isMounted) return;
-
-        const nextProfile = normalizeProfileData(
-          userResult.status === 'fulfilled' ? userResult.value : null,
-          profileResult.status === 'fulfilled' ? profileResult.value : null,
-          getStoredProfileSnapshot() || {}
-        );
-
-        setProfileSnapshot(nextProfile);
-        writeProfileSnapshot(nextProfile);
-        // Determine role (robust against different response shapes)
-        try {
-          const userPayload =
-            userResult && userResult.status === 'fulfilled' ? userResult.value : null;
-          const extractedRole =
-            userPayload?.data?.role ?? userPayload?.role ?? userPayload?.data?.data?.role ?? null;
-          setRole(extractedRole || 'student');
-        } catch (err) {
-          setRole('student');
-        }
-      } catch (error) {
-        if (import.meta.env.DEV) {
-          console.error('Could not load navbar profile:', error);
-        }
-      }
-    };
-
-    loadNavbarProfile();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const profileSnapshot = session?.displayProfile || {}
+  const role = session?.role || 'student'
 
   const isActive = (to) => {
     if (to === "/") return location.pathname === "/";
@@ -141,7 +73,7 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
-      await logoutUser();
+      await signOut();
     } catch (error) {
       console.error('Logout failed:', error);
     } finally {

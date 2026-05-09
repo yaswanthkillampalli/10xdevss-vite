@@ -63,4 +63,53 @@ const validateRefreshToken = (req, res, next) => {
 	next();
 };
 
-module.exports = { validateRegister, validateLogin, validateRefreshToken };
+const validateForgotPassword = (req, res, next) => {
+	const { emailId } = req.body || {};
+
+	if (!emailId) {
+		return errorResponse(res, { statusCode: 400, message: "emailId is required." });
+	}
+
+	if (!/^\S+@\S+\.\S+$/.test(String(emailId).trim())) {
+		return errorResponse(res, { statusCode: 400, message: "emailId must be a valid email address." });
+	}
+
+	next();
+};
+
+const validateResetPassword = (req, res, next) => {
+	const { emailId, otp, newPassword, confirmPassword } = req.body || {};
+
+	if (!emailId || !otp || !newPassword || !confirmPassword) {
+		return errorResponse(res, {
+			statusCode: 400,
+			message: "emailId, otp, newPassword and confirmPassword are required.",
+		});
+	}
+
+	if (!/^\S+@\S+\.\S+$/.test(String(emailId).trim())) {
+		return errorResponse(res, { statusCode: 400, message: "emailId must be a valid email address." });
+	}
+
+	if (!/^\d{6}$/.test(String(otp).trim())) {
+		return errorResponse(res, { statusCode: 400, message: "otp must be a valid 6 digit code." });
+	}
+
+	if (String(newPassword).length < 6) {
+		return errorResponse(res, { statusCode: 400, message: "newPassword must be at least 6 characters." });
+	}
+
+	if (String(newPassword) !== String(confirmPassword)) {
+		return errorResponse(res, { statusCode: 400, message: "newPassword and confirmPassword do not match." });
+	}
+
+	next();
+};
+
+module.exports = {
+	validateRegister,
+	validateLogin,
+	validateRefreshToken,
+	validateForgotPassword,
+	validateResetPassword,
+};

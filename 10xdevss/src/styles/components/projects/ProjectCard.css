@@ -293,12 +293,27 @@
   padding-top: 4px;
   padding-bottom: 14px;
 
-  /* clamp to 3 lines for visual rhythm */
-  display: -webkit-box;
-  line-clamp: 3;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  /* allow scrolling when description is long */
+  max-height: 72px; /* roughly 4 lines */
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Subtle custom scrollbars */
+.project-card__description::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.project-card__description::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--pc-border) 60%, transparent);
+  border-radius: 8px;
+}
+.project-card__description::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--pc-border) 80%, transparent);
+}
+.project-card__description {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--pc-border) 60%, transparent) transparent;
 }
 
 /* ─────────────────────────────────────────

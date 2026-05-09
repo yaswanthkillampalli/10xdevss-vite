@@ -2,10 +2,12 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { ArrowRight, LockKeyhole, Mail, ShieldCheck, Zap } from 'lucide-react'
 import { loginUser } from '../../authentication/api'
+import { useAuth } from '../../context/AuthContext.jsx'
 import '../../styles/auth/Login.css'
 
 export default function Login() {
   const navigate = useNavigate()
+  const { setSessionFromLoginResponse } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -18,7 +20,16 @@ export default function Login() {
 
     try {
       const result = await loginUser({ email, password })
-      const role = result?.data?.role || result?.data?.data?.role
+      
+      // Extract user and profile from the login response
+      const userData = result?.data?.user
+      const profileData = result?.data?.profile
+      const role = userData?.role || 'student'
+      
+      // Populate auth context with the login response data
+      setSessionFromLoginResponse(userData, profileData)
+      
+      // Route based on role
       if (role === 'admin') {
         navigate('/admin')
       } else {
@@ -130,7 +141,7 @@ export default function Login() {
                       <label htmlFor="password" className="form-label login-label mb-0">
                         Password
                       </label>
-                      <button type="button" className="login-forgot-btn">
+                      <button type="button" className="login-forgot-btn" onClick={() => navigate('/forgot-password')}>
                         Forgot Password?
                       </button>
                     </div>

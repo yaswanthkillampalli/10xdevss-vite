@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { toast } from 'react-toastify';
 import "../styles/Dashboard.css";
 import RecentProjects from "../components/dashboard/RecentProjects";
 import RecentActivity from "../components/dashboard/RecentActivity";
@@ -129,7 +130,7 @@ export default function Dashboard() {
         setError("");
       } catch (loadError) {
         if (!isMounted) return;
-        setError(loadError?.response?.data?.message || "Could not load dashboard data.");
+        toast.error(loadError?.response?.data?.message || "Could not load dashboard data.");
       } finally {
         if (isMounted) setIsLoading(false);
       }
@@ -230,12 +231,7 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* ── Error ── */}
-        {error && (
-          <div className="card" style={{ padding: 16, marginBottom: 20 }}>
-            {error}
-          </div>
-        )}
+        {/* Errors are shown via toast notifications (react-toastify) */}
 
         {/* ── Stats row ── */}
         {isLoading ? (

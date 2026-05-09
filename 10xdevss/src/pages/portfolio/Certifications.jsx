@@ -7,6 +7,7 @@ import {
   updateCertification,
 } from "../../authentication/api";
 import useImageKitUpload from "../../hooks/useImageKitUpload";
+import { toast } from 'react-toastify';
 
 const EMPTY_FORM = {
   title: "",
@@ -270,7 +271,6 @@ export default function Certifications() {
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [message, setMessage] = useState("");
   const { uploadFile } = useImageKitUpload();
 
   /* modal states */
@@ -302,10 +302,9 @@ export default function Certifications() {
             issueDate: item.issueDate ? String(item.issueDate).slice(0, 10) : "",
           }))
         );
-        setMessage("");
       } catch (error) {
         if (!isMounted) return;
-        setMessage(error?.response?.data?.message || "Could not load certifications.");
+        toast.error(error?.response?.data?.message || "Could not load certifications.");
       } finally {
         if (isMounted) setIsLoading(false);
       }
@@ -393,11 +392,11 @@ export default function Certifications() {
           ]);
         }
 
-        setMessage("Certification added successfully.");
+        toast.success("Certification added successfully.");
         resetForm();
         setAddModalOpen(false);
       } catch (error) {
-        setMessage(error?.response?.data?.message || error?.message || "Could not create certification.");
+        toast.error(error?.response?.data?.message || error?.message || "Could not create certification.");
       } finally {
         setIsSaving(false);
       }
@@ -462,11 +461,11 @@ export default function Certifications() {
           );
         }
 
-        setMessage("Certification updated successfully.");
+        toast.success("Certification updated successfully.");
         resetForm();
         setEditModalOpen(false);
       } catch (error) {
-        setMessage(error?.response?.data?.message || error?.message || "Could not update certification.");
+        toast.error(error?.response?.data?.message || error?.message || "Could not update certification.");
       } finally {
         setIsSaving(false);
       }
@@ -482,9 +481,9 @@ export default function Certifications() {
       try {
         await deleteCertification(deleteTarget.id);
         setCertifications((prev) => prev.filter((item) => item.id !== deleteTarget.id));
-        setMessage("Certification deleted successfully.");
+        toast.success("Certification deleted successfully.");
       } catch (error) {
-        setMessage(error?.response?.data?.message || "Could not delete certification.");
+        toast.error(error?.response?.data?.message || "Could not delete certification.");
       } finally {
         setDeleteTarget(null);
       }
@@ -506,11 +505,7 @@ export default function Certifications() {
             </div>
           </div>
 
-          {message && (
-            <div className="cert-empty-state" style={{ marginBottom: 12, padding: "0.9rem" }}>
-              <p>{message}</p>
-            </div>
-          )}
+          {/* Notifications shown via toast (react-toastify) */}
 
           <div className="cert-layout">
             {/* Sidebar */}

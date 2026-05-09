@@ -11,10 +11,12 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { registerUser } from "../../authentication/api";
+import { useAuth } from "../../context/AuthContext.jsx";
 import "../../styles/auth/Register.css";
 
 export default function Register() {
   const navigate = useNavigate();
+  const { setSessionFromLoginResponse } = useAuth();
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -45,7 +47,7 @@ export default function Register() {
     setLoading(true);
 
     try {
-      await registerUser({
+      const result = await registerUser({
         fullName: formData.fullName,
         emailId: formData.emailId,
         rollId: formData.rollId,
@@ -53,6 +55,12 @@ export default function Register() {
         role: formData.role,
         password: formData.password,
       });
+      // Extract user and profile from the registration response
+      const userData = result?.data?.user
+      const profileData = result?.data?.profile
+      
+      // Populate auth context with the registration response data
+      setSessionFromLoginResponse(userData, profileData);
       navigate("/");
     } catch (requestError) {
       setError(

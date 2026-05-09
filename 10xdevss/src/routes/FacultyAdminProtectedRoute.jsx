@@ -2,7 +2,9 @@ import { Navigate, Outlet, useLocation } from 'react-router'
 import { isAuthenticated } from '../authentication/api'
 import { useAuth } from '../context/AuthContext.jsx'
 
-export default function AdminProtectedRoute() {
+const ALLOWED_ROLES = ['faculty', 'admin']
+
+export default function FacultyAdminProtectedRoute() {
   const location = useLocation()
   const { isHydrating, session } = useAuth()
 
@@ -14,7 +16,7 @@ export default function AdminProtectedRoute() {
     return <Navigate to="/login" replace state={{ from: location }} />
   }
 
-  if ((session?.role || 'student') !== 'admin') {
+  if (!ALLOWED_ROLES.includes(session?.role || 'student')) {
     return <Navigate to="/" replace />
   }
 

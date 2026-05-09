@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import "../../styles/portfolio/Skills.css";
+import { toast } from 'react-toastify';
 import {
   createSkill,
   deleteSkill,
@@ -79,7 +80,6 @@ export default function Skills() {
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [message, setMessage] = useState("");
 
   const normalizeSkill = (item) => ({
     ...item,
@@ -100,10 +100,9 @@ export default function Skills() {
 
         if (!isMounted) return;
         setSkills(list.map(normalizeSkill));
-        setMessage("");
       } catch (error) {
         if (!isMounted) return;
-        setMessage(error?.response?.data?.message || "Could not load skills.");
+        toast.error(error?.response?.data?.message || "Could not load skills.");
       } finally {
         if (isMounted) setIsLoading(false);
       }
@@ -171,11 +170,11 @@ export default function Skills() {
           setSkills((prev) => [normalizeSkill(created), ...prev]);
         }
 
-        setMessage("Skill added successfully.");
+        toast.success("Skill added successfully.");
         setFormData(EMPTY_FORM);
         setActivePanel("view");
       } catch (error) {
-        setMessage(error?.response?.data?.message || error?.message || "Could not create skill.");
+        toast.error(error?.response?.data?.message || error?.message || "Could not create skill.");
       } finally {
         setIsSaving(false);
       }
@@ -207,12 +206,12 @@ export default function Skills() {
           );
         }
 
-        setMessage("Skill updated successfully.");
+        toast.success("Skill updated successfully.");
         setSelectedSkill(null);
         setFormData(EMPTY_FORM);
         setActivePanel("view");
       } catch (error) {
-        setMessage(error?.response?.data?.message || error?.message || "Could not update skill.");
+        toast.error(error?.response?.data?.message || error?.message || "Could not update skill.");
       } finally {
         setIsSaving(false);
       }
@@ -228,9 +227,9 @@ export default function Skills() {
       try {
         await deleteSkill(deleteTarget.id);
         setSkills((prev) => prev.filter((skill) => skill.id !== deleteTarget.id));
-        setMessage("Skill deleted successfully.");
+        toast.success("Skill deleted successfully.");
       } catch (error) {
-        setMessage(error?.response?.data?.message || "Could not delete skill.");
+        toast.error(error?.response?.data?.message || "Could not delete skill.");
       } finally {
         setDeleteTarget(null);
       }
@@ -253,11 +252,7 @@ export default function Skills() {
             </div>
           </div>
 
-          {message && (
-            <div className="skills-empty-state" style={{ marginBottom: 12, padding: "0.9rem" }}>
-              <p>{message}</p>
-            </div>
-          )}
+          {/* Notifications shown via toast (react-toastify) */}
 
           <div className="skills-layout">
             <aside className="skills-sidebar">

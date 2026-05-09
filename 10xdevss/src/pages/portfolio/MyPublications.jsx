@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "../../styles/portfolio/Publications.css";
+import { toast } from 'react-toastify';
 import PublicationCard from "../../components/publications/PublicationCard.jsx";
 import {
   createPublication,
@@ -333,10 +334,9 @@ export default function MyPublications() {
         const list = response?.data || [];
         if (!isMounted) return;
         setPublications(list.map(normalizePublication));
-        setMessage("");
       } catch (error) {
         if (!isMounted) return;
-        setMessage(error?.response?.data?.message || "Could not load publications.");
+        toast.error(error?.response?.data?.message || "Could not load publications.");
       } finally {
         if (isMounted) setIsLoading(false);
       }
@@ -417,11 +417,11 @@ export default function MyPublications() {
           setPublications((prev) => [normalizePublication(created), ...prev]);
         }
 
-        setMessage("Publication added successfully.");
+        toast.success("Publication added successfully.");
         resetForm();
         setAddModalOpen(false);
       } catch (error) {
-        setMessage(error?.response?.data?.message || error?.message || "Could not create publication.");
+        toast.error(error?.response?.data?.message || error?.message || "Could not create publication.");
       } finally {
         setIsSaving(false);
       }
@@ -463,11 +463,11 @@ export default function MyPublications() {
           );
         }
 
-        setMessage("Publication updated successfully.");
+        toast.success("Publication updated successfully.");
         resetForm();
         setEditModalOpen(false);
       } catch (error) {
-        setMessage(error?.response?.data?.message || error?.message || "Could not update publication.");
+        toast.error(error?.response?.data?.message || error?.message || "Could not update publication.");
       } finally {
         setIsSaving(false);
       }
@@ -482,9 +482,9 @@ export default function MyPublications() {
       try {
         await deletePublication(deleteTarget.id);
         setPublications((prev) => prev.filter((item) => item.id !== deleteTarget.id));
-        setMessage("Publication deleted successfully.");
+        toast.success("Publication deleted successfully.");
       } catch (error) {
-        setMessage(error?.response?.data?.message || "Could not delete publication.");
+        toast.error(error?.response?.data?.message || "Could not delete publication.");
       } finally {
         setDeleteTarget(null);
       }
@@ -504,11 +504,7 @@ export default function MyPublications() {
             </div>
           </div>
 
-          {message && (
-            <div className="cert-empty-state" style={{ marginBottom: 12, padding: "0.9rem" }}>
-              <p>{message}</p>
-            </div>
-          )}
+          {/* Notifications shown via toast (react-toastify) */}
 
           <div className="cert-layout">
             <aside className="cert-sidebar">

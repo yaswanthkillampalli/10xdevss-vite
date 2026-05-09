@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from 'react-toastify';
 import "../../styles/portfolio/Experience.css";
 import {
   createExperience,
@@ -110,7 +111,6 @@ export default function Experience() {
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [message, setMessage] = useState("");
 
   const formatMonthYear = (dateValue) => {
     if (!dateValue) return null;
@@ -158,7 +158,7 @@ export default function Experience() {
         setExperience(list.map(normalizeItem));
       } catch (error) {
         if (!isMounted) return;
-        setMessage(error?.response?.data?.message || "Could not load experience records.");
+        toast.error(error?.response?.data?.message || "Could not load experience records.");
       } finally {
         if (isMounted) setIsLoading(false);
       }
@@ -200,22 +200,22 @@ export default function Experience() {
     try {
       await deleteExperience(id);
       setExperience((prev) => prev.filter((item) => item.id !== id));
-      setMessage("Experience deleted successfully.");
+      toast.success("Experience deleted successfully.");
     } catch (error) {
-      setMessage(error?.response?.data?.message || "Could not delete experience.");
+      toast.error(error?.response?.data?.message || "Could not delete experience.");
     }
   };
 
   const handleSave = async () => {
     const payload = mapToPayload();
     if (!payload.company || !payload.role || !payload.startDate) {
-      setMessage("Company, role and start date are required.");
+      toast.error("Company, role and start date are required.");
       return;
     }
 
     try {
       setIsSaving(true);
-      if (modalMode === "edit" && selectedItem) {
+        if (modalMode === "edit" && selectedItem) {
         const response = await updateExperience(selectedItem.id, payload);
         const updated = response?.data;
         if (updated) {
@@ -223,20 +223,20 @@ export default function Experience() {
             prev.map((item) => (item.id === selectedItem.id ? normalizeItem(updated) : item))
           );
         }
-        setMessage("Experience updated successfully.");
+        toast.success("Experience updated successfully.");
       } else {
         const response = await createExperience(payload);
         const created = response?.data;
         if (created) {
           setExperience((prev) => [normalizeItem(created), ...prev]);
         }
-        setMessage("Experience added successfully.");
+        toast.success("Experience added successfully.");
       }
       setShowModal(false);
       setSelectedItem(null);
       setFormData(EMPTY_FORM);
     } catch (error) {
-      setMessage(error?.response?.data?.message || "Could not save experience.");
+      toast.error(error?.response?.data?.message || "Could not save experience.");
     } finally {
       setIsSaving(false);
     }
@@ -254,11 +254,7 @@ export default function Experience() {
             <button onClick={openAddModal} className="btn btn-primary">+ Add Experience</button>
           </div>
 
-          {message && (
-            <div className="card" style={{ marginBottom: 12, padding: 12 }}>
-              {message}
-            </div>
-          )}
+          {/* Notifications shown via toast (react-toastify) */}
 
           {isLoading && (
             <div className="card" style={{ marginBottom: 12, padding: 12 }}>

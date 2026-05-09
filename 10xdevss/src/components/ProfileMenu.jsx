@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import ChangePassword from './ChangePassword';
 import '../styles/components/ProfileMenu.css';
 
 export default function ProfileMenu({
@@ -11,6 +12,8 @@ export default function ProfileMenu({
   profileHeadline,
   profileLocation,
 }) {
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const initials = (profileName || 'JD')
     .split(' ')
     .map((part) => part[0])
@@ -83,6 +86,18 @@ export default function ProfileMenu({
         <li><hr className="dropdown-divider" /></li>
 
         <li>
+          <button
+            type="button"
+            className="dropdown-item portfolio-dropdown-item"
+            onClick={() => setShowChangePassword(true)}
+          >
+            Change Password
+          </button>
+        </li>
+
+        <li><hr className="dropdown-divider" /></li>
+
+        <li>
           <Link to="/profile" className="dropdown-item portfolio-dropdown-item">
             Profile
           </Link>
@@ -148,6 +163,18 @@ export default function ProfileMenu({
           </button>
         </li>
       </ul>
+      {showChangePassword && (
+        <ChangePassword
+          onClose={() => setShowChangePassword(false)}
+          onSuccess={(msg) => {
+            setSuccessMessage(msg);
+            setTimeout(() => setSuccessMessage(''), 3000);
+          }}
+        />
+      )}
+      {successMessage && (
+        <div className="dropdown-success-toast">{successMessage}</div>
+      )}
     </div>
   );
 }

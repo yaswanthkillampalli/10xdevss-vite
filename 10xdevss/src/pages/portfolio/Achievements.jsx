@@ -10,6 +10,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import "../../styles/portfolio/Achievements.css";
+import { toast } from 'react-toastify';
 import AchievementCard from "../../components/achievements/AchievementCard.jsx";
 import { getDiscoverAchievements } from "../../authentication/api";
 
@@ -158,7 +159,8 @@ export default function Achievements() {
         setError("");
       } catch (loadError) {
         if (!isMounted) return;
-        setError(loadError?.response?.data?.message || "Could not load achievements.");
+        const msg = loadError?.response?.data?.message || "Could not load achievements.";
+        toast.error(msg);
         setAchievements([]);
       } finally {
         if (isMounted) setIsLoading(false);
@@ -223,12 +225,7 @@ export default function Achievements() {
         )}
       </div>
 
-      {/* ── Error ── */}
-      {error && (
-        <div className="card" style={{ padding: 16, marginBottom: 20 }}>
-          {error}
-        </div>
-      )}
+      {/* Errors are shown via toast notifications (react-toastify) */}
 
       {/* ── Main layout: sidebar + content ── */}
       <div className="achievements-layout">

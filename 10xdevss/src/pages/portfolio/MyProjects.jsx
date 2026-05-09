@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "../../styles/portfolio/Projects.css";
+import { toast } from 'react-toastify';
 import ProjectCard from "../../components/projects/ProjectCard.jsx";
 import {
   createProject,
@@ -174,10 +175,10 @@ export default function MyProjects() {
         const list = response?.data || [];
         if (!isMounted) return;
         setProjects(list.map(normalizeProject));
-        setMessage("");
+        // clear message (notifications handled via toast)
       } catch (error) {
         if (!isMounted) return;
-        setMessage(error?.response?.data?.message || "Could not load your projects.");
+        toast.error(error?.response?.data?.message || "Could not load your projects.");
       } finally {
         if (isMounted) setIsLoading(false);
       }
@@ -237,11 +238,11 @@ export default function MyProjects() {
         if (created) {
           setProjects((prev) => [normalizeProject(created), ...prev]);
         }
-        setMessage("Project added successfully.");
+        toast.success("Project added successfully.");
         resetForm();
         setAddModalOpen(false);
       } catch (error) {
-        setMessage(error?.response?.data?.message || "Could not create project.");
+        toast.error(error?.response?.data?.message || "Could not create project.");
       } finally {
         setIsSaving(false);
       }
@@ -267,11 +268,11 @@ export default function MyProjects() {
           );
         }
 
-        setMessage("Project updated successfully.");
+        toast.success("Project updated successfully.");
         resetForm();
         setEditModalOpen(false);
       } catch (error) {
-        setMessage(error?.response?.data?.message || "Could not update project.");
+        toast.error(error?.response?.data?.message || "Could not update project.");
       } finally {
         setIsSaving(false);
       }
@@ -286,9 +287,9 @@ export default function MyProjects() {
       try {
         await deleteProject(deleteTarget.id);
         setProjects((prev) => prev.filter((p) => p.id !== deleteTarget.id));
-        setMessage("Project deleted successfully.");
+        toast.success("Project deleted successfully.");
       } catch (error) {
-        setMessage(error?.response?.data?.message || "Could not delete project.");
+        toast.error(error?.response?.data?.message || "Could not delete project.");
       } finally {
         setDeleteTarget(null);
       }
@@ -308,11 +309,7 @@ export default function MyProjects() {
             </div>
           </div>
 
-          {message && (
-            <div className="cert-empty-state" style={{ marginBottom: 12, padding: "0.9rem" }}>
-              <p>{message}</p>
-            </div>
-          )}
+          {/* Notifications shown via toast (react-toastify) */}
 
           <div className="cert-layout">
             <aside className="cert-sidebar">
