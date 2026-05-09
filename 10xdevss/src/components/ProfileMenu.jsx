@@ -86,6 +86,14 @@ export default function ProfileMenu({
         <li><hr className="dropdown-divider" /></li>
 
         <li>
+          <Link to="/profile" className="dropdown-item portfolio-dropdown-item">
+            Profile
+          </Link>
+        </li>        
+
+        <li><hr className="dropdown-divider" /></li>
+
+        <li>
           <button
             type="button"
             className="dropdown-item portfolio-dropdown-item"
@@ -93,14 +101,6 @@ export default function ProfileMenu({
           >
             Change Password
           </button>
-        </li>
-
-        <li><hr className="dropdown-divider" /></li>
-
-        <li>
-          <Link to="/profile" className="dropdown-item portfolio-dropdown-item">
-            Profile
-          </Link>
         </li>
 
         <li><hr className="dropdown-divider" /></li>
